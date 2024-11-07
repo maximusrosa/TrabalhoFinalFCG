@@ -1,3 +1,0 @@
-C:/Users/maxbo/OneDrive/Documentos/Estudos/Faculdade/Prática/Semestre6/FCG/TrabalhoFinalFCG/cmake-build-debug/CMakeFiles/TrabalhoFinalFCG.dir
-C:/Users/maxbo/OneDrive/Documentos/Estudos/Faculdade/Prática/Semestre6/FCG/TrabalhoFinalFCG/cmake-build-debug/CMakeFiles/edit_cache.dir
-C:/Users/maxbo/OneDrive/Documentos/Estudos/Faculdade/Prática/Semestre6/FCG/TrabalhoFinalFCG/cmake-build-debug/CMakeFiles/rebuild_cache.dir
