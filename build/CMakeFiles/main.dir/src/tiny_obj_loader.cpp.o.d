@@ -1,7 +1,7 @@
 CMakeFiles/main.dir/src/tiny_obj_loader.cpp.o: \
- /home/gabriel/Documents/UFRGS/2024-2/FCG/TF/src/src/tiny_obj_loader.cpp \
+ /home/gabriel/Documents/UFRGS/2024-2/FCG/TrabalhoFinalFCG/src/tiny_obj_loader.cpp \
  /usr/include/stdc-predef.h \
- /home/gabriel/Documents/UFRGS/2024-2/FCG/TF/src/include/tiny_obj_loader.h \
+ /home/gabriel/Documents/UFRGS/2024-2/FCG/TrabalhoFinalFCG/include/tiny_obj_loader.h \
  /usr/include/c++/11/map /usr/include/c++/11/bits/stl_tree.h \
  /usr/include/c++/11/bits/stl_algobase.h \
  /usr/include/x86_64-linux-gnu/c++/11/bits/c++config.h \

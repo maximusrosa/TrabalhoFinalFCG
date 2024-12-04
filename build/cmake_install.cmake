@@ -1,4 +1,4 @@
-# Install script for directory: /home/gabriel/Documents/UFRGS/2024-2/FCG/TF/src
+# Install script for directory: /home/gabriel/Documents/UFRGS/2024-2/FCG/TrabalhoFinalFCG
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -50,5 +50,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/gabriel/Documents/UFRGS/2024-2/FCG/TF/src/build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/gabriel/Documents/UFRGS/2024-2/FCG/TrabalhoFinalFCG/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

@@ -53,10 +53,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/gabriel/Documents/UFRGS/2024-2/FCG/TF/src
+CMAKE_SOURCE_DIR = /home/gabriel/Documents/UFRGS/2024-2/FCG/TrabalhoFinalFCG
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/gabriel/Documents/UFRGS/2024-2/FCG/TF/src/build
+CMAKE_BINARY_DIR = /home/gabriel/Documents/UFRGS/2024-2/FCG/TrabalhoFinalFCG/build
 
 # Utility rule file for run.
 
@@ -67,7 +67,7 @@ include CMakeFiles/run.dir/compiler_depend.make
 include CMakeFiles/run.dir/progress.make
 
 CMakeFiles/run: ../bin/Linux/main
-	/usr/bin/cmake -E chdir /home/gabriel/Documents/UFRGS/2024-2/FCG/TF/src/bin/Linux ./main
+	/usr/bin/cmake -E chdir /home/gabriel/Documents/UFRGS/2024-2/FCG/TrabalhoFinalFCG/bin/Linux ./main
 
 run: CMakeFiles/run
 run: CMakeFiles/run.dir/build.make
@@ -82,6 +82,6 @@ CMakeFiles/run.dir/clean:
 .PHONY : CMakeFiles/run.dir/clean
 
 CMakeFiles/run.dir/depend:
-	cd /home/gabriel/Documents/UFRGS/2024-2/FCG/TF/src/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/gabriel/Documents/UFRGS/2024-2/FCG/TF/src /home/gabriel/Documents/UFRGS/2024-2/FCG/TF/src /home/gabriel/Documents/UFRGS/2024-2/FCG/TF/src/build /home/gabriel/Documents/UFRGS/2024-2/FCG/TF/src/build /home/gabriel/Documents/UFRGS/2024-2/FCG/TF/src/build/CMakeFiles/run.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/gabriel/Documents/UFRGS/2024-2/FCG/TrabalhoFinalFCG/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/gabriel/Documents/UFRGS/2024-2/FCG/TrabalhoFinalFCG /home/gabriel/Documents/UFRGS/2024-2/FCG/TrabalhoFinalFCG /home/gabriel/Documents/UFRGS/2024-2/FCG/TrabalhoFinalFCG/build /home/gabriel/Documents/UFRGS/2024-2/FCG/TrabalhoFinalFCG/build /home/gabriel/Documents/UFRGS/2024-2/FCG/TrabalhoFinalFCG/build/CMakeFiles/run.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/run.dir/depend
 

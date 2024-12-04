@@ -1,4 +1,4 @@
-/home/gabriel/Documents/UFRGS/2024-2/FCG/TF/src/build/CMakeFiles/main.dir
-/home/gabriel/Documents/UFRGS/2024-2/FCG/TF/src/build/CMakeFiles/run.dir
-/home/gabriel/Documents/UFRGS/2024-2/FCG/TF/src/build/CMakeFiles/edit_cache.dir
-/home/gabriel/Documents/UFRGS/2024-2/FCG/TF/src/build/CMakeFiles/rebuild_cache.dir
+/home/gabriel/Documents/UFRGS/2024-2/FCG/TrabalhoFinalFCG/build/CMakeFiles/main.dir
+/home/gabriel/Documents/UFRGS/2024-2/FCG/TrabalhoFinalFCG/build/CMakeFiles/run.dir
+/home/gabriel/Documents/UFRGS/2024-2/FCG/TrabalhoFinalFCG/build/CMakeFiles/edit_cache.dir
+/home/gabriel/Documents/UFRGS/2024-2/FCG/TrabalhoFinalFCG/build/CMakeFiles/rebuild_cache.dir

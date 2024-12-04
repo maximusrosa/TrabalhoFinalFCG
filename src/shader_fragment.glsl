@@ -14,8 +14,9 @@ uniform mat4 projection;
 
 // Identificador que define qual objeto está sendo desenhado no momento
 #define SPHERE 0
-#define BUNNY  1
-#define PLANE  2
+#define COW 1
+#define PLANE 2
+#define MAZE 3
 uniform int object_id;
 
 // O valor de saída ("out") de um Fragment Shader é a cor final do fragmento.
@@ -31,8 +32,7 @@ void main()
     // O fragmento atual é coberto por um ponto que percente à superfície de um
     // dos objetos virtuais da cena. Este ponto, p, possui uma posição no
     // sistema de coordenadas global (World coordinates). Esta posição é obtida
-    // através da interpolação, feita pelo rasterizador, da posição de cada
-    // vértice.
+    // através da interpolação, feita pelo rasterizador, da posição de cada vértice.
     vec4 p = position_world;
 
     // Normal do fragmento atual, interpolada pelo rasterizador a partir das
@@ -57,17 +57,15 @@ void main()
 
     if ( object_id == SPHERE )
     {
-        // PREENCHA AQUI
         // Propriedades espectrais da esfera
         Kd = vec3(0.8,0.4,0.08);
         Ks = vec3(0.0,0.0,0.0);
         Ka = 0.5 * Kd;
         q = 1.0;
     }
-    else if ( object_id == BUNNY )
+    else if ( object_id == COW )
     {
-        // PREENCHA AQUI
-        // Propriedades espectrais do coelho
+        // Propriedades espectrais da vaca
         Kd = vec3(0.08,0.4,0.8);
         Ks = vec3(0.8,0.8,0.8);
         Ka = 0.5 * Kd;
@@ -75,8 +73,15 @@ void main()
     }
     else if ( object_id == PLANE )
     {
-        // PREENCHA AQUI
         // Propriedades espectrais do plano
+        Kd = vec3(0.2,0.2,0.2);
+        Ks = vec3(0.3,0.3,0.3);
+        Ka = vec3(0.0,0.0,0.0);
+        q = 20.0;
+    }
+    else if ( object_id == MAZE )
+    {
+        // Propriedades espectrais do labirinto
         Kd = vec3(0.2,0.2,0.2);
         Ks = vec3(0.3,0.3,0.3);
         Ka = vec3(0.0,0.0,0.0);
@@ -91,10 +96,10 @@ void main()
     }
 
     // Espectro da fonte de iluminação
-    vec3 I = vec3(1.0,1.0,1.0); // PREENCH AQUI o espectro da fonte de luz
+    vec3 I = vec3(1.0,1.0,1.0);
 
     // Espectro da luz ambiente
-    vec3 Ia = vec3(0.2,0.2,0.2); // PREENCHA AQUI o espectro da luz ambiente
+    vec3 Ia = vec3(0.2,0.2,0.2);
 
     // Termo difuso utilizando a lei dos cossenos de Lambert
     vec3 lambert_diffuse_term = Kd * I * max(dot(n, l), 0);

@@ -53,10 +53,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/gabriel/Documents/UFRGS/2024-2/FCG/TF/src
+CMAKE_SOURCE_DIR = /home/gabriel/Documents/UFRGS/2024-2/FCG/TrabalhoFinalFCG
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/gabriel/Documents/UFRGS/2024-2/FCG/TF/src/build
+CMAKE_BINARY_DIR = /home/gabriel/Documents/UFRGS/2024-2/FCG/TrabalhoFinalFCG/build
 
 # Include any dependencies generated for this target.
 include CMakeFiles/main.dir/depend.make
@@ -72,58 +72,58 @@ include CMakeFiles/main.dir/flags.make
 CMakeFiles/main.dir/src/main.cpp.o: CMakeFiles/main.dir/flags.make
 CMakeFiles/main.dir/src/main.cpp.o: ../src/main.cpp
 CMakeFiles/main.dir/src/main.cpp.o: CMakeFiles/main.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/gabriel/Documents/UFRGS/2024-2/FCG/TF/src/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/main.dir/src/main.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/main.dir/src/main.cpp.o -MF CMakeFiles/main.dir/src/main.cpp.o.d -o CMakeFiles/main.dir/src/main.cpp.o -c /home/gabriel/Documents/UFRGS/2024-2/FCG/TF/src/src/main.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/gabriel/Documents/UFRGS/2024-2/FCG/TrabalhoFinalFCG/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/main.dir/src/main.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/main.dir/src/main.cpp.o -MF CMakeFiles/main.dir/src/main.cpp.o.d -o CMakeFiles/main.dir/src/main.cpp.o -c /home/gabriel/Documents/UFRGS/2024-2/FCG/TrabalhoFinalFCG/src/main.cpp
 
 CMakeFiles/main.dir/src/main.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/main.dir/src/main.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/gabriel/Documents/UFRGS/2024-2/FCG/TF/src/src/main.cpp > CMakeFiles/main.dir/src/main.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/gabriel/Documents/UFRGS/2024-2/FCG/TrabalhoFinalFCG/src/main.cpp > CMakeFiles/main.dir/src/main.cpp.i
 
 CMakeFiles/main.dir/src/main.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/main.dir/src/main.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/gabriel/Documents/UFRGS/2024-2/FCG/TF/src/src/main.cpp -o CMakeFiles/main.dir/src/main.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/gabriel/Documents/UFRGS/2024-2/FCG/TrabalhoFinalFCG/src/main.cpp -o CMakeFiles/main.dir/src/main.cpp.s
 
 CMakeFiles/main.dir/src/textrendering.cpp.o: CMakeFiles/main.dir/flags.make
 CMakeFiles/main.dir/src/textrendering.cpp.o: ../src/textrendering.cpp
 CMakeFiles/main.dir/src/textrendering.cpp.o: CMakeFiles/main.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/gabriel/Documents/UFRGS/2024-2/FCG/TF/src/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/main.dir/src/textrendering.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/main.dir/src/textrendering.cpp.o -MF CMakeFiles/main.dir/src/textrendering.cpp.o.d -o CMakeFiles/main.dir/src/textrendering.cpp.o -c /home/gabriel/Documents/UFRGS/2024-2/FCG/TF/src/src/textrendering.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/gabriel/Documents/UFRGS/2024-2/FCG/TrabalhoFinalFCG/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/main.dir/src/textrendering.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/main.dir/src/textrendering.cpp.o -MF CMakeFiles/main.dir/src/textrendering.cpp.o.d -o CMakeFiles/main.dir/src/textrendering.cpp.o -c /home/gabriel/Documents/UFRGS/2024-2/FCG/TrabalhoFinalFCG/src/textrendering.cpp
 
 CMakeFiles/main.dir/src/textrendering.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/main.dir/src/textrendering.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/gabriel/Documents/UFRGS/2024-2/FCG/TF/src/src/textrendering.cpp > CMakeFiles/main.dir/src/textrendering.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/gabriel/Documents/UFRGS/2024-2/FCG/TrabalhoFinalFCG/src/textrendering.cpp > CMakeFiles/main.dir/src/textrendering.cpp.i
 
 CMakeFiles/main.dir/src/textrendering.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/main.dir/src/textrendering.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/gabriel/Documents/UFRGS/2024-2/FCG/TF/src/src/textrendering.cpp -o CMakeFiles/main.dir/src/textrendering.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/gabriel/Documents/UFRGS/2024-2/FCG/TrabalhoFinalFCG/src/textrendering.cpp -o CMakeFiles/main.dir/src/textrendering.cpp.s
 
 CMakeFiles/main.dir/src/tiny_obj_loader.cpp.o: CMakeFiles/main.dir/flags.make
 CMakeFiles/main.dir/src/tiny_obj_loader.cpp.o: ../src/tiny_obj_loader.cpp
 CMakeFiles/main.dir/src/tiny_obj_loader.cpp.o: CMakeFiles/main.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/gabriel/Documents/UFRGS/2024-2/FCG/TF/src/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/main.dir/src/tiny_obj_loader.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/main.dir/src/tiny_obj_loader.cpp.o -MF CMakeFiles/main.dir/src/tiny_obj_loader.cpp.o.d -o CMakeFiles/main.dir/src/tiny_obj_loader.cpp.o -c /home/gabriel/Documents/UFRGS/2024-2/FCG/TF/src/src/tiny_obj_loader.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/gabriel/Documents/UFRGS/2024-2/FCG/TrabalhoFinalFCG/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/main.dir/src/tiny_obj_loader.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/main.dir/src/tiny_obj_loader.cpp.o -MF CMakeFiles/main.dir/src/tiny_obj_loader.cpp.o.d -o CMakeFiles/main.dir/src/tiny_obj_loader.cpp.o -c /home/gabriel/Documents/UFRGS/2024-2/FCG/TrabalhoFinalFCG/src/tiny_obj_loader.cpp
 
 CMakeFiles/main.dir/src/tiny_obj_loader.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/main.dir/src/tiny_obj_loader.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/gabriel/Documents/UFRGS/2024-2/FCG/TF/src/src/tiny_obj_loader.cpp > CMakeFiles/main.dir/src/tiny_obj_loader.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/gabriel/Documents/UFRGS/2024-2/FCG/TrabalhoFinalFCG/src/tiny_obj_loader.cpp > CMakeFiles/main.dir/src/tiny_obj_loader.cpp.i
 
 CMakeFiles/main.dir/src/tiny_obj_loader.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/main.dir/src/tiny_obj_loader.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/gabriel/Documents/UFRGS/2024-2/FCG/TF/src/src/tiny_obj_loader.cpp -o CMakeFiles/main.dir/src/tiny_obj_loader.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/gabriel/Documents/UFRGS/2024-2/FCG/TrabalhoFinalFCG/src/tiny_obj_loader.cpp -o CMakeFiles/main.dir/src/tiny_obj_loader.cpp.s
 
 CMakeFiles/main.dir/src/glad.c.o: CMakeFiles/main.dir/flags.make
 CMakeFiles/main.dir/src/glad.c.o: ../src/glad.c
 CMakeFiles/main.dir/src/glad.c.o: CMakeFiles/main.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/gabriel/Documents/UFRGS/2024-2/FCG/TF/src/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building C object CMakeFiles/main.dir/src/glad.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/main.dir/src/glad.c.o -MF CMakeFiles/main.dir/src/glad.c.o.d -o CMakeFiles/main.dir/src/glad.c.o -c /home/gabriel/Documents/UFRGS/2024-2/FCG/TF/src/src/glad.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/gabriel/Documents/UFRGS/2024-2/FCG/TrabalhoFinalFCG/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building C object CMakeFiles/main.dir/src/glad.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/main.dir/src/glad.c.o -MF CMakeFiles/main.dir/src/glad.c.o.d -o CMakeFiles/main.dir/src/glad.c.o -c /home/gabriel/Documents/UFRGS/2024-2/FCG/TrabalhoFinalFCG/src/glad.c
 
 CMakeFiles/main.dir/src/glad.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/main.dir/src/glad.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/gabriel/Documents/UFRGS/2024-2/FCG/TF/src/src/glad.c > CMakeFiles/main.dir/src/glad.c.i
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/gabriel/Documents/UFRGS/2024-2/FCG/TrabalhoFinalFCG/src/glad.c > CMakeFiles/main.dir/src/glad.c.i
 
 CMakeFiles/main.dir/src/glad.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/main.dir/src/glad.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/gabriel/Documents/UFRGS/2024-2/FCG/TF/src/src/glad.c -o CMakeFiles/main.dir/src/glad.c.s
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/gabriel/Documents/UFRGS/2024-2/FCG/TrabalhoFinalFCG/src/glad.c -o CMakeFiles/main.dir/src/glad.c.s
 
 # Object files for target main
 main_OBJECTS = \
@@ -153,7 +153,7 @@ main_EXTERNAL_OBJECTS =
 ../bin/Linux/main: /usr/lib/x86_64-linux-gnu/libXinerama.so
 ../bin/Linux/main: /usr/lib/x86_64-linux-gnu/libXxf86vm.so
 ../bin/Linux/main: CMakeFiles/main.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/gabriel/Documents/UFRGS/2024-2/FCG/TF/src/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Linking CXX executable ../bin/Linux/main"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/gabriel/Documents/UFRGS/2024-2/FCG/TrabalhoFinalFCG/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Linking CXX executable ../bin/Linux/main"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/main.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -165,6 +165,6 @@ CMakeFiles/main.dir/clean:
 .PHONY : CMakeFiles/main.dir/clean
 
 CMakeFiles/main.dir/depend:
-	cd /home/gabriel/Documents/UFRGS/2024-2/FCG/TF/src/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/gabriel/Documents/UFRGS/2024-2/FCG/TF/src /home/gabriel/Documents/UFRGS/2024-2/FCG/TF/src /home/gabriel/Documents/UFRGS/2024-2/FCG/TF/src/build /home/gabriel/Documents/UFRGS/2024-2/FCG/TF/src/build /home/gabriel/Documents/UFRGS/2024-2/FCG/TF/src/build/CMakeFiles/main.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/gabriel/Documents/UFRGS/2024-2/FCG/TrabalhoFinalFCG/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/gabriel/Documents/UFRGS/2024-2/FCG/TrabalhoFinalFCG /home/gabriel/Documents/UFRGS/2024-2/FCG/TrabalhoFinalFCG /home/gabriel/Documents/UFRGS/2024-2/FCG/TrabalhoFinalFCG/build /home/gabriel/Documents/UFRGS/2024-2/FCG/TrabalhoFinalFCG/build /home/gabriel/Documents/UFRGS/2024-2/FCG/TrabalhoFinalFCG/build/CMakeFiles/main.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/main.dir/depend
 
