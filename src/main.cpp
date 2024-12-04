@@ -317,7 +317,7 @@ int main(int argc, char* argv[])
         // Loop de renderização
 
         // Definimos a cor de fundo do framebuffer.
-        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+        glClearColor(0.2f, 0.1f, 0.3f, 1.0f);
 
         // "Pintamos" todos os pixels do framebuffer com a cor definida acima
         // e resetamos todos os pixels do Z-buffer (depth buffer).
@@ -371,14 +371,15 @@ int main(int argc, char* argv[])
         glUniformMatrix4fv(g_projection_uniform , 1 , GL_FALSE , glm::value_ptr(projection));
 
         // Desenhamos o modelo da esfera
-        model = Matrix_Translate(-2.0f,0.0f,2.0f);
+        model = Matrix_Translate(-2.0f,50.0f,2.0f)
+                * Matrix_Scale(2.0f,2.0f,2.0f);
         glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
         glUniform1i(g_object_id_uniform, SPHERE);
         DrawVirtualObject("the_sphere");
 
         // Desenhamos o modelo da vaca
-        model = Matrix_Translate(1.0f,0.0f,0.0f)
-                * Matrix_Scale(1.75f,1.75f,1.75f);
+        model = Matrix_Translate(4.0f,1.05f,-100.0f)
+                * Matrix_Scale(2.0f,2.0f,2.0f);
         glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
         glUniform1i(g_object_id_uniform, COW);
         DrawVirtualObject("the_cow");

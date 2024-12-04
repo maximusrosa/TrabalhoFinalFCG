@@ -26,7 +26,7 @@ void main()
 {
     // Obtemos a posição da câmera utilizando a inversa da matriz que define o
     // sistema de coordenadas da câmera.
-    vec4 origin = vec4(0.0, 0.0, 0.0, 1.0);
+    vec4 origin = vec4(0.0,0.0,0.0,1.0);
     vec4 camera_position = inverse(view) * origin;
 
     // O fragmento atual é coberto por um ponto que percente à superfície de um
@@ -66,26 +66,26 @@ void main()
     else if ( object_id == COW )
     {
         // Propriedades espectrais da vaca
-        Kd = vec3(0.08,0.4,0.8);
+        Kd = vec3(0.8,0.4,0.08);
         Ks = vec3(0.8,0.8,0.8);
-        Ka = 0.5 * Kd;
+        Ka = vec3(0.05,0.0,0.0);
         q = 32.0;
     }
     else if ( object_id == PLANE )
     {
         // Propriedades espectrais do plano
-        Kd = vec3(0.2,0.2,0.2);
-        Ks = vec3(0.3,0.3,0.3);
-        Ka = vec3(0.0,0.0,0.0);
-        q = 20.0;
+        Kd = vec3(0.02,0.1,0.02);
+        Ks = vec3(0.0,0.05,0.0);
+        Ka = vec3(0.05,0.0,0.0);
+        q = 5.0;
     }
     else if ( object_id == MAZE )
     {
         // Propriedades espectrais do labirinto
-        Kd = vec3(0.2,0.2,0.2);
-        Ks = vec3(0.3,0.3,0.3);
-        Ka = vec3(0.0,0.0,0.0);
-        q = 20.0;
+        Kd = vec3(0.15,0.15,0.15);
+        Ks = vec3(0.01,0.01,0.01);
+        Ka = vec3(0.05,0.0,0.0);
+        q = 5.0;
     }
     else // Objeto desconhecido = preto
     {

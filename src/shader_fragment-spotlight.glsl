@@ -29,9 +29,9 @@ void main()
     // sistema de coordenadas da câmera.
     vec4 origin = vec4(0.0, 0.0, 0.0, 1.0);
     vec4 camera_position = inverse(view) * origin;
-    vec4 light_source = vec4(0.0, 2.0, 1.0, 1.0);
-    vec4 light_direction = vec4(0.0, 1.0, 0.0, 0.0);
-    float aperture = PI / 6.0;
+    vec4 light_source = vec4(-2.0, 50.0, 2.0, 1.0);
+    vec4 light_direction = normalize(vec4(2.0, -50.0, 2.0, 0.0));
+    float aperture = PI / 3.0;
     float cos_alpha = cos(aperture);
 
     // O fragmento atual é coberto por um ponto que percente à superfície de um
