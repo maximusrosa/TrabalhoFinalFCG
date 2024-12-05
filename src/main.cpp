@@ -80,7 +80,8 @@ struct ObjModel
     }
 };
 
-enum ObjectModelType {
+enum ObjectModelType 
+{
     SPHERE,
     COW,
     PLANE,
@@ -278,10 +279,6 @@ int main(int argc, char* argv[])
     LoadShadersFromFiles();
 
     // Construímos a representação de objetos geométricos através de malhas de triângulos
-    ObjModel sphereModel("../../data/sphere.obj");
-    ComputeNormals(&sphereModel);
-    BuildTrianglesAndAddToVirtualScene(&sphereModel);
-
     ObjModel cowModel("../../data/cow.obj");
     ComputeNormals(&cowModel);
     BuildTrianglesAndAddToVirtualScene(&cowModel);
@@ -369,13 +366,6 @@ int main(int argc, char* argv[])
         // efetivamente aplicadas em todos os pontos.
         glUniformMatrix4fv(g_view_uniform       , 1 , GL_FALSE , glm::value_ptr(view));
         glUniformMatrix4fv(g_projection_uniform , 1 , GL_FALSE , glm::value_ptr(projection));
-
-        // Desenhamos o modelo da esfera
-        model = Matrix_Translate(-2.0f,50.0f,2.0f)
-                * Matrix_Scale(2.0f,2.0f,2.0f);
-        glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
-        glUniform1i(g_object_id_uniform, SPHERE);
-        DrawVirtualObject("the_sphere");
 
         // Desenhamos o modelo da vaca
         model = Matrix_Translate(4.0f,1.05f,-100.0f)
