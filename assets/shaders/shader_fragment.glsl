@@ -12,12 +12,10 @@ uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 
-#define PI 3.14159265359
-
 // Identificador que define qual objeto está sendo desenhado no momento
-#define SPHERE 0
-#define COW  1
-#define PLANE  2
+#define COW 0
+#define PLANE 1
+#define MAZE 2
 uniform int object_id;
 
 // O valor de saída ("out") de um Fragment Shader é a cor final do fragmento.
@@ -27,18 +25,13 @@ void main()
 {
     // Obtemos a posição da câmera utilizando a inversa da matriz que define o
     // sistema de coordenadas da câmera.
-    vec4 origin = vec4(0.0, 0.0, 0.0, 1.0);
+    vec4 origin = vec4(0.0,0.0,0.0,1.0);
     vec4 camera_position = inverse(view) * origin;
-    vec4 light_source = vec4(-2.0, 50.0, 2.0, 1.0);
-    vec4 light_direction = normalize(vec4(2.0, -50.0, 2.0, 0.0));
-    float aperture = PI / 3.0;
-    float cos_alpha = cos(aperture);
 
     // O fragmento atual é coberto por um ponto que percente à superfície de um
     // dos objetos virtuais da cena. Este ponto, p, possui uma posição no
     // sistema de coordenadas global (World coordinates). Esta posição é obtida
-    // através da interpolação, feita pelo rasterizador, da posição de cada
-    // vértice.
+    // através da interpolação, feita pelo rasterizador, da posição de cada vértice.
     vec4 p = position_world;
 
     // Normal do fragmento atual, interpolada pelo rasterizador a partir das
@@ -46,11 +39,10 @@ void main()
     vec4 n = normalize(normal);
 
     // Vetor que define o sentido da fonte de luz em relação ao ponto atual.
-    vec4 l = normalize(light_source - p);
-    float cos_beta = dot(l, light_direction);
+    vec4 l = normalize(camera_position - p);
 
     // Vetor que define o sentido da câmera em relação ao ponto atual.
-    vec4 v = normalize(camera_position - p);
+    vec4 v = l;
 
     // Vetor que define o sentido da reflexão especular ideal.
     vec4 r = -l + 2 * n * dot(n, l);
@@ -62,29 +54,29 @@ void main()
     vec3 Ka; // Refletância ambiente
     float q; // Expoente especular para o modelo de iluminação de Phong
 
-    if ( object_id == SPHERE )
-    {
-        // Propriedades espectrais da esfera
-        Kd = vec3(0.8,0.4,0.08);
-        Ks = vec3(0.0,0.0,0.0);
-        Ka = 0.5 * Kd;
-        q = 1.0;
-    }
-    else if ( object_id == COW )
+    if ( object_id == COW )
     {
         // Propriedades espectrais da vaca
-        Kd = vec3(0.08,0.4,0.8);
+        Kd = vec3(0.8,0.4,0.08);
         Ks = vec3(0.8,0.8,0.8);
-        Ka = 0.5 * Kd;
+        Ka = vec3(0.05,0.0,0.0);
         q = 32.0;
     }
     else if ( object_id == PLANE )
     {
         // Propriedades espectrais do plano
-        Kd = vec3(0.2,0.2,0.2);
-        Ks = vec3(0.3,0.3,0.3);
+        Kd = vec3(0.1,0.3,0.1);
+        Ks = vec3(0.0,0.0,0.0);
         Ka = vec3(0.0,0.0,0.0);
-        q = 20.0;
+        q = 1.0;
+    }
+    else if ( object_id == MAZE )
+    {
+        // Propriedades espectrais do labirinto
+        Kd = vec3(0.2,0.2,0.2);
+        Ks = vec3(0.0,0.0,0.0);
+        Ka = vec3(0.0,0.0,0.0);
+        q = 1.0;
     }
     else // Objeto desconhecido = preto
     {
@@ -125,14 +117,7 @@ void main()
 
     // Cor final do fragmento calculada com uma combinação dos termos difuso,
     // especular, e ambiente. Veja slide 129 do documento Aula_17_e_18_Modelos_de_Iluminacao.pdf.
-    if (cos_beta < cos_alpha)
-    {
-        color.rgb = ambient_term;
-    }
-    else
-    {
-        color.rgb = lambert_diffuse_term + ambient_term + phong_specular_term;
-    }
+    color.rgb = lambert_diffuse_term + ambient_term + phong_specular_term;
 
     // Cor final com correção gamma, considerando monitor sRGB.
     // Veja https://en.wikipedia.org/w/index.php?title=Gamma_correction&oldid=751281772#Windows.2C_Mac.2C_sRGB_and_TV.2Fvideo_standard_gammas

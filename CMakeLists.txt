@@ -6,15 +6,19 @@
 # Arquivos fonte C/C++. Inclua nesta lista todos os arquivos que devem
 # ser compilados.
 set(SOURCES
-  src/main.cpp
-  src/textrendering.cpp
   src/tiny_obj_loader.cpp
-  src/glad.c
+  src/glad/glad.c
+  src/utils/math_utils.cpp
+  src/graphics/core.cpp
+  src/graphics/shaders.cpp
+  src/graphics/renderer.cpp
+  src/core/game.cpp
+  src/main.cpp
 )
 
 cmake_minimum_required(VERSION 3.5.0)
 
-project(LAB_FCG VERSION 1.0.0)
+project(CowQuest VERSION 1.0.0)
 
 set(CMAKE_CXX_STANDARD          11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -40,7 +44,7 @@ message(STATUS
                for type in {Release, Debug, RelWithDebInfo}.
 ")
 
-set(EXECUTABLE_NAME main)
+set(EXECUTABLE_NAME CowQuest)
 
 # Verifica se todos os arquivos fonte estão presentes no diretório
 # atual. Se não estão, avisa sobre CMakeLists mal configurado.
@@ -108,8 +112,8 @@ elseif(UNIX)
 
   # Add custom target for 'run'
   add_custom_target(run
-      COMMAND ${CMAKE_COMMAND} -E chdir ${CMAKE_RUNTIME_OUTPUT_DIRECTORY} ./main
-      DEPENDS main
+      COMMAND ${CMAKE_COMMAND} -E chdir ${CMAKE_RUNTIME_OUTPUT_DIRECTORY} ./CowQuest
+      DEPENDS CowQuest
       USES_TERMINAL
   )
 

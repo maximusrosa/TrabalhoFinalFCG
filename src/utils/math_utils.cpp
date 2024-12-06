@@ -1,12 +1,11 @@
-#ifndef _MATRICES_H
-#define _MATRICES_H
-
 #include <cstdio>
 #include <cstdlib>
 
 #include <glm/mat4x4.hpp>
 #include <glm/vec4.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+
+#include "utils/math_utils.h"
 
 // Esta função Matrix() auxilia na criação de matrizes usando a biblioteca GLM.
 // Note que em OpenGL (e GLM) as matrizes são definidas como "column-major",
@@ -320,6 +319,11 @@ glm::mat4 Matrix_Perspective(float field_of_view, float aspect, float n, float f
     return -M*P;
 }
 
+glm::vec4 ComputeTriangleNormal(glm::vec4 a, glm::vec4 b, glm::vec4 c)
+{
+    return crossproduct(c-a, b-a);
+}
+
 // Função que imprime uma matriz M no terminal
 void PrintMatrix(glm::mat4 M)
 {
@@ -363,7 +367,3 @@ void PrintMatrixVectorProductDivW(glm::mat4 M, glm::vec4 v)
     printf("[ %+0.2f  %+0.2f  %+0.2f  %+0.2f ][ %+0.2f ]   [ %+0.2f ]            [ %+0.2f ]\n", M[0][2], M[1][2], M[2][2], M[3][2], v[2], r[2], r[2]/w);
     printf("[ %+0.2f  %+0.2f  %+0.2f  %+0.2f ][ %+0.2f ]   [ %+0.2f ]            [ %+0.2f ]\n", M[0][3], M[1][3], M[2][3], M[3][3], v[3], r[3], r[3]/w);
 }
-
-
-#endif // _MATRICES_H
-// vim: set spell spelllang=pt_br :

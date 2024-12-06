@@ -145,7 +145,7 @@ CMAKE_PROJECT_DESCRIPTION:STATIC=
 CMAKE_PROJECT_HOMEPAGE_URL:STATIC=
 
 //Value Computed by CMake
-CMAKE_PROJECT_NAME:STATIC=LAB_FCG
+CMAKE_PROJECT_NAME:STATIC=CowQuest
 
 //Value Computed by CMake
 CMAKE_PROJECT_VERSION:STATIC=1.0.0
@@ -224,6 +224,15 @@ CMAKE_STRIP:FILEPATH=/usr/bin/strip
 // Studio IDE projects all commands are done without /nologo.
 CMAKE_VERBOSE_MAKEFILE:BOOL=FALSE
 
+//Value Computed by CMake
+CowQuest_BINARY_DIR:STATIC=/home/gabriel/Documents/UFRGS/2024-2/FCG/TrabalhoFinalFCG/build
+
+//Value Computed by CMake
+CowQuest_IS_TOP_LEVEL:STATIC=ON
+
+//Value Computed by CMake
+CowQuest_SOURCE_DIR:STATIC=/home/gabriel/Documents/UFRGS/2024-2/FCG/TrabalhoFinalFCG
+
 //Path to a file.
 FREETYPE_INCLUDE_DIR_freetype2:PATH=/usr/include/freetype2
 
@@ -241,15 +250,6 @@ Fontconfig_INCLUDE_DIR:PATH=/usr/include
 
 //Path to a library.
 Fontconfig_LIBRARY:FILEPATH=/usr/lib/x86_64-linux-gnu/libfontconfig.so
-
-//Value Computed by CMake
-LAB_FCG_BINARY_DIR:STATIC=/home/gabriel/Documents/UFRGS/2024-2/FCG/TrabalhoFinalFCG/build
-
-//Value Computed by CMake
-LAB_FCG_IS_TOP_LEVEL:STATIC=ON
-
-//Value Computed by CMake
-LAB_FCG_SOURCE_DIR:STATIC=/home/gabriel/Documents/UFRGS/2024-2/FCG/TrabalhoFinalFCG
 
 //Path to a library.
 MATH_LIBRARY:FILEPATH=/usr/lib/x86_64-linux-gnu/libm.so

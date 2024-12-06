@@ -66,8 +66,8 @@ include CMakeFiles/run.dir/compiler_depend.make
 # Include the progress variables for this target.
 include CMakeFiles/run.dir/progress.make
 
-CMakeFiles/run: ../bin/Linux/main
-	/usr/bin/cmake -E chdir /home/gabriel/Documents/UFRGS/2024-2/FCG/TrabalhoFinalFCG/bin/Linux ./main
+CMakeFiles/run: ../bin/Linux/CowQuest
+	/usr/bin/cmake -E chdir /home/gabriel/Documents/UFRGS/2024-2/FCG/TrabalhoFinalFCG/bin/Linux ./CowQuest
 
 run: CMakeFiles/run
 run: CMakeFiles/run.dir/build.make
