@@ -117,17 +117,17 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named main
+# Target rules for targets named CowQuest
 
 # Build rule for target.
-main: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 main
-.PHONY : main
+CowQuest: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CowQuest
+.PHONY : CowQuest
 
 # fast build rule for target.
-main/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/build
-.PHONY : main/fast
+CowQuest/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CowQuest.dir/build.make CMakeFiles/CowQuest.dir/build
+.PHONY : CowQuest/fast
 
 #=============================================================================
 # Target rules for targets named run
@@ -142,36 +142,132 @@ run/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/run.dir/build.make CMakeFiles/run.dir/build
 .PHONY : run/fast
 
-src/glad.o: src/glad.c.o
-.PHONY : src/glad.o
+src/core/game.o: src/core/game.cpp.o
+.PHONY : src/core/game.o
 
 # target to build an object file
-src/glad.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/glad.c.o
-.PHONY : src/glad.c.o
+src/core/game.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CowQuest.dir/build.make CMakeFiles/CowQuest.dir/src/core/game.cpp.o
+.PHONY : src/core/game.cpp.o
 
-src/glad.i: src/glad.c.i
-.PHONY : src/glad.i
+src/core/game.i: src/core/game.cpp.i
+.PHONY : src/core/game.i
 
 # target to preprocess a source file
-src/glad.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/glad.c.i
-.PHONY : src/glad.c.i
+src/core/game.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CowQuest.dir/build.make CMakeFiles/CowQuest.dir/src/core/game.cpp.i
+.PHONY : src/core/game.cpp.i
 
-src/glad.s: src/glad.c.s
-.PHONY : src/glad.s
+src/core/game.s: src/core/game.cpp.s
+.PHONY : src/core/game.s
 
 # target to generate assembly for a file
-src/glad.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/glad.c.s
-.PHONY : src/glad.c.s
+src/core/game.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CowQuest.dir/build.make CMakeFiles/CowQuest.dir/src/core/game.cpp.s
+.PHONY : src/core/game.cpp.s
+
+src/glad/glad.o: src/glad/glad.c.o
+.PHONY : src/glad/glad.o
+
+# target to build an object file
+src/glad/glad.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CowQuest.dir/build.make CMakeFiles/CowQuest.dir/src/glad/glad.c.o
+.PHONY : src/glad/glad.c.o
+
+src/glad/glad.i: src/glad/glad.c.i
+.PHONY : src/glad/glad.i
+
+# target to preprocess a source file
+src/glad/glad.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CowQuest.dir/build.make CMakeFiles/CowQuest.dir/src/glad/glad.c.i
+.PHONY : src/glad/glad.c.i
+
+src/glad/glad.s: src/glad/glad.c.s
+.PHONY : src/glad/glad.s
+
+# target to generate assembly for a file
+src/glad/glad.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CowQuest.dir/build.make CMakeFiles/CowQuest.dir/src/glad/glad.c.s
+.PHONY : src/glad/glad.c.s
+
+src/graphics/core.o: src/graphics/core.cpp.o
+.PHONY : src/graphics/core.o
+
+# target to build an object file
+src/graphics/core.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CowQuest.dir/build.make CMakeFiles/CowQuest.dir/src/graphics/core.cpp.o
+.PHONY : src/graphics/core.cpp.o
+
+src/graphics/core.i: src/graphics/core.cpp.i
+.PHONY : src/graphics/core.i
+
+# target to preprocess a source file
+src/graphics/core.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CowQuest.dir/build.make CMakeFiles/CowQuest.dir/src/graphics/core.cpp.i
+.PHONY : src/graphics/core.cpp.i
+
+src/graphics/core.s: src/graphics/core.cpp.s
+.PHONY : src/graphics/core.s
+
+# target to generate assembly for a file
+src/graphics/core.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CowQuest.dir/build.make CMakeFiles/CowQuest.dir/src/graphics/core.cpp.s
+.PHONY : src/graphics/core.cpp.s
+
+src/graphics/renderer.o: src/graphics/renderer.cpp.o
+.PHONY : src/graphics/renderer.o
+
+# target to build an object file
+src/graphics/renderer.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CowQuest.dir/build.make CMakeFiles/CowQuest.dir/src/graphics/renderer.cpp.o
+.PHONY : src/graphics/renderer.cpp.o
+
+src/graphics/renderer.i: src/graphics/renderer.cpp.i
+.PHONY : src/graphics/renderer.i
+
+# target to preprocess a source file
+src/graphics/renderer.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CowQuest.dir/build.make CMakeFiles/CowQuest.dir/src/graphics/renderer.cpp.i
+.PHONY : src/graphics/renderer.cpp.i
+
+src/graphics/renderer.s: src/graphics/renderer.cpp.s
+.PHONY : src/graphics/renderer.s
+
+# target to generate assembly for a file
+src/graphics/renderer.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CowQuest.dir/build.make CMakeFiles/CowQuest.dir/src/graphics/renderer.cpp.s
+.PHONY : src/graphics/renderer.cpp.s
+
+src/graphics/shaders.o: src/graphics/shaders.cpp.o
+.PHONY : src/graphics/shaders.o
+
+# target to build an object file
+src/graphics/shaders.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CowQuest.dir/build.make CMakeFiles/CowQuest.dir/src/graphics/shaders.cpp.o
+.PHONY : src/graphics/shaders.cpp.o
+
+src/graphics/shaders.i: src/graphics/shaders.cpp.i
+.PHONY : src/graphics/shaders.i
+
+# target to preprocess a source file
+src/graphics/shaders.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CowQuest.dir/build.make CMakeFiles/CowQuest.dir/src/graphics/shaders.cpp.i
+.PHONY : src/graphics/shaders.cpp.i
+
+src/graphics/shaders.s: src/graphics/shaders.cpp.s
+.PHONY : src/graphics/shaders.s
+
+# target to generate assembly for a file
+src/graphics/shaders.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CowQuest.dir/build.make CMakeFiles/CowQuest.dir/src/graphics/shaders.cpp.s
+.PHONY : src/graphics/shaders.cpp.s
 
 src/main.o: src/main.cpp.o
 .PHONY : src/main.o
 
 # target to build an object file
 src/main.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/main.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CowQuest.dir/build.make CMakeFiles/CowQuest.dir/src/main.cpp.o
 .PHONY : src/main.cpp.o
 
 src/main.i: src/main.cpp.i
@@ -179,7 +275,7 @@ src/main.i: src/main.cpp.i
 
 # target to preprocess a source file
 src/main.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/main.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CowQuest.dir/build.make CMakeFiles/CowQuest.dir/src/main.cpp.i
 .PHONY : src/main.cpp.i
 
 src/main.s: src/main.cpp.s
@@ -187,39 +283,15 @@ src/main.s: src/main.cpp.s
 
 # target to generate assembly for a file
 src/main.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/main.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CowQuest.dir/build.make CMakeFiles/CowQuest.dir/src/main.cpp.s
 .PHONY : src/main.cpp.s
-
-src/textrendering.o: src/textrendering.cpp.o
-.PHONY : src/textrendering.o
-
-# target to build an object file
-src/textrendering.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/textrendering.cpp.o
-.PHONY : src/textrendering.cpp.o
-
-src/textrendering.i: src/textrendering.cpp.i
-.PHONY : src/textrendering.i
-
-# target to preprocess a source file
-src/textrendering.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/textrendering.cpp.i
-.PHONY : src/textrendering.cpp.i
-
-src/textrendering.s: src/textrendering.cpp.s
-.PHONY : src/textrendering.s
-
-# target to generate assembly for a file
-src/textrendering.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/textrendering.cpp.s
-.PHONY : src/textrendering.cpp.s
 
 src/tiny_obj_loader.o: src/tiny_obj_loader.cpp.o
 .PHONY : src/tiny_obj_loader.o
 
 # target to build an object file
 src/tiny_obj_loader.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/tiny_obj_loader.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CowQuest.dir/build.make CMakeFiles/CowQuest.dir/src/tiny_obj_loader.cpp.o
 .PHONY : src/tiny_obj_loader.cpp.o
 
 src/tiny_obj_loader.i: src/tiny_obj_loader.cpp.i
@@ -227,7 +299,7 @@ src/tiny_obj_loader.i: src/tiny_obj_loader.cpp.i
 
 # target to preprocess a source file
 src/tiny_obj_loader.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/tiny_obj_loader.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CowQuest.dir/build.make CMakeFiles/CowQuest.dir/src/tiny_obj_loader.cpp.i
 .PHONY : src/tiny_obj_loader.cpp.i
 
 src/tiny_obj_loader.s: src/tiny_obj_loader.cpp.s
@@ -235,8 +307,32 @@ src/tiny_obj_loader.s: src/tiny_obj_loader.cpp.s
 
 # target to generate assembly for a file
 src/tiny_obj_loader.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/tiny_obj_loader.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CowQuest.dir/build.make CMakeFiles/CowQuest.dir/src/tiny_obj_loader.cpp.s
 .PHONY : src/tiny_obj_loader.cpp.s
+
+src/utils/math_utils.o: src/utils/math_utils.cpp.o
+.PHONY : src/utils/math_utils.o
+
+# target to build an object file
+src/utils/math_utils.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CowQuest.dir/build.make CMakeFiles/CowQuest.dir/src/utils/math_utils.cpp.o
+.PHONY : src/utils/math_utils.cpp.o
+
+src/utils/math_utils.i: src/utils/math_utils.cpp.i
+.PHONY : src/utils/math_utils.i
+
+# target to preprocess a source file
+src/utils/math_utils.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CowQuest.dir/build.make CMakeFiles/CowQuest.dir/src/utils/math_utils.cpp.i
+.PHONY : src/utils/math_utils.cpp.i
+
+src/utils/math_utils.s: src/utils/math_utils.cpp.s
+.PHONY : src/utils/math_utils.s
+
+# target to generate assembly for a file
+src/utils/math_utils.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CowQuest.dir/build.make CMakeFiles/CowQuest.dir/src/utils/math_utils.cpp.s
+.PHONY : src/utils/math_utils.cpp.s
 
 # Help Target
 help:
@@ -247,19 +343,31 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... run"
-	@echo "... main"
-	@echo "... src/glad.o"
-	@echo "... src/glad.i"
-	@echo "... src/glad.s"
+	@echo "... CowQuest"
+	@echo "... src/core/game.o"
+	@echo "... src/core/game.i"
+	@echo "... src/core/game.s"
+	@echo "... src/glad/glad.o"
+	@echo "... src/glad/glad.i"
+	@echo "... src/glad/glad.s"
+	@echo "... src/graphics/core.o"
+	@echo "... src/graphics/core.i"
+	@echo "... src/graphics/core.s"
+	@echo "... src/graphics/renderer.o"
+	@echo "... src/graphics/renderer.i"
+	@echo "... src/graphics/renderer.s"
+	@echo "... src/graphics/shaders.o"
+	@echo "... src/graphics/shaders.i"
+	@echo "... src/graphics/shaders.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"
-	@echo "... src/textrendering.o"
-	@echo "... src/textrendering.i"
-	@echo "... src/textrendering.s"
 	@echo "... src/tiny_obj_loader.o"
 	@echo "... src/tiny_obj_loader.i"
 	@echo "... src/tiny_obj_loader.s"
+	@echo "... src/utils/math_utils.o"
+	@echo "... src/utils/math_utils.i"
+	@echo "... src/utils/math_utils.s"
 .PHONY : help
 
 
