@@ -95,6 +95,9 @@ if(WIN32)
     message(FATAL_ERROR "This CMakeLists.txt file only supports MINGW or MSVC toolchain on Windows.")
   endif()
 
+  # Setou a variável LIBGLFW de acordo com o compilador de 64 bits
+  set(LIBGLFW ${PROJECT_SOURCE_DIR}/lib-mingw-64/libglfw3.a)
+
   message(STATUS "LIBGLFW = ${LIBGLFW}")
 
   target_link_libraries(${EXECUTABLE_NAME} ${LIBGLFW} gdi32 opengl32)

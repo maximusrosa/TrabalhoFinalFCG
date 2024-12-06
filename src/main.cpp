@@ -28,6 +28,8 @@
 #include "utils.h"
 #include "matrices.h"
 
+#define M_PI 3.14159265358979323846
+
 // Estrutura que representa um modelo geométrico carregado a partir de um arquivo OBJ
 struct ObjModel 
 {
@@ -233,7 +235,7 @@ int main(int argc, char* argv[])
     const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 
     // Create a windowed mode window and its OpenGL context
-    window = glfwCreateWindow(mode->width, mode->height, "Path to the Sacred Cow", glfwGetPrimaryMonitor(), NULL);
+    window = glfwCreateWindow(800, 800, "Path to the Sacred Cow", glfwGetPrimaryMonitor(), NULL);
 
     if (!window) 
     {
@@ -262,8 +264,8 @@ int main(int argc, char* argv[])
     // redimensionada, por consequência alterando o tamanho do "framebuffer"
     // (região de memória onde são armazenados os pixels da imagem).
     glfwSetFramebufferSizeCallback(window, FramebufferSizeCallback);
-    FramebufferSizeCallback(window, mode->width, mode->height); // Forçamos a chamada do callback para definir g_ScreenRatio.
-    CursorPosCallback(window, mode->width/2, mode->height/2); // Forçamos a chamada do callback para definir a posição do cursor.
+    FramebufferSizeCallback(window, 800, 800); // Forçamos a chamada do callback para definir g_ScreenRatio.
+    CursorPosCallback(window, 400, 400); // Forçamos a chamada do callback para definir a posição do cursor.
 
     // Imprimimos no terminal informações sobre a GPU do sistema
     const GLubyte *vendor      = glGetString(GL_VENDOR);
