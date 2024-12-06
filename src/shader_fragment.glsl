@@ -74,18 +74,18 @@ void main()
     else if ( object_id == PLANE )
     {
         // Propriedades espectrais do plano
-        Kd = vec3(0.02,0.1,0.02);
-        Ks = vec3(0.0,0.05,0.0);
-        Ka = vec3(0.05,0.0,0.0);
-        q = 5.0;
+        Kd = vec3(0.1,0.3,0.1);
+        Ks = vec3(0.0,0.0,0.0);
+        Ka = vec3(0.0,0.0,0.0);
+        q = 1.0;
     }
     else if ( object_id == MAZE )
     {
         // Propriedades espectrais do labirinto
-        Kd = vec3(0.15,0.15,0.15);
-        Ks = vec3(0.01,0.01,0.01);
-        Ka = vec3(0.05,0.0,0.0);
-        q = 5.0;
+        Kd = vec3(0.2,0.2,0.2);
+        Ks = vec3(0.0,0.0,0.0);
+        Ka = vec3(0.0,0.0,0.0);
+        q = 1.0;
     }
     else // Objeto desconhecido = preto
     {

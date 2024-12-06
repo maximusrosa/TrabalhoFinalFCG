@@ -35,3 +35,4 @@ CMakeLists.txt
 CMakeLists.txt
 .idea/workspace.xml
 .idea/misc.xml
+*.xml
