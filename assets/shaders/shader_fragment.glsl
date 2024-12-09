@@ -45,14 +45,18 @@ void main()
     vec4 v = l;
 
     // Vetor que define o sentido da reflexão especular ideal.
-    vec4 r = -l + 2 * n * dot(n, l);
-    r = normalize(r);
+    vec4 r = normalize(-l + 2 * n * dot(n, l));
+
+    // "Half-vector": vetor que define o sentido da meia reflexão entre 
+    // a fonte de luz e a câmera
+    // (para o modelo de iluminação de Blinn-Phong).
+    vec4 h = normalize(l + v);
 
     // Parâmetros que definem as propriedades espectrais da superfície
     vec3 Kd; // Refletância difusa
     vec3 Ks; // Refletância especular
     vec3 Ka; // Refletância ambiente
-    float q; // Expoente especular para o modelo de iluminação de Phong
+    float q; // Expoente especular para o modelo de iluminação de Blinn-Phong
 
     if ( object_id == COW )
     {
@@ -99,7 +103,7 @@ void main()
     vec3 ambient_term = Ka * Ia;
 
     // Termo especular utilizando o modelo de iluminação de Phong
-    vec3 phong_specular_term = Ks * I * pow(max(dot(r, v), 0), q);
+    vec3 phong_specular_term = Ks * I * pow(max(dot(n, h), 0), q);
 
     // NOTE: Se você quiser fazer o rendering de objetos transparentes, é
     // necessário:
