@@ -68,6 +68,18 @@ glm::mat4 Matrix_Translate(float tx, float ty, float tz)
     );
 }
 
+// Matriz de translação inversa, ou seja, a matriz que desfaz a translação
+// realizada pela matriz de translação T.
+glm::mat4 Inv_Translate(glm::mat4 T)
+{
+    return Matrix(
+        1.0f , 0.0f , 0.0f , -T[0][3] ,
+        0.0f , 1.0f , 0.0f , -T[1][3] ,
+        0.0f , 0.0f , 1.0f , -T[2][3] ,
+        0.0f , 0.0f , 0.0f , 1.0f
+    );
+}
+
 // Matriz S de "escalamento de um ponto" em relação à origem do sistema de
 // coordenadas. Seja p=[px,py,pz,pw] um ponto em coordenadas homogêneas.
 // Então, a matriz S é definida pela seguinte igualdade:

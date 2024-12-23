@@ -8,6 +8,8 @@
 // tinyobjloader: load models from OBJ files
 #include <tiny_obj_loader.h>
 
+#include <glm/glm.hpp>
+
 // Represents a model loaded from an OBJ file
 struct ObjModel 
 {
@@ -52,6 +54,26 @@ struct ObjModel
             }
             printf("Object '%s' loaded\n", shapes[shape].name.c_str());
         }
+    }
+
+    std::vector<glm::vec4> getVertices() const
+    {
+        std::vector<glm::vec4> vertices;
+        for (size_t shape = 0; shape < shapes.size(); ++shape) 
+        {
+            for (size_t index = 0; index < shapes[shape].mesh.indices.size(); ++index) 
+            {
+                tinyobj::index_t idx = shapes[shape].mesh.indices[index];
+                glm::vec4 vertex(
+                    attrib.vertices[3*idx.vertex_index+0],
+                    attrib.vertices[3*idx.vertex_index+1],
+                    attrib.vertices[3*idx.vertex_index+2],
+                    1.0f
+                );
+                vertices.push_back(vertex);
+            }
+        }
+        return vertices;
     }
 };
 
