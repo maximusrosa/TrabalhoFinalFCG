@@ -46,29 +46,29 @@ void main()
         vec3 Ka; // Ambient reflectance
         float q; // Specular exponent for Blinn-Phong model
 
-        vec3 I = vec3(1.0,1.0,1.0);  // Light intensity (white light)
-        vec3 Ia = vec3(0.2,0.1,0.1); // Ambient light intensity
+        vec3 I = vec3(0.75, 0.75, 0.75);  // Light intensity (white light)
+        vec3 Ia = vec3(0.25, 0.15, 0.2); // Ambient light intensity
 
         if ( object_id == COW )
         {
             Kd = vec3(0.8,0.4,0.08);
             Ks = vec3(0.8,0.8,0.8);
-            Ka = vec3(0.05,0.05,0.05);
+            Ka = vec3(0.05, 0.05, 0.05);
             q = 32.0;
         }
         else if ( object_id == PLANE )
         {   
-            Kd = vec3(0.15,0.3,0.15);
-            Ks = vec3(0.1,0.15,0.1);
-            Ka = vec3(0.05,0.05,0.05);
-            q = 4.0;
+            Kd = vec3(0.1, 0.6, 0.3);
+            Ks = vec3(0.0, 0.0, 0.0);
+            Ka = vec3(0.01, 0.01, 0.01);
+            q = 1.0;
         }
         else if ( object_id == MAZE )
         {
-            Kd = vec3(0.3,0.3,0.3);
-            Ks = vec3(0.1,0.1,0.1);
-            Ka = vec3(0.05,0.05,0.05);
-            q = 4.0;
+            Kd = vec3(0.35,0.35,0.35);
+            Ks = vec3(0.01,0.01,0.01);
+            Ka = vec3(0.1, 0.1, 0.1);
+            q = 2.0;
         }
         else // Unknown object
         {
