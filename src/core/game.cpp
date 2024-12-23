@@ -13,22 +13,9 @@
 #include "graphics/shaders.h"
 #include "core/game.h"
 
-Game::Game(const std::string& title, int width, int height)
-{
-    createWindow(title, width, height);
-}
-
-Game::Game(const std::string& title)
-{
-    const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-    createWindow(title, mode->width, mode->height);
-}
-
-void Game::createWindow(const std::string& title, int width, int height)
-{
+void Game::createWindow(const std::string& title, int width, int height) {
     int success = glfwInit();
-    if (!success) 
-    {
+    if (!success) {
         fprintf(stderr, "ERROR: glfwInit() failed.\n");
         std::exit(EXIT_FAILURE);
     }
@@ -55,61 +42,67 @@ void Game::createWindow(const std::string& title, int width, int height)
 
     glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
     framebufferSizeCallback(width, height);
-    cursorPosCallback((float)width/2.0f, (float)height/2.0f);
+
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }
 
-void Game::keyCallback(int key, int scancode, int actions, int mods)
-{
-    if (key == GLFW_KEY_ESCAPE && actions == GLFW_PRESS)
+void Game::keyCallback(int key, int scancode, int actions, int mods) {
+    if (key == GLFW_KEY_ESCAPE && actions == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, GL_TRUE);
-
-    if (actions == GLFW_PRESS || actions == GLFW_REPEAT)
-    {
-        if (key == GLFW_KEY_W || key == GLFW_KEY_S || key == GLFW_KEY_A || key == GLFW_KEY_D)
-        {
+    }
+    if (actions == GLFW_PRESS || actions == GLFW_REPEAT) {
+        if (key == GLFW_KEY_W || key == GLFW_KEY_S || 
+            key == GLFW_KEY_A || key == GLFW_KEY_D) {
             glm::vec4 displacement;
-            if (key == GLFW_KEY_W) 
+            if (key == GLFW_KEY_W) {
                 displacement = cameraView;
-            
-            if (key == GLFW_KEY_S) 
+            }
+            if (key == GLFW_KEY_S) {
                 displacement = -cameraView;
-            
-            if (key == GLFW_KEY_A) 
+            }
+            if (key == GLFW_KEY_A) {
                 displacement = -cameraRight;
-            
-            if (key == GLFW_KEY_D) 
+            }
+            if (key == GLFW_KEY_D) {
                 displacement = cameraRight;
-
+            }
             displacement.y = 0;
             displacement = normalize(displacement);
             
-            if (mods & GLFW_MOD_SHIFT)
+            if (mods & GLFW_MOD_SHIFT) {
                 displacement *= runningSpeed;
-            else
+            } else {
                 displacement *= walkingSpeed;
-
+            }
             cameraPosition += displacement;
+        }
+        // F11: toggle full screen
+        if (key == GLFW_KEY_F11) {
+            if (!fullScreen) {
+                glfwSetWindowMonitor(window, nullptr, 0, 0,
+                                     fullScreenWidth, fullScreenHeight, GLFW_DONT_CARE);
+            } else {
+                glfwSetWindowMonitor(window, nullptr, windowX, windowY,
+                                     normalWindowWidth, normalWindowHeight, GLFW_DONT_CARE);
+            }
+            fullScreen = !fullScreen;
         }
     }
 }
 
-void Game::mouseButtonCallback(int button, int action, int mods)
-{
+void Game::mouseButtonCallback(int button, int action, int mods) {
     static double lastCursorPosX = -1.0, lastCursorPosY = -1.0;
 
-    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
-    {
+    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
         glfwGetCursorPos(window, &lastCursorPosX, &lastCursorPosY);
         leftMouseButtonPressed = true;
     }
-    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE)
-    {
+    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE) {
         leftMouseButtonPressed = false;
     }
 }
 
-void Game::cursorPosCallback(double xpos, double ypos)
-{
+void Game::cursorPosCallback(double xpos, double ypos) {
     static double lastX = xpos, lastY = ypos;
 
     // Compute mouse delta (change in position) and update last position
@@ -144,16 +137,13 @@ void Game::cursorPosCallback(double xpos, double ypos)
     cameraUp = normalize(crossproduct(cameraRight, cameraView));
 }
 
-void Game::framebufferSizeCallback(int width, int height) 
-{
+void Game::framebufferSizeCallback(int width, int height) {
     glViewport(0, 0, width, height);
     screenRatio = (float)width / height;
 }
 
-void Game::gameLoop()
-{
-    while (!glfwWindowShouldClose(window))
-    {
+void Game::gameLoop() {
+    while (!glfwWindowShouldClose(window)) {
         glClearColor(0.2f, 0.1f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -189,14 +179,11 @@ void Game::gameLoop()
     }
 }
 
-void Game::run() 
-{
-    if (!window)
-    {
+void Game::run() {
+    if (!window) {
         fprintf(stderr, "ERROR: window is not initialized.\n");
         std::exit(EXIT_FAILURE);
     }
-
     LoadShadersFromFiles(gpuProgramId, modelUniform, viewUniform, projectionUniform, objectIdUniform);
 
     ObjModel cowModel("../../assets/models/cow.obj");
@@ -217,7 +204,6 @@ void Game::run()
     glfwTerminate();
 }
 
-Game::~Game()
-{
+Game::~Game() {
     glfwDestroyWindow(window);
 }

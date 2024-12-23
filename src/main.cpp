@@ -33,7 +33,7 @@
 
 int main()
 {
-    Game game("CowQuest", 800, 600);
-    game.run();
+    auto game = Game::getInstance("Game", 800, 600);
+    game->run();
     return EXIT_SUCCESS;
 }
