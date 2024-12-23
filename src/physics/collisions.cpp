@@ -1,5 +1,18 @@
-#include "physics/collisions.h"
-#include "utils/math_utils.h"
+#include <map>
+#include <vector>
+
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/mat4x4.hpp>
+#include <glm/vec4.hpp>
+
+#include <physics/bbox.h>
+#include <graphics/objmodel.h>
+#include <core/gameobject.h>
+#include <utils/math_utils.h>
+#include <physics/collisions.h>
 
 void resolveCollision(GameObject& obj1, GameObject& obj2) {
     if (obj1.intersects(obj2)) {
@@ -23,6 +36,21 @@ void resolveCollisions(std::vector<GameObject>& objects) {
     for (int i = 0; i < objects.size(); ++i) {
         for (int j = i + 1; j < objects.size(); ++j) {
             resolveCollision(objects[i], objects[j]);
+        }
+    }
+}
+
+void resolveCollisionsWithStaticObjects(GameObject* movingObject, const std::map<std::string, GameObject*>& staticObjects) {
+    for (const auto& [name, staticObject] : staticObjects) {
+        if (movingObject->sceneObject.name == name || staticObject->lastMoveTime != 0.0) {
+            continue;
+        }
+        if (movingObject->intersects(*staticObject)) {
+            // Undo the last translation of the moving object
+            glm::mat4 invTranslation = Inv_Translate(movingObject->lastTranslation);
+            movingObject->aabb = movingObject->aabb.transform(invTranslation);
+            movingObject->lastTranslation = Matrix_Identity();
+            movingObject->lastMoveTime = 0.0;
         }
     }
 }

@@ -1,10 +1,17 @@
-#ifndef BOUNDINGBOX_H
+#ifndef BOUNDINGBOX_H 
 #define BOUNDINGBOX_H
 
 #include <vector>
 
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
-#include "utils/math_utils.h"
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/mat4x4.hpp>
+#include <glm/vec4.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
+#include <utils/math_utils.h>
 
 /* Class representing an Axis-Aligned Bounding Box (AABB), which is a box aligned 
  * with the coordinate axes. An AABB is defined by two points: the minimum and 
@@ -33,12 +40,20 @@ public:
 
     // Transform the AABB with a 4x4 transformation matrix
     AABB transform(const glm::mat4& matrix) const;
+    // Move the AABB by a displacement vector
+    AABB move(const glm::vec4& displacement) const;
 
     // Get the 8 corners of the AABB
     std::vector<glm::vec4> getCorners() const;
 
     // Get the overlap between this AABB and another AABB
     glm::vec3 getOverlap(const AABB& other) const;
+
+    AABB& operator=(const AABB& other) {
+        min = other.min;
+        max = other.max;
+        return *this;
+    }
 };
 
 /* Class representing an Oriented Bounding Box (OBB), which is a generalization 

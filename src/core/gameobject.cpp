@@ -1,6 +1,21 @@
-#include "physics/gameobject.h"
+#include <vector>
+#include <ctime>
+#include <map>
 
-GameObject:: GameObject(const AABB& aabb)
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/mat4x4.hpp>
+#include <glm/vec4.hpp>
+
+#include <tiny_obj_loader.h>
+#include <graphics/objmodel.h>
+#include <utils/math_utils.h>
+#include <physics/bbox.h>
+#include <core/gameobject.h>
+
+GameObject::GameObject(const AABB& aabb)
     : lastTranslation(Matrix_Identity()), lastMoveTime(0.0), aabb(aabb) {}
 
 // Build a GameObject computing the AABB from a list of vertices
@@ -32,6 +47,17 @@ GameObject::GameObject(const ObjModel& model, const glm::mat4& transformation)
 
 GameObject::GameObject(const ObjModel& model)
     : lastTranslation(Matrix_Identity()), lastMoveTime(0.0) {
+    std::vector<glm::vec4> vertices = model.getVertices();
+    glm::vec4 min = vertices[0];
+    glm::vec4 max = vertices[0];
+    for (const auto& vertex : vertices) {
+        min = glm::min(min, vertex);
+        max = glm::max(max, vertex);
+    }
+    aabb = AABB(min, max);
+}
+
+void GameObject::buildAABBFromModel(const ObjModel& model) {
     std::vector<glm::vec4> vertices = model.getVertices();
     glm::vec4 min = vertices[0];
     glm::vec4 max = vertices[0];

@@ -1,17 +1,25 @@
 #include <iostream>
 #include <string>
+#include <memory>
+#include <vector>
+#include <map>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
-
 #include <glm/mat4x4.hpp>
+#include <glm/vec4.hpp>
 
-#include "utils/math_utils.h"
-#include "graphics/objmodel.h"
-#include "graphics/renderer.h"
-#include "graphics/shaders.h"
-#include "core/game.h"
+#include <utils/math_utils.h>
+#include <core/gameobject.h>
+#include <graphics/objmodel.h>
+#include <graphics/renderer.h>
+#include <graphics/shaders.h>
+#include <graphics/core.h>
+#include <physics/bbox.h>
+#include <physics/collisions.h>
+#include <core/game.h>
 
 void Game::createWindow(const std::string& title, int width, int height) {
     int success = glfwInit();
@@ -75,6 +83,8 @@ void Game::keyCallback(int key, int scancode, int actions, int mods) {
                 displacement *= walkingSpeed;
             }
             cameraPosition += displacement;
+            virtualScene["Cube"]->translate(displacement.x, displacement.y, displacement.z);
+            resolveCollisionsWithStaticObjects(virtualScene["Cube"], virtualScene);
         }
         // F11: toggle full screen
         if (key == GLFW_KEY_F11) {
@@ -176,6 +186,15 @@ void Game::gameLoop() {
         glUniform1i(objectIdUniform, MAZE);
         glUniform1i(interpolationTypeUniform, GOURAUD_INTERPOLATION);
         DrawVirtualObject(virtualScene, "maze");
+
+        // Draw the cube (player)
+        model = Matrix_Translate(cameraPosition.x, cameraPosition.y, cameraPosition.z)
+                * Matrix_Rotate_Y(-cameraYaw)
+                * Matrix_Scale(0.1f, 0.1f, 0.1f);
+        glUniformMatrix4fv(modelUniform, 1 , GL_FALSE , glm::value_ptr(model));
+        glUniform1i(objectIdUniform, CUBE);
+        glUniform1i(interpolationTypeUniform, GOURAUD_INTERPOLATION);
+        DrawVirtualObject(virtualScene, "Cube");
         
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -198,6 +217,10 @@ void Game::run() {
     ComputeNormals(&mazeModel);
     BuildSceneTriangles(virtualScene, &mazeModel);
 
+    ObjModel cubeModel("../../assets/models/cube.obj");
+    ComputeNormals(&cubeModel);
+    BuildSceneTriangles(virtualScene, &cubeModel);
+
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
@@ -210,4 +233,8 @@ void Game::run() {
 
 Game::~Game() {
     glfwDestroyWindow(window);
+    for (auto& obj : virtualScene) {
+        delete obj.second;
+    }
+    virtualScene.clear();
 }

@@ -1,18 +1,21 @@
-#include "graphics/renderer.h"
 
-void DrawVirtualObject(std::map<std::string, SceneObject>& virtualScene, char* objectName)
+#include <graphics/renderer.h>
+#include <graphics/objmodel.h>
+#include <core/gameobject.h>
+
+void DrawVirtualObject(std::map<std::string, GameObject*>& virtualScene, char* objectName)
 {
-    glBindVertexArray(virtualScene[objectName].vertexArrayObjectId);
+    glBindVertexArray(virtualScene[objectName]->sceneObject.vertexArrayObjectId);
     glDrawElements(
-        virtualScene[objectName].renderingMode,
-        virtualScene[objectName].numIndices,
+        virtualScene[objectName]->sceneObject.renderingMode,
+        virtualScene[objectName]->sceneObject.numIndices,
         GL_UNSIGNED_INT,
-        (void*)(virtualScene[objectName].baseIndex * sizeof(GLuint))
+        (void*)(virtualScene[objectName]->sceneObject.baseIndex * sizeof(GLuint))
     );
     glBindVertexArray(0);
 }
 
-void BuildSceneTriangles(std::map<std::string, SceneObject>& virtualScene, ObjModel* model)
+void BuildSceneTriangles(std::map<std::string, GameObject*>& virtualScene, ObjModel* model)
 {
     GLuint vertex_array_object_id;
     glGenVertexArrays(1, &vertex_array_object_id);
@@ -68,12 +71,22 @@ void BuildSceneTriangles(std::map<std::string, SceneObject>& virtualScene, ObjMo
         }
         size_t last_index = indices.size() - 1;
 
-        SceneObject theobject;
-        theobject.name = model->shapes[shape].name;
-        theobject.baseIndex = first_index;
-        theobject.numIndices = last_index - first_index + 1;
-        theobject.renderingMode = GL_TRIANGLES;
-        theobject.vertexArrayObjectId = vertex_array_object_id;
+        GameObject* theobject = new GameObject();
+
+        std::vector<glm::vec4> vertices = model->getVertices();
+        glm::vec4 min = vertices[0];
+        glm::vec4 max = vertices[0];
+        for (const auto& vertex : vertices) {
+            min = glm::min(min, vertex);
+            max = glm::max(max, vertex);
+        }
+        theobject->aabb = AABB(min, max);
+
+        theobject->sceneObject.name = model->shapes[shape].name;
+        theobject->sceneObject.baseIndex = first_index;
+        theobject->sceneObject.numIndices = last_index - first_index + 1;
+        theobject->sceneObject.renderingMode = GL_TRIANGLES;
+        theobject->sceneObject.vertexArrayObjectId = vertex_array_object_id;
 
         virtualScene[model->shapes[shape].name] = theobject;
     }

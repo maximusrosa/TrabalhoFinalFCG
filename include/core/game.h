@@ -4,17 +4,23 @@
 #include <iostream>
 #include <string>
 #include <memory>
+#include <map>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
-
 #include <glm/mat4x4.hpp>
+#include <glm/vec4.hpp>
 
-#include "utils/math_utils.h"
-#include "graphics/objmodel.h"
-#include "graphics/renderer.h"
-#include "graphics/shaders.h"
+#include <utils/math_utils.h>
+#include <core/gameobject.h>
+#include <graphics/objmodel.h>
+#include <graphics/renderer.h>
+#include <graphics/shaders.h>
+#include <graphics/core.h>
+#include <physics/bbox.h>
+#include <physics/collisions.h>
 
 class Game {
 public:
@@ -57,7 +63,7 @@ private:
 
     GLFWwindow* window;
     const GLFWvidmode* videoMode;
-    std::map<std::string, SceneObject> virtualScene;
+    std::map<std::string, GameObject*> virtualScene;
     GLuint gpuProgramId = 0;
 
     int normalWindowWidth;

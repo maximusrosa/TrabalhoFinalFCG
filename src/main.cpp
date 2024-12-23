@@ -26,10 +26,6 @@
 
 // Local headers 
 #include <core/game.h>
-#include <graphics/objmodel.h>
-#include <graphics/renderer.h>
-#include <graphics/shaders.h>
-#include <utils/math_utils.h>
 
 int main()
 {

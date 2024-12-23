@@ -3,12 +3,20 @@
 
 #include <vector>
 #include <string>
+#include <iostream>
+#include <map>
+#include <fstream>
 #include <stdexcept>
 
 // tinyobjloader: load models from OBJ files
 #include <tiny_obj_loader.h>
 
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/mat4x4.hpp>
+#include <glm/vec4.hpp>
 
 // Represents a model loaded from an OBJ file
 struct ObjModel 
@@ -82,7 +90,8 @@ enum ObjectModelType
 {
     COW,
     PLANE,
-    MAZE
+    MAZE,
+    CUBE
 };
 
 #endif // OBJMODEL_H

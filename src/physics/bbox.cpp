@@ -1,4 +1,4 @@
-#include "physics/bbox.h"
+#include <physics/bbox.h>
 
 // Transform the AABB with a 4x4 transformation matrix
 AABB AABB::transform(const glm::mat4& matrix) const {
@@ -20,6 +20,10 @@ AABB AABB::transform(const glm::mat4& matrix) const {
     }
 
     return AABB(newMin, newMax);
+}
+
+AABB AABB::move(const glm::vec4& displacement) const {
+    return AABB(min + displacement, max + displacement);
 }
 
 // Check if a point (in homogeneous coordinates) is inside the AABB

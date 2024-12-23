@@ -5,7 +5,7 @@
 #include <stdexcept>
 #include <string>
 
-#include "graphics/core.h"
+#include <graphics/core.h>
 
 void LoadShadersFromFiles(
     GLuint& gpuProgramId, 
