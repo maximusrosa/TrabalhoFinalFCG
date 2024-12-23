@@ -160,18 +160,21 @@ void Game::gameLoop() {
                 * Matrix_Scale(2.0f,2.0f,2.0f);
         glUniformMatrix4fv(modelUniform, 1 , GL_FALSE , glm::value_ptr(model));
         glUniform1i(objectIdUniform, COW);
+        glUniform1i(interpolationTypeUniform, PHONG_INTERPOLATION);
         DrawVirtualObject(virtualScene, "the_cow");
 
         // Draw the plane
         model = Matrix_Identity();
         glUniformMatrix4fv(modelUniform, 1 , GL_FALSE , glm::value_ptr(model));
         glUniform1i(objectIdUniform, PLANE);
+        glUniform1i(interpolationTypeUniform, PHONG_INTERPOLATION);
         DrawVirtualObject(virtualScene, "Plane01");
 
         // Draw the maze
         model = Matrix_Identity();
         glUniformMatrix4fv(modelUniform, 1 , GL_FALSE , glm::value_ptr(model));
         glUniform1i(objectIdUniform, MAZE);
+        glUniform1i(interpolationTypeUniform, GOURAUD_INTERPOLATION);
         DrawVirtualObject(virtualScene, "maze");
         
         glfwSwapBuffers(window);
@@ -184,7 +187,8 @@ void Game::run() {
         fprintf(stderr, "ERROR: window is not initialized.\n");
         std::exit(EXIT_FAILURE);
     }
-    LoadShadersFromFiles(gpuProgramId, modelUniform, viewUniform, projectionUniform, objectIdUniform);
+    LoadShadersFromFiles(gpuProgramId, modelUniform, viewUniform, projectionUniform, 
+                         objectIdUniform, interpolationTypeUniform);
 
     ObjModel cowModel("../../assets/models/cow.obj");
     ComputeNormals(&cowModel);
