@@ -2,7 +2,7 @@
 #include <graphics/objmodel.h>
 #include <core/gameobject.h>
 
-void DrawVirtualObject(std::map<std::string, GameObject*>& virtualScene, char* objectName)
+void DrawVirtualObject(std::map<std::string, GameObject*>& virtualScene, const char* objectName)
 {
     glBindVertexArray(virtualScene[objectName]->sceneObject.vertexArrayObjectId);
     glDrawElements(

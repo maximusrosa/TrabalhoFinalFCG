@@ -44,7 +44,7 @@ void resolveCollisions(std::vector<GameObject>& objects) {
 void resolveCollisionsWithStaticObjects(GameObject* movingObject, const std::map<std::string, GameObject*>& staticObjects) {
     for (const auto& [name, staticObject] : staticObjects) {
         if (movingObject->sceneObject.name == staticObject->sceneObject.name || 
-            staticObject->sceneObject.name == "Plane01" || staticObject->sceneObject.name == "maze") {
+            staticObject->sceneObject.name == "Plane01") {
             continue;
         }
         if (movingObject->intersects(*staticObject)) {
@@ -62,7 +62,7 @@ void resolveCollisionsWithStaticObjects(GameObject* movingObject, const std::map
 bool checkCollisionWithStaticObjects(GameObject* movingObject, const std::map<std::string, GameObject*>& staticObjects) {
     for (const auto& [name, staticObject] : staticObjects) {
         if (movingObject->sceneObject.name == staticObject->sceneObject.name || 
-            staticObject->sceneObject.name == "Plane01" || staticObject->sceneObject.name == "maze") {
+            staticObject->sceneObject.name == "Plane01") {
             continue;
         }
         if (movingObject->intersects(*staticObject)) {

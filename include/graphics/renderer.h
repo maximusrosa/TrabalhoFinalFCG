@@ -24,7 +24,7 @@ enum InterpolationType
 }; 
 
 // Draw a virtual object
-void DrawVirtualObject(std::map<std::string, GameObject*>& virtualScene, char* objectName);
+void DrawVirtualObject(std::map<std::string, GameObject*>& virtualScene, const char* objectName);
 // Build triangles from an ObjModel and add to the virtual scene
 void BuildSceneTriangles(
     std::map<std::string, GameObject*>& virtualScene, 

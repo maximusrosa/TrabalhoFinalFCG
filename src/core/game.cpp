@@ -19,6 +19,8 @@
 #include <graphics/core.h>
 #include <physics/bbox.h>
 #include <physics/collisions.h>
+#include <utils/file_utils.h>
+
 #include <core/game.h>
 
 void Game::createWindow(const std::string& title, int width, int height) {
@@ -184,11 +186,15 @@ void Game::gameLoop() {
         DrawVirtualObject(virtualScene, "Plane01");
 
         // Draw the maze
-        model = Matrix_Identity();
-        glUniformMatrix4fv(modelUniform, 1 , GL_FALSE , glm::value_ptr(model));
-        glUniform1i(objectIdUniform, MAZE);
-        glUniform1i(interpolationTypeUniform, GOURAUD_INTERPOLATION);
-        DrawVirtualObject(virtualScene, "maze");
+        for (const auto& [name, obj] : virtualScene) {
+            if (name.find("maze") != std::string::npos) {
+                model = Matrix_Identity();
+                glUniformMatrix4fv(modelUniform, 1 , GL_FALSE , glm::value_ptr(model));
+                glUniform1i(objectIdUniform, MAZE);
+                glUniform1i(interpolationTypeUniform, GOURAUD_INTERPOLATION);
+                DrawVirtualObject(virtualScene, name.c_str());
+            }
+        }
 
         // Draw the cube (player)
         model = Matrix_Translate(cameraPosition.x, cameraPosition.y, cameraPosition.z)
@@ -220,9 +226,15 @@ void Game::run() {
     ComputeNormals(&cowModel);
     BuildSceneTriangles(virtualScene, &cowModel, model);
 
-    ObjModel mazeModel("../../assets/models/maze.obj");
-    ComputeNormals(&mazeModel);
-    BuildSceneTriangles(virtualScene, &mazeModel, Matrix_Identity());
+    std::string mazeModelFolder("../../assets/models/maze/");
+    std::vector<std::string> mazeModelFiles = getObjFiles(mazeModelFolder);
+
+    for (const auto& mazeModelFile : mazeModelFiles) {
+        std::string mazeModelFilePath = mazeModelFolder + mazeModelFile;
+        ObjModel mazeModel(mazeModelFilePath.c_str());
+        ComputeNormals(&mazeModel);
+        BuildSceneTriangles(virtualScene, &mazeModel, Matrix_Identity());
+    }
 
     model = Matrix_Translate(cameraPosition.x, cameraPosition.y, cameraPosition.z)
             * Matrix_Rotate_Y(-cameraYaw)
