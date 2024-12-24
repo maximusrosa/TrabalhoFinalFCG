@@ -1,6 +1,5 @@
 .idea/
 .vscode/
-
 build/
 *.cmake
 *.xml
@@ -9,4 +8,7 @@ bin/Debug/
 *CMakeLists.txt
 .idea/workspace.xml
 /cmake-build-debug
+/cmake-build-debug
 cmake-build-debug/Testing/Temporary/LastTest.log
+*.log
+/.idea

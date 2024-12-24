@@ -12,8 +12,7 @@ void LoadShadersFromFiles(
     GLint& modelUniform, 
     GLint& viewUniform, 
     GLint& projectionUniform, 
-    GLint& objectIdUniform,
-    GLint& interpolationTypeUniform
+    GLint& objectIdUniform
 )
 {
     GLuint vertex_shader_id = LoadShader_Vertex("../../assets/shaders/shader_vertex.glsl");
@@ -25,11 +24,10 @@ void LoadShadersFromFiles(
     gpuProgramId = CreateGpuProgram(vertex_shader_id, fragment_shader_id);
 
     // Defined in "shader_vertex.glsl" and "shader_fragment.glsl".
-    modelUniform             = glGetUniformLocation(gpuProgramId, "model");
-    viewUniform              = glGetUniformLocation(gpuProgramId, "view");
-    projectionUniform        = glGetUniformLocation(gpuProgramId, "projection");
-    objectIdUniform          = glGetUniformLocation(gpuProgramId, "object_id");
-    interpolationTypeUniform = glGetUniformLocation(gpuProgramId, "interpolation_type");
+    modelUniform      = glGetUniformLocation(gpuProgramId, "model");
+    viewUniform       = glGetUniformLocation(gpuProgramId, "view");
+    projectionUniform = glGetUniformLocation(gpuProgramId, "projection");
+    objectIdUniform   = glGetUniformLocation(gpuProgramId, "object_id");
 }
 
 GLuint LoadShader_Vertex(const char* filename)
