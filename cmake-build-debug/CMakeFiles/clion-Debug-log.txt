@@ -1,0 +1,13 @@
+"C:\Program Files\JetBrains\CLion 2023.1.2\bin\cmake\win\x64\bin\cmake.exe" -DCMAKE_BUILD_TYPE=Debug "-DCMAKE_MAKE_PROGRAM=C:/Program Files/JetBrains/CLion 2023.1.2/bin/ninja/win/x64/ninja.exe" -G Ninja -S C:\Users\maxbo\OneDrive\Documentos\Estudos\Faculdade\Prática\Semestre6\FCG\TrabalhoFinalFCG -B C:\Users\maxbo\OneDrive\Documentos\Estudos\Faculdade\Prática\Semestre6\FCG\TrabalhoFinalFCG\cmake-build-debug
+-- Build type: Debug
+
+               Change the build type on the command line with
+
+                   -DCMAKE_BUILD_TYPE=type
+
+               for type in {Release, Debug, RelWithDebInfo}.
+
+-- LIBGLFW = C:/Users/maxbo/OneDrive/Documentos/Estudos/Faculdade/Prática/Semestre6/FCG/TrabalhoFinalFCG/lib-mingw-64/libglfw3.a
+-- Configuring done (1.0s)
+-- Generating done (0.1s)
+-- Build files have been written to: C:/Users/maxbo/OneDrive/Documentos/Estudos/Faculdade/Prática/Semestre6/FCG/TrabalhoFinalFCG/cmake-build-debug
