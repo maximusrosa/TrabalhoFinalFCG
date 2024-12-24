@@ -9,7 +9,7 @@
 # Faces: 2
 #
 ####
-mtllib ./maze.obj.mtl
+mtllib ./maze1.obj.mtl
 
 vn 0.000000 1.570796 0.000000
 v -167.009201 0.000000 -125.144997
