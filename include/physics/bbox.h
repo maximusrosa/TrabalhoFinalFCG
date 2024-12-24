@@ -6,12 +6,11 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
-#include <glm/gtc/type_ptr.hpp>
 #include <glm/mat4x4.hpp>
 #include <glm/vec4.hpp>
-#include <glm/gtc/matrix_transform.hpp>
 
 #include <utils/math_utils.h>
+#include <graphics/objmodel.h>
 
 /* Class representing an Axis-Aligned Bounding Box (AABB), which is a box aligned 
  * with the coordinate axes. An AABB is defined by two points: the minimum and 
@@ -42,6 +41,21 @@ public:
     AABB transform(const glm::mat4& matrix) const;
     // Move the AABB by a displacement vector
     AABB move(const glm::vec4& displacement) const;
+
+    static AABB fromVertices(const std::vector<glm::vec4>& vertices) {
+        glm::vec4 min = vertices[0];
+        glm::vec4 max = vertices[0];
+        for (const auto& vertex : vertices) {
+            min = glm::min(min, vertex);
+            max = glm::max(max, vertex);
+        }
+        return AABB(min, max);
+    }
+
+    static AABB fromModel(const ObjModel& model) {
+        std::vector<glm::vec4> vertices = model.getVertices();
+        return fromVertices(vertices);
+    }
 
     // Get the 8 corners of the AABB
     std::vector<glm::vec4> getCorners() const;

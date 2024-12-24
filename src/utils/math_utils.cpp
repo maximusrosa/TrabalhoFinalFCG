@@ -44,12 +44,13 @@ glm::mat4 Matrix(
 // Matriz identidade.
 glm::mat4 Matrix_Identity()
 {
-    return Matrix(
+    static const glm::mat4 I = Matrix(
         1.0f , 0.0f , 0.0f , 0.0f , // LINHA 1
         0.0f , 1.0f , 0.0f , 0.0f , // LINHA 2
         0.0f , 0.0f , 1.0f , 0.0f , // LINHA 3
         0.0f , 0.0f , 0.0f , 1.0f   // LINHA 4
     );
+    return I;
 }
 
 // Matriz de translação T. Seja p=[px,py,pz,pw] um ponto e t=[tx,ty,tz,0] um

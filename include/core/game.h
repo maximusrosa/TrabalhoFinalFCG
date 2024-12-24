@@ -100,7 +100,6 @@ private:
     GLint modelUniform;
     GLint viewUniform;
     GLint projectionUniform;
-
     GLint objectIdUniform;
     GLint interpolationTypeUniform;
 

@@ -19,6 +19,7 @@
 void resolveCollision(GameObject& obj1, GameObject& obj2);
 void resolveCollisions(std::vector<GameObject>& objects);
 void resolveCollisionsWithStaticObjects(GameObject* movingObject, const std::map<std::string, GameObject*>& staticObjects);
+bool checkCollisionWithStaticObjects(GameObject* movingObject, const std::map<std::string, GameObject*>& staticObjects);
 
 bool checkCollisionRaySphere(const glm::vec4& origin, const glm::vec4& dir, const glm::vec4& center, float radius);
 bool checkCollisionRayAABB(const glm::vec4& origin, const glm::vec4& dir, const AABB& aabb);

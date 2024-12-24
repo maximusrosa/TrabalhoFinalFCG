@@ -84,7 +84,10 @@ void Game::keyCallback(int key, int scancode, int actions, int mods) {
             }
             cameraPosition += displacement;
             virtualScene["Cube"]->translate(displacement.x, displacement.y, displacement.z);
-            resolveCollisionsWithStaticObjects(virtualScene["Cube"], virtualScene);
+            if (checkCollisionWithStaticObjects(virtualScene["Cube"], virtualScene)) {
+                cameraPosition -= displacement;
+                virtualScene["Cube"]->translate(-displacement.x, -displacement.y, -displacement.z);
+            }
         }
         // F11: toggle full screen
         if (key == GLFW_KEY_F11) {
@@ -208,18 +211,25 @@ void Game::run() {
     }
     LoadShadersFromFiles(gpuProgramId, modelUniform, viewUniform, projectionUniform, 
                          objectIdUniform, interpolationTypeUniform);
+    
+    glm::mat4 model = Matrix_Identity();
 
+    model = Matrix_Translate(4.0f,1.05f,-100.0f)
+            * Matrix_Scale(2.0f,2.0f,2.0f);
     ObjModel cowModel("../../assets/models/cow.obj");
     ComputeNormals(&cowModel);
-    BuildSceneTriangles(virtualScene, &cowModel);
+    BuildSceneTriangles(virtualScene, &cowModel, model);
 
     ObjModel mazeModel("../../assets/models/maze.obj");
     ComputeNormals(&mazeModel);
-    BuildSceneTriangles(virtualScene, &mazeModel);
+    BuildSceneTriangles(virtualScene, &mazeModel, Matrix_Identity());
 
+    model = Matrix_Translate(cameraPosition.x, cameraPosition.y, cameraPosition.z)
+            * Matrix_Rotate_Y(-cameraYaw)
+            * Matrix_Scale(0.1f, 0.1f, 0.1f);
     ObjModel cubeModel("../../assets/models/cube.obj");
     ComputeNormals(&cubeModel);
-    BuildSceneTriangles(virtualScene, &cubeModel);
+    BuildSceneTriangles(virtualScene, &cubeModel, model);
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);

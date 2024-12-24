@@ -1,5 +1,6 @@
 #include <map>
 #include <vector>
+#include <iostream>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -42,17 +43,34 @@ void resolveCollisions(std::vector<GameObject>& objects) {
 
 void resolveCollisionsWithStaticObjects(GameObject* movingObject, const std::map<std::string, GameObject*>& staticObjects) {
     for (const auto& [name, staticObject] : staticObjects) {
-        if (movingObject->sceneObject.name == name || staticObject->lastMoveTime != 0.0) {
+        if (movingObject->sceneObject.name == staticObject->sceneObject.name || 
+            staticObject->sceneObject.name == "Plane01" || staticObject->sceneObject.name == "maze") {
             continue;
         }
         if (movingObject->intersects(*staticObject)) {
+            std::cout << "Collision between " << movingObject->sceneObject.name << " and " << staticObject->sceneObject.name << std::endl;
             // Undo the last translation of the moving object
-            glm::mat4 invTranslation = Inv_Translate(movingObject->lastTranslation);
-            movingObject->aabb = movingObject->aabb.transform(invTranslation);
+            movingObject->translate(-movingObject->lastTranslation[3][0], 
+                                    -movingObject->lastTranslation[3][1], 
+                                    -movingObject->lastTranslation[3][2]);
             movingObject->lastTranslation = Matrix_Identity();
             movingObject->lastMoveTime = 0.0;
         }
     }
+}
+
+bool checkCollisionWithStaticObjects(GameObject* movingObject, const std::map<std::string, GameObject*>& staticObjects) {
+    for (const auto& [name, staticObject] : staticObjects) {
+        if (movingObject->sceneObject.name == staticObject->sceneObject.name || 
+            staticObject->sceneObject.name == "Plane01" || staticObject->sceneObject.name == "maze") {
+            continue;
+        }
+        if (movingObject->intersects(*staticObject)) {
+            std::cout << "Collision between " << movingObject->sceneObject.name << " and " << staticObject->sceneObject.name << std::endl;
+            return true;
+        }
+    }
+    return false;
 }
 
 bool checkCollisionRaySphere(const glm::vec4& origin, const glm::vec4& dir, const glm::vec4& center, float radius) {
