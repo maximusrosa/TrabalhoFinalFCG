@@ -21,6 +21,12 @@ struct SceneObject
     GLuint vertexArrayObjectId;
 };
 
+enum InterpolationType 
+{
+    GOURAUD_INTERPOLATION,
+    PHONG_INTERPOLATION
+}; 
+
 // Draw a virtual object
 void DrawVirtualObject(std::map<std::string, SceneObject>& virtualScene, char* objectName);
 // Build triangles from an ObjModel and add to the virtual scene
