@@ -3,4 +3,7 @@
 
 build/
 bin/
+
+*.mlp
+*.mtl
 /cmake-build-debug
