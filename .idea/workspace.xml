@@ -23,7 +23,29 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6ed9da7c-acf7-4d08-a0b9-64f909798ec1" name="Changes" comment="" />
+    <list default="true" id="6ed9da7c-acf7-4d08-a0b9-64f909798ec1" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/textures/gold.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/textures/grass.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/textures/wall.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/Debug/CowQuest.exe" beforeDir="false" afterPath="$PROJECT_DIR$/bin/Debug/CowQuest.exe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/.ninja_deps" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/.ninja_deps" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/.ninja_log" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/.ninja_log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeCache.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeCache.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CowQuest.dir/src/core/game.cpp.obj" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CowQuest.dir/src/core/game.cpp.obj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CowQuest.dir/src/graphics/core.cpp.obj" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CowQuest.dir/src/graphics/core.cpp.obj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CowQuest.dir/src/graphics/renderer.cpp.obj" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CowQuest.dir/src/graphics/renderer.cpp.obj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CowQuest.dir/src/graphics/shaders.cpp.obj" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CowQuest.dir/src/graphics/shaders.cpp.obj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CowQuest.dir/src/main.cpp.obj" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CowQuest.dir/src/main.cpp.obj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CowQuest.dir/src/utils/math_utils.cpp.obj" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CowQuest.dir/src/utils/math_utils.cpp.obj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/clion-Debug-log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/clion-Debug-log.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/rules.ninja" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/rules.ninja" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/Testing/Temporary/LastTest.log" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/Testing/Temporary/LastTest.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/build.ninja" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/build.ninja" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/graphics/stb_image.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/graphics/textures.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/graphics/textures.cpp" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -71,6 +93,12 @@
     &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
   }
 }</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\maxbo\OneDrive\Documentos\Estudos\Faculdade\Prática\Semestre6\FCG\TrabalhoFinalFCG\include\graphics" />
+      <recent name="C:\Users\maxbo\OneDrive\Documentos\Estudos\Faculdade\Prática\Semestre6\FCG\TrabalhoFinalFCG\src\graphics" />
+    </key>
+  </component>
   <component name="RunManager" selected="CMake Application.CowQuest">
     <configuration name="CowQuest" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="CowQuest" TARGET_NAME="CowQuest" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="CowQuest" RUN_TARGET_NAME="CowQuest">
       <method v="2">
