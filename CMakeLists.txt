@@ -9,9 +9,13 @@ set(SOURCES
   src/tiny_obj_loader.cpp
   src/glad/glad.c
   src/utils/math_utils.cpp
+  src/utils/file_utils.cpp
   src/graphics/core.cpp
   src/graphics/shaders.cpp
   src/graphics/renderer.cpp
+  src/physics/bbox.cpp
+  src/physics/collisions.cpp
+  src/core/gameobject.cpp
   src/core/game.cpp
   src/main.cpp
 )

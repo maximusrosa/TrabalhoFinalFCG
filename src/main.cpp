@@ -26,14 +26,10 @@
 
 // Local headers 
 #include <core/game.h>
-#include <graphics/objmodel.h>
-#include <graphics/renderer.h>
-#include <graphics/shaders.h>
-#include <utils/math_utils.h>
 
 int main()
 {
-    Game game("CowQuest", 800, 600);
-    game.run();
+    auto game = Game::getInstance("Game", 800, 600);
+    game->run();
     return EXIT_SUCCESS;
 }

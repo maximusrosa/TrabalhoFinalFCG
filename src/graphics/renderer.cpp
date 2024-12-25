@@ -1,18 +1,24 @@
-#include "graphics/renderer.h"
+#include <graphics/renderer.h>
+#include <graphics/objmodel.h>
+#include <core/gameobject.h>
 
-void DrawVirtualObject(std::map<std::string, SceneObject>& virtualScene, char* objectName)
+void DrawVirtualObject(std::map<std::string, GameObject*>& virtualScene, const char* objectName)
 {
-    glBindVertexArray(virtualScene[objectName].vertexArrayObjectId);
+    glBindVertexArray(virtualScene[objectName]->sceneObject.vertexArrayObjectId);
     glDrawElements(
-        virtualScene[objectName].renderingMode,
-        virtualScene[objectName].numIndices,
+        virtualScene[objectName]->sceneObject.renderingMode,
+        virtualScene[objectName]->sceneObject.numIndices,
         GL_UNSIGNED_INT,
-        (void*)(virtualScene[objectName].baseIndex * sizeof(GLuint))
+        (void*)(virtualScene[objectName]->sceneObject.baseIndex * sizeof(GLuint))
     );
     glBindVertexArray(0);
 }
 
-void BuildSceneTriangles(std::map<std::string, SceneObject>& virtualScene, ObjModel* model)
+void BuildSceneTriangles(
+    std::map<std::string, GameObject*>& virtualScene, 
+    ObjModel* model,
+    glm::mat4 modelMatrix
+)
 {
     GLuint vertex_array_object_id;
     glGenVertexArrays(1, &vertex_array_object_id);
@@ -68,12 +74,14 @@ void BuildSceneTriangles(std::map<std::string, SceneObject>& virtualScene, ObjMo
         }
         size_t last_index = indices.size() - 1;
 
-        SceneObject theobject;
-        theobject.name = model->shapes[shape].name;
-        theobject.baseIndex = first_index;
-        theobject.numIndices = last_index - first_index + 1;
-        theobject.renderingMode = GL_TRIANGLES;
-        theobject.vertexArrayObjectId = vertex_array_object_id;
+        SceneObject sceneObject;
+        sceneObject.name = model->shapes[shape].name;
+        sceneObject.baseIndex = first_index;
+        sceneObject.numIndices = last_index - first_index + 1;
+        sceneObject.renderingMode = GL_TRIANGLES;
+        sceneObject.vertexArrayObjectId = vertex_array_object_id;
+
+        GameObject* theobject = new GameObject(*model, sceneObject, modelMatrix);
 
         virtualScene[model->shapes[shape].name] = theobject;
     }

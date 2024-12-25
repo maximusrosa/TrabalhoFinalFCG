@@ -3,25 +3,34 @@
 
 #include <iostream>
 #include <string>
+#include <memory>
+#include <map>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
-
 #include <glm/mat4x4.hpp>
+#include <glm/vec4.hpp>
 
-#include "utils/math_utils.h"
-#include "graphics/objmodel.h"
-#include "graphics/renderer.h"
-#include "graphics/shaders.h"
+#include <utils/math_utils.h>
+#include <core/gameobject.h>
+#include <graphics/objmodel.h>
+#include <graphics/renderer.h>
+#include <graphics/shaders.h>
+#include <graphics/core.h>
+#include <physics/bbox.h>
+#include <physics/collisions.h>
 
-class Game
-{
+class Game {
 public:
-    Game() : window(nullptr) {}
+    Game(Game const&) = delete;
+    Game& operator=(Game const&) = delete;
 
-    Game(const std::string& title, int width, int height);
-    Game(const std::string& title);
+    static std::shared_ptr<Game> getInstance(const std::string& title, int width=800, int height=600) {
+        static std::shared_ptr<Game> instance{new Game(title, width, height)};
+        return instance;
+    }
 
     void run();
 
@@ -34,13 +43,38 @@ public:
     ~Game();
 
 private:
+    Game(const std::string& title, int width, int height) {
+        normalWindowWidth = width;
+        normalWindowHeight = height;
+
+        createWindow(title, width, height);
+
+        videoMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+        fullScreenWidth = videoMode->width;
+        fullScreenHeight = videoMode->height;
+
+        // Make window centered
+        windowX = (fullScreenWidth - width) / 2;
+        windowY = (fullScreenHeight - height) / 2;
+
+        normalWindowRatio = (float)width / height;
+        screenRatio = (float)fullScreenWidth / fullScreenHeight;
+    }
+
     GLFWwindow* window;
-
-    std::map<std::string, SceneObject> virtualScene;
-
+    const GLFWvidmode* videoMode;
+    std::map<std::string, GameObject*> virtualScene;
     GLuint gpuProgramId = 0;
 
-    float screenRatio = 1.0f;
+    int normalWindowWidth;
+    int normalWindowHeight;
+    int windowX;
+    int windowY;
+    int fullScreenWidth;
+    int fullScreenHeight;
+    float normalWindowRatio;
+    float screenRatio;
+    bool fullScreen = false;
 
     glm::vec4 cameraPosition = glm::vec4(0.0f, 2.0f, 0.0f, 1.0f);
     glm::vec4 cameraLookAt = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
@@ -56,8 +90,8 @@ private:
 
     bool leftMouseButtonPressed = false;
 
-    float mouseSensitivityX = 0.01f;
-    float mouseSensitivityY = 0.01f;
+    float mouseSensitivityX = 0.005f;
+    float mouseSensitivityY = 0.005f;
 
     float nearPlane = -0.1f;
     float farPlane = -100.0f;
@@ -67,35 +101,33 @@ private:
     GLint viewUniform;
     GLint projectionUniform;
     GLint objectIdUniform;
+    GLint interpolationTypeUniform;
 
     void gameLoop();
 
-    static void keyCallback(GLFWwindow* window, int key, int scancode, int actions, int mods)
-    {
+    static void keyCallback(GLFWwindow* window, int key, int scancode,
+                            int actions, int mods) {
         Game* obj = static_cast<Game*>(glfwGetWindowUserPointer(window));
         obj->keyCallback(key, scancode, actions, mods);
     }
 
-    static void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
-    {
+    static void mouseButtonCallback(GLFWwindow* window, int button, 
+                                    int action, int mods) {
         Game* obj = static_cast<Game*>(glfwGetWindowUserPointer(window));
         obj->mouseButtonCallback(button, action, mods);
     }
 
-    static void cursorPosCallback(GLFWwindow* window, double xpos, double ypos)
-    {
+    static void cursorPosCallback(GLFWwindow* window, double xpos, double ypos) {
         Game* obj = static_cast<Game*>(glfwGetWindowUserPointer(window));
         obj->cursorPosCallback(xpos, ypos);
     }
 
-    static void framebufferSizeCallback(GLFWwindow* window, int width, int height)
-    {
+    static void framebufferSizeCallback(GLFWwindow* window, int width, int height) {
         Game* obj = static_cast<Game*>(glfwGetWindowUserPointer(window));
         obj->framebufferSizeCallback(width, height);
     }
 
-    static void errorCallback(int error, const char* description)
-    {
+    static void errorCallback(int error, const char* description) {
         fprintf(stderr, "Error: %s\n", description);
     }
 };

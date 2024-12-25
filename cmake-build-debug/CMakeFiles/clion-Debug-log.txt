@@ -8,6 +8,6 @@
                for type in {Release, Debug, RelWithDebInfo}.
 
 -- LIBGLFW = C:/Users/maxbo/OneDrive/Documentos/Estudos/Faculdade/Prática/Semestre6/FCG/TrabalhoFinalFCG/lib-mingw-64/libglfw3.a
--- Configuring done (1.0s)
+-- Configuring done (0.6s)
 -- Generating done (0.1s)
 -- Build files have been written to: C:/Users/maxbo/OneDrive/Documentos/Estudos/Faculdade/Prática/Semestre6/FCG/TrabalhoFinalFCG/cmake-build-debug

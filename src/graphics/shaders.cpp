@@ -5,14 +5,15 @@
 #include <stdexcept>
 #include <string>
 
-#include "graphics/core.h"
+#include <graphics/core.h>
 
 void LoadShadersFromFiles(
     GLuint& gpuProgramId, 
     GLint& modelUniform, 
     GLint& viewUniform, 
     GLint& projectionUniform, 
-    GLint& objectIdUniform
+    GLint& objectIdUniform,
+    GLint& interpolationTypeUniform
 )
 {
     GLuint vertex_shader_id = LoadShader_Vertex("../../assets/shaders/shader_vertex.glsl");
@@ -24,10 +25,11 @@ void LoadShadersFromFiles(
     gpuProgramId = CreateGpuProgram(vertex_shader_id, fragment_shader_id);
 
     // Defined in "shader_vertex.glsl" and "shader_fragment.glsl".
-    modelUniform      = glGetUniformLocation(gpuProgramId, "model");
-    viewUniform       = glGetUniformLocation(gpuProgramId, "view");
-    projectionUniform = glGetUniformLocation(gpuProgramId, "projection");
-    objectIdUniform   = glGetUniformLocation(gpuProgramId, "object_id");
+    modelUniform             = glGetUniformLocation(gpuProgramId, "model");
+    viewUniform              = glGetUniformLocation(gpuProgramId, "view");
+    projectionUniform        = glGetUniformLocation(gpuProgramId, "projection");
+    objectIdUniform          = glGetUniformLocation(gpuProgramId, "object_id");
+    interpolationTypeUniform = glGetUniformLocation(gpuProgramId, "interpolation_type");
 }
 
 GLuint LoadShader_Vertex(const char* filename)

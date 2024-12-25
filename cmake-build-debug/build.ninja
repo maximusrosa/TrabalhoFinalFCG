@@ -70,6 +70,13 @@ build CMakeFiles/CowQuest.dir/src/utils/math_utils.cpp.obj: CXX_COMPILER__CowQue
   OBJECT_DIR = CMakeFiles\CowQuest.dir
   OBJECT_FILE_DIR = CMakeFiles\CowQuest.dir\src\utils
 
+build CMakeFiles/CowQuest.dir/src/utils/file_utils.cpp.obj: CXX_COMPILER__CowQuest_unscanned_Debug C$:/Users/maxbo/OneDrive/Documentos/Estudos/Faculdade/Prática/Semestre6/FCG/TrabalhoFinalFCG/src/utils/file_utils.cpp || cmake_object_order_depends_target_CowQuest
+  DEP_FILE = CMakeFiles\CowQuest.dir\src\utils\file_utils.cpp.obj.d
+  FLAGS = -g -std=c++11 -fdiagnostics-color=always
+  INCLUDES = -IC:/Users/maxbo/OneDrive/Documentos/Estudos/Faculdade/Prática/Semestre6/FCG/TrabalhoFinalFCG/include
+  OBJECT_DIR = CMakeFiles\CowQuest.dir
+  OBJECT_FILE_DIR = CMakeFiles\CowQuest.dir\src\utils
+
 build CMakeFiles/CowQuest.dir/src/graphics/core.cpp.obj: CXX_COMPILER__CowQuest_unscanned_Debug C$:/Users/maxbo/OneDrive/Documentos/Estudos/Faculdade/Prática/Semestre6/FCG/TrabalhoFinalFCG/src/graphics/core.cpp || cmake_object_order_depends_target_CowQuest
   DEP_FILE = CMakeFiles\CowQuest.dir\src\graphics\core.cpp.obj.d
   FLAGS = -g -std=c++11 -fdiagnostics-color=always
@@ -90,6 +97,27 @@ build CMakeFiles/CowQuest.dir/src/graphics/renderer.cpp.obj: CXX_COMPILER__CowQu
   INCLUDES = -IC:/Users/maxbo/OneDrive/Documentos/Estudos/Faculdade/Prática/Semestre6/FCG/TrabalhoFinalFCG/include
   OBJECT_DIR = CMakeFiles\CowQuest.dir
   OBJECT_FILE_DIR = CMakeFiles\CowQuest.dir\src\graphics
+
+build CMakeFiles/CowQuest.dir/src/physics/bbox.cpp.obj: CXX_COMPILER__CowQuest_unscanned_Debug C$:/Users/maxbo/OneDrive/Documentos/Estudos/Faculdade/Prática/Semestre6/FCG/TrabalhoFinalFCG/src/physics/bbox.cpp || cmake_object_order_depends_target_CowQuest
+  DEP_FILE = CMakeFiles\CowQuest.dir\src\physics\bbox.cpp.obj.d
+  FLAGS = -g -std=c++11 -fdiagnostics-color=always
+  INCLUDES = -IC:/Users/maxbo/OneDrive/Documentos/Estudos/Faculdade/Prática/Semestre6/FCG/TrabalhoFinalFCG/include
+  OBJECT_DIR = CMakeFiles\CowQuest.dir
+  OBJECT_FILE_DIR = CMakeFiles\CowQuest.dir\src\physics
+
+build CMakeFiles/CowQuest.dir/src/physics/collisions.cpp.obj: CXX_COMPILER__CowQuest_unscanned_Debug C$:/Users/maxbo/OneDrive/Documentos/Estudos/Faculdade/Prática/Semestre6/FCG/TrabalhoFinalFCG/src/physics/collisions.cpp || cmake_object_order_depends_target_CowQuest
+  DEP_FILE = CMakeFiles\CowQuest.dir\src\physics\collisions.cpp.obj.d
+  FLAGS = -g -std=c++11 -fdiagnostics-color=always
+  INCLUDES = -IC:/Users/maxbo/OneDrive/Documentos/Estudos/Faculdade/Prática/Semestre6/FCG/TrabalhoFinalFCG/include
+  OBJECT_DIR = CMakeFiles\CowQuest.dir
+  OBJECT_FILE_DIR = CMakeFiles\CowQuest.dir\src\physics
+
+build CMakeFiles/CowQuest.dir/src/core/gameobject.cpp.obj: CXX_COMPILER__CowQuest_unscanned_Debug C$:/Users/maxbo/OneDrive/Documentos/Estudos/Faculdade/Prática/Semestre6/FCG/TrabalhoFinalFCG/src/core/gameobject.cpp || cmake_object_order_depends_target_CowQuest
+  DEP_FILE = CMakeFiles\CowQuest.dir\src\core\gameobject.cpp.obj.d
+  FLAGS = -g -std=c++11 -fdiagnostics-color=always
+  INCLUDES = -IC:/Users/maxbo/OneDrive/Documentos/Estudos/Faculdade/Prática/Semestre6/FCG/TrabalhoFinalFCG/include
+  OBJECT_DIR = CMakeFiles\CowQuest.dir
+  OBJECT_FILE_DIR = CMakeFiles\CowQuest.dir\src\core
 
 build CMakeFiles/CowQuest.dir/src/core/game.cpp.obj: CXX_COMPILER__CowQuest_unscanned_Debug C$:/Users/maxbo/OneDrive/Documentos/Estudos/Faculdade/Prática/Semestre6/FCG/TrabalhoFinalFCG/src/core/game.cpp || cmake_object_order_depends_target_CowQuest
   DEP_FILE = CMakeFiles\CowQuest.dir\src\core\game.cpp.obj.d
@@ -113,7 +141,7 @@ build CMakeFiles/CowQuest.dir/src/main.cpp.obj: CXX_COMPILER__CowQuest_unscanned
 #############################################
 # Link the executable C:\Users\maxbo\OneDrive\Documentos\Estudos\Faculdade\Prática\Semestre6\FCG\TrabalhoFinalFCG\bin\Debug\CowQuest.exe
 
-build C$:/Users/maxbo/OneDrive/Documentos/Estudos/Faculdade/Prática/Semestre6/FCG/TrabalhoFinalFCG/bin/Debug/CowQuest.exe: CXX_EXECUTABLE_LINKER__CowQuest_Debug CMakeFiles/CowQuest.dir/src/tiny_obj_loader.cpp.obj CMakeFiles/CowQuest.dir/src/glad/glad.c.obj CMakeFiles/CowQuest.dir/src/utils/math_utils.cpp.obj CMakeFiles/CowQuest.dir/src/graphics/core.cpp.obj CMakeFiles/CowQuest.dir/src/graphics/shaders.cpp.obj CMakeFiles/CowQuest.dir/src/graphics/renderer.cpp.obj CMakeFiles/CowQuest.dir/src/core/game.cpp.obj CMakeFiles/CowQuest.dir/src/main.cpp.obj | C$:/Users/maxbo/OneDrive/Documentos/Estudos/Faculdade/Prática/Semestre6/FCG/TrabalhoFinalFCG/lib-mingw-64/libglfw3.a
+build C$:/Users/maxbo/OneDrive/Documentos/Estudos/Faculdade/Prática/Semestre6/FCG/TrabalhoFinalFCG/bin/Debug/CowQuest.exe: CXX_EXECUTABLE_LINKER__CowQuest_Debug CMakeFiles/CowQuest.dir/src/tiny_obj_loader.cpp.obj CMakeFiles/CowQuest.dir/src/glad/glad.c.obj CMakeFiles/CowQuest.dir/src/utils/math_utils.cpp.obj CMakeFiles/CowQuest.dir/src/utils/file_utils.cpp.obj CMakeFiles/CowQuest.dir/src/graphics/core.cpp.obj CMakeFiles/CowQuest.dir/src/graphics/shaders.cpp.obj CMakeFiles/CowQuest.dir/src/graphics/renderer.cpp.obj CMakeFiles/CowQuest.dir/src/physics/bbox.cpp.obj CMakeFiles/CowQuest.dir/src/physics/collisions.cpp.obj CMakeFiles/CowQuest.dir/src/core/gameobject.cpp.obj CMakeFiles/CowQuest.dir/src/core/game.cpp.obj CMakeFiles/CowQuest.dir/src/main.cpp.obj | C$:/Users/maxbo/OneDrive/Documentos/Estudos/Faculdade/Prática/Semestre6/FCG/TrabalhoFinalFCG/lib-mingw-64/libglfw3.a
   FLAGS = -g
   LINK_LIBRARIES = C:/Users/maxbo/OneDrive/Documentos/Estudos/Faculdade/Prática/Semestre6/FCG/TrabalhoFinalFCG/lib-mingw-64/libglfw3.a  -lgdi32  -lopengl32  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\CowQuest.dir
