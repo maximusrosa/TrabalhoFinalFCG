@@ -175,7 +175,7 @@ void Game::gameLoop() {
                 * Matrix_Scale(2.0f,2.0f,2.0f);
         glUniformMatrix4fv(modelUniform, 1 , GL_FALSE , glm::value_ptr(model));
         glUniform1i(objectIdUniform, COW);
-        glUniform1i(interpolationTypeUniform, PHONG_INTERPOLATION);
+        glUniform1i(interpolationTypeUniform, GOURAUD_INTERPOLATION);
         DrawVirtualObject(virtualScene, "the_cow");
 
         // Draw the plane
@@ -191,7 +191,7 @@ void Game::gameLoop() {
                 model = Matrix_Identity();
                 glUniformMatrix4fv(modelUniform, 1 , GL_FALSE , glm::value_ptr(model));
                 glUniform1i(objectIdUniform, MAZE);
-                glUniform1i(interpolationTypeUniform, GOURAUD_INTERPOLATION);
+                glUniform1i(interpolationTypeUniform, PHONG_INTERPOLATION);
                 DrawVirtualObject(virtualScene, name.c_str());
             }
         }
