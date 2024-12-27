@@ -11,17 +11,17 @@
 #include <glm/mat4x4.hpp>
 #include <glm/vec4.hpp>
 
-#include <utils/math_utils.h>
-#include <core/gameobject.h>
-#include <graphics/objmodel.h>
-#include <graphics/renderer.h>
-#include <graphics/shaders.h>
-#include <graphics/core.h>
-#include <physics/bbox.h>
-#include <physics/collisions.h>
-#include <utils/file_utils.h>
+#include "utils/math_utils.h"
+#include "core/gameobject.h"
+#include "graphics/objmodel.h"
+#include "graphics/renderer.h"
+#include "graphics/shaders.h"
+#include "graphics/core.h"
+#include "physics/bounding.h"
+#include "physics/collisions.h"
+#include "utils/file_utils.h"
 
-#include <core/game.h>
+#include "core/game.h"
 
 void Game::createWindow(const std::string& title, int width, int height) {
     int success = glfwInit();

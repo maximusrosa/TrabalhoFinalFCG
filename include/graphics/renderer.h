@@ -13,9 +13,9 @@
 #include <glm/vec4.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include <graphics/objmodel.h>
-#include <utils/math_utils.h>
-#include <core/gameobject.h>
+#include "graphics/objmodel.h"
+#include "utils/math_utils.h"
+#include "core/gameobject.h"
 
 enum InterpolationType 
 {
