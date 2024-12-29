@@ -4,6 +4,12 @@ in vec4 position_world;
 in vec4 normal;
 in vec4 vertex_color;
 
+// Posição do vértice atual no sistema de coordenadas local do modelo.
+in vec4 position_model;
+
+// Coordenadas de textura obtidas do arquivo OBJ (se existirem!)
+in vec2 texcoords;
+
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
@@ -13,6 +19,13 @@ uniform mat4 projection;
 #define PLANE 1
 #define MAZE 2
 uniform int object_id;
+
+// Parâmetros da axis-aligned bounding box (AABB) do modelo
+uniform vec4 bbox_min;
+uniform vec4 bbox_max;
+
+// Variável para acesso da imagem de textura
+uniform sampler2D GoldTexture;
 
 // Identify the type of interpolation to be used
 #define GOURAUD_INTERPOLATION 0
@@ -47,9 +60,27 @@ void main()
         vec3 I = vec3(0.75, 0.75, 0.75);  // Light intensity (white light)
         vec3 Ia = vec3(0.25, 0.15, 0.2); // Ambient light intensity
 
+        // Coordenadas de textura U e V
+        float U = 0.0;
+        float V = 0.0;
+
         if ( object_id == COW )
         {
-            Kd = vec3(0.8,0.4,0.08);
+
+            float minx = bbox_min.x;
+            float maxx = bbox_max.x;
+
+            float miny = bbox_min.y;
+            float maxy = bbox_max.y;
+
+            float minz = bbox_min.z;
+            float maxz = bbox_max.z;
+
+            U = (position_model.x - minx) / (maxx - minx);
+            V = (position_model.y - miny) / (maxy - miny);
+
+            Kd = texture(GoldTexture, vec2(U,V)).rgb;
+            //Kd = vec3(0.8,0.4,0.08);
             Ks = vec3(0.8,0.8,0.8);
             Ka = vec3(0.05, 0.05, 0.05);
             q = 32.0;

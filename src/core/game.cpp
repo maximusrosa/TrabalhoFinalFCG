@@ -16,6 +16,7 @@
 #include <graphics/objmodel.h>
 #include <graphics/renderer.h>
 #include <graphics/shaders.h>
+#include <graphics/textures.h>
 #include <graphics/core.h>
 #include <physics/bbox.h>
 #include <physics/collisions.h>
@@ -217,15 +218,19 @@ void Game::run() {
     }
     LoadShadersFromFiles(gpuProgramId, modelUniform, viewUniform, projectionUniform, 
                          objectIdUniform, interpolationTypeUniform);
-    
+
+    LoadTextureImage("../../assets/textures/grass.png");
+
     glm::mat4 model = Matrix_Identity();
 
+    // Drawing the cow model
     model = Matrix_Translate(4.0f,1.05f,-100.0f)
             * Matrix_Scale(2.0f,2.0f,2.0f);
     ObjModel cowModel("../../assets/models/cow.obj");
     ComputeNormals(&cowModel);
     BuildSceneTriangles(virtualScene, &cowModel, model);
 
+    // Drawing the maze models
     std::string mazeModelFolder("../../assets/models/maze/");
     std::vector<std::string> mazeModelFiles = getObjFiles(mazeModelFolder);
 
@@ -236,6 +241,7 @@ void Game::run() {
         BuildSceneTriangles(virtualScene, &mazeModel, Matrix_Identity());
     }
 
+    // Drawing (?) the cube model
     model = Matrix_Translate(cameraPosition.x, cameraPosition.y, cameraPosition.z)
             * Matrix_Rotate_Y(-cameraYaw)
             * Matrix_Scale(0.1f, 0.1f, 0.1f);

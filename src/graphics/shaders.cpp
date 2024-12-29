@@ -30,6 +30,11 @@ void LoadShadersFromFiles(
     projectionUniform        = glGetUniformLocation(gpuProgramId, "projection");
     objectIdUniform          = glGetUniformLocation(gpuProgramId, "object_id");
     interpolationTypeUniform = glGetUniformLocation(gpuProgramId, "interpolation_type");
+
+    // Variáveis em "shader_fragment.glsl" para acesso das imagens de textura
+    glUseProgram(gpuProgramId);
+    glUniform1i(glGetUniformLocation(gpuProgramId, "GoldTexture"), 0);
+    glUseProgram(0);
 }
 
 GLuint LoadShader_Vertex(const char* filename)
