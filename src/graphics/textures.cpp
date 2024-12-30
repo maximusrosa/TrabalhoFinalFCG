@@ -1,51 +1,44 @@
-#include <string>
-#include <glad/glad.h>   // Criação de contexto OpenGL 3.3
-#include <stb_image.h>
+#include "graphics/textures.h"
 
-// Função que carrega uma imagem para ser utilizada como textura
-void LoadTextureImage(const char* filename)
+/* Loads a texture image and creates an OpenGL texture object. */
+void LoadTextureImage(const char* filename, GLuint& numLoadedTextures, GLint wrappingMode)
 {
-    // Número de texturas carregadas pela função LoadTextureImage()
-    static GLuint g_NumLoadedTextures = 0;
-    
-    printf("Carregando imagem \"%s\"... ", filename);
+    printf("Loading image \"%s\"... ", filename);
 
-    // Primeiro fazemos a leitura da imagem do disco
+    // Loads image data from disk
     stbi_set_flip_vertically_on_load(true);
     int width;
     int height;
     int channels;
     unsigned char *data = stbi_load(filename, &width, &height, &channels, 3);
 
-    if ( data == nullptr )
+    if ( data == NULL )
     {
         fprintf(stderr, "ERROR: Cannot open image file \"%s\".\n", filename);
         std::exit(EXIT_FAILURE);
     }
-
     printf("OK (%dx%d).\n", width, height);
 
-    // Agora criamos objetos na GPU com OpenGL para armazenar a textura
     GLuint texture_id;
     GLuint sampler_id;
     glGenTextures(1, &texture_id);
     glGenSamplers(1, &sampler_id);
 
-    // Veja slides 95-96 do documento Aula_20_Mapeamento_de_Texturas.pdf
-    glSamplerParameteri(sampler_id, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glSamplerParameteri(sampler_id, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    // Texture mapping parameters
+    glSamplerParameteri(sampler_id, GL_TEXTURE_WRAP_S, wrappingMode);
+    glSamplerParameteri(sampler_id, GL_TEXTURE_WRAP_T, wrappingMode);
 
-    // Parâmetros de amostragem da textura.
-    glSamplerParameteri(sampler_id, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glSamplerParameteri(sampler_id, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    // Texture sampling parameters
+    glSamplerParameteri(sampler_id, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
+    glSamplerParameteri(sampler_id, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-    // Agora enviamos a imagem lida do disco para a GPU
+    // Send texture data to OpenGL
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
     glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
     glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
     glPixelStorei(GL_UNPACK_SKIP_ROWS, 0);
 
-    GLuint textureunit = g_NumLoadedTextures;
+    GLuint textureunit = numLoadedTextures;
     glActiveTexture(GL_TEXTURE0 + textureunit);
     glBindTexture(GL_TEXTURE_2D, texture_id);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_SRGB8, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
@@ -54,5 +47,5 @@ void LoadTextureImage(const char* filename)
 
     stbi_image_free(data);
 
-    g_NumLoadedTextures += 1; // Increment the number of loaded textures
+    numLoadedTextures += 1;
 }

@@ -14,23 +14,19 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "graphics/objmodel.h"
+#include "graphics/core.h"
 #include "utils/math_utils.h"
 #include "core/gameobject.h"
 
-enum InterpolationType 
-{
+enum InterpolationType {
     GOURAUD_INTERPOLATION,
     PHONG_INTERPOLATION
 }; 
 
 // Draw a virtual object
-void DrawVirtualObject(std::map<std::string, GameObject*>& virtualScene, const char* objectName, GLint& bboxMin, GLint& bboxMax);
+void DrawVirtualObject(UniformMap& uniforms, VirtualScene& virtualScene, const char* objectName);
 // Build triangles from an ObjModel and add to the virtual scene
-void BuildSceneTriangles(
-    std::map<std::string, GameObject*>& virtualScene, 
-    ObjModel* model,
-    glm::mat4 modelMatrix
-);
+void BuildSceneTriangles(VirtualScene& virtualScene, ObjModel* model, glm::mat4 modelMatrix);
 // Compute normals for an ObjModel
 void ComputeNormals(ObjModel* model);
 // Push a matrix onto the matrix stack

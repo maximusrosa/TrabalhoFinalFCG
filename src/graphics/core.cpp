@@ -1,9 +1,9 @@
+#include "graphics/core.h"
+
 #include <string>
 #include <fstream>
 #include <sstream>
 #include <stdexcept>
-
-#include <graphics/core.h>
 
 GLuint CreateGpuProgram(GLuint vertex_shader_id, GLuint fragment_shader_id)
 {

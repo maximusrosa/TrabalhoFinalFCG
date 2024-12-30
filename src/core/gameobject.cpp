@@ -1,3 +1,5 @@
+#include "core/gameobject.h"
+
 #include <vector>
 #include <ctime>
 #include <map>
@@ -9,31 +11,18 @@
 #include <glm/mat4x4.hpp>
 #include <glm/vec4.hpp>
 
-#include <tiny_obj_loader.h>
-#include <graphics/objmodel.h>
-#include <utils/math_utils.h>
-#include <physics/bbox.h>
-#include <core/gameobject.h>
-
 void GameObject::rotate(float angle, const glm::vec4& axis) {
-    glm::mat4 rotationMatrix = Matrix_Rotate(angle, axis);
-    aabb = aabb.transform(rotationMatrix);
+    aabb.rotate(angle, axis);
 }
 
 void GameObject::translate(float tx, float ty, float tz) {
-    glm::mat4 translationMatrix = Matrix_Translate(tx, ty, tz);
-    aabb = aabb.transform(translationMatrix);
-    lastTranslation = translationMatrix;
+    aabb.translate(tx, ty, tz);
+    lastMove = glm::vec3(tx, ty, tz);
     updateMoveTime();
 }
 
 void GameObject::scale(float sx, float sy, float sz) {
-    glm::mat4 scaleMatrix = Matrix_Scale(sx, sy, sz);
-    aabb = aabb.transform(scaleMatrix);
-}
-
-void GameObject::transform(const glm::mat4& transformation) {
-    aabb = aabb.transform(transformation);
+    aabb.scale(sx, sy, sz);
 }
 
 // Check if a point (in homogeneous coordinates) is inside the GameObject

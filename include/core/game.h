@@ -5,6 +5,8 @@
 #include <string>
 #include <memory>
 #include <map>
+#include <ctime>
+#include <vector>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -13,14 +15,16 @@
 #include <glm/mat4x4.hpp>
 #include <glm/vec4.hpp>
 
-#include <utils/math_utils.h>
-#include <core/gameobject.h>
-#include <graphics/objmodel.h>
-#include <graphics/renderer.h>
-#include <graphics/shaders.h>
-#include <graphics/core.h>
-#include <physics/bbox.h>
-#include <physics/collisions.h>
+#include "utils/math_utils.h"
+#include "core/gameobject.h"
+#include "graphics/objmodel.h"
+#include "graphics/renderer.h"
+#include "graphics/shaders.h"
+#include "graphics/textures.h"
+#include "graphics/core.h"
+#include "physics/bounding.h"
+#include "physics/collisions.h"
+#include "utils/file_utils.h"
 
 class Game {
 public:
@@ -44,35 +48,32 @@ public:
 
 private:
     Game(const std::string& title, int width, int height) {
-        normalWindowWidth = width;
-        normalWindowHeight = height;
+        windowWidth = width;
+        windowHeight = height;
 
         createWindow(title, width, height);
 
         videoMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-        fullScreenWidth = videoMode->width;
-        fullScreenHeight = videoMode->height;
+        screenWidth = videoMode->width;
+        screenHeight = videoMode->height;
 
         // Make window centered
-        windowX = (fullScreenWidth - width) / 2;
-        windowY = (fullScreenHeight - height) / 2;
+        windowX = (screenWidth - width) / 2;
+        windowY = (screenHeight - height) / 2;
 
-        normalWindowRatio = (float)width / height;
-        screenRatio = (float)fullScreenWidth / fullScreenHeight;
+        windowRatio = (float)width / height;
+        screenRatio = (float)screenWidth / screenHeight;
     }
 
     GLFWwindow* window;
     const GLFWvidmode* videoMode;
-    std::map<std::string, GameObject*> virtualScene;
-    GLuint gpuProgramId = 0;
 
-    int normalWindowWidth;
-    int normalWindowHeight;
-    int windowX;
-    int windowY;
-    int fullScreenWidth;
-    int fullScreenHeight;
-    float normalWindowRatio;
+    VirtualScene virtualScene;
+
+    int windowWidth, windowHeight;
+    int windowX, windowY;
+    int screenWidth, screenHeight;
+    float windowRatio;
     float screenRatio;
     bool fullScreen = false;
 
@@ -82,32 +83,29 @@ private:
     glm::vec4 cameraUp = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
     glm::vec4 cameraRight = glm::vec4(1.0f, 0.0f, 0.0f, 0.0f);
 
-    float walkingSpeed = 1.0f;
-    float runningSpeed = 0.5f;
+    const float baseSpeed = 0.2f;
+    const float speedMultiplier = 1.75f;
+    float currentSpeed = baseSpeed;
 
     float cameraYaw = 0.0f;
     float cameraPitch = 0.0f;
 
     bool leftMouseButtonPressed = false;
 
-    float mouseSensitivityX = 0.005f;
-    float mouseSensitivityY = 0.005f;
+    const float mouseSensitivityX = 0.005f;
+    const float mouseSensitivityY = 0.005f;
 
     float nearPlane = -0.1f;
     float farPlane = -100.0f;
     float fov = M_PI / 3.0f;
 
-    GLint modelUniform;
-    GLint viewUniform;
-    GLint projectionUniform;
-    GLint objectIdUniform;
-    GLint interpolationTypeUniform;
-    GLint bboxMin;
-    GLint bboxMax;
+    GLuint gpuProgramId = 0;
+    GLuint numLoadedTextures = 0;
+    UniformMap uniforms;
 
     void gameLoop();
 
-    static void keyCallback(GLFWwindow* window, int key, int scancode,
+    static void keyCallback(GLFWwindow* window, int key, int scancode, 
                             int actions, int mods) {
         Game* obj = static_cast<Game*>(glfwGetWindowUserPointer(window));
         obj->keyCallback(key, scancode, actions, mods);

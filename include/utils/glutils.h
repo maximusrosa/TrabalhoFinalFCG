@@ -3,6 +3,8 @@
 
 #include <cstdio>
 
+#include <glad/glad.h>
+
 static GLenum glCheckError_(const char *file, int line)
 {
     GLenum errorCode;
