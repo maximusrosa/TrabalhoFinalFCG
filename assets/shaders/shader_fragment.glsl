@@ -71,9 +71,27 @@ void main()
             float py = position_model.y;
             float pz = position_model.z;
 
-            u = (px - minx) / (maxx - minx);
-            v = (py - miny) / (maxy - miny);
-
+            if ( px == minx || px == maxx )
+            {
+                u = (pz - minz) / (maxz - minz);
+                v = (py - miny) / (maxy - miny);
+            }
+            else if ( py == miny || py == maxy )
+            {
+                u = (px - minx) / (maxx - minx);
+                v = (pz - minz) / (maxz - minz);
+            }
+            else if ( pz == minz || pz == maxz )
+            {
+                u = (px - minx) / (maxx - minx);
+                v = (py - miny) / (maxy - miny);
+            }
+            else
+            {
+                u = (py - miny) / (maxy - miny);
+                v = (pz - minz) / (maxz - minz);
+            }
+            
             Kd = texture(wall_texture, vec2(u,v)).rgb;
             float lambert = max(dot(n,l),0.0) + 0.1;
 
@@ -81,7 +99,7 @@ void main()
         }
         else
         {
-            vec3 I = vec3(0.75, 0.75, 0.75);
+            vec3 I = vec3(1.0, 1.0, 1.0);
             vec3 Ia = vec3(0.25, 0.15, 0.2);
 
             if ( object_id == COW )
@@ -93,9 +111,9 @@ void main()
             }
             else if ( object_id == PLANE )
             {   
-                Kd = vec3(0.1, 0.6, 0.3);
+                Kd = vec3(0.0627, 0.2588, 0.0745);
                 Ks = vec3(0.0, 0.0, 0.0);
-                Ka = vec3(0.01, 0.01, 0.01);
+                Ka = vec3(0.0, 0.0, 0.0);
                 q = 1.0;
             }
             else // Unknown object

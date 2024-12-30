@@ -46,7 +46,7 @@ void resolveCollisionsWithStaticObjects(GameObject* movingObject, const VirtualS
             continue;
         }
         if (movingObject->intersects(*staticObject)) {
-            std::cout << "Collision between " << staticObjectName << " and " << staticObjectName << std::endl;
+            std::cout << "Collision between " << movingObjectName << " and " << staticObjectName << std::endl;
             reverseTranslation(*movingObject); // Undo the last translation of the moving object
         }
     }
@@ -60,7 +60,7 @@ bool checkCollisionWithStaticObjects(GameObject* movingObject, const VirtualScen
             continue;
         }
         if (movingObject->intersects(*staticObject)) {
-            std::cout << "Collision between " << staticObjectName << " and " << staticObjectName << std::endl;
+            std::cout << "Collision between " << movingObjectName << " and " << staticObjectName << std::endl;
             return true;
         }
     }

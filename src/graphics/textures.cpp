@@ -1,7 +1,7 @@
 #include "graphics/textures.h"
 
 /* Loads a texture image and creates an OpenGL texture object. */
-void LoadTextureImage(const char* filename, GLuint& numLoadedTextures)
+void LoadTextureImage(const char* filename, GLuint& numLoadedTextures, GLint wrappingMode)
 {
     printf("Loading image \"%s\"... ", filename);
 
@@ -25,12 +25,12 @@ void LoadTextureImage(const char* filename, GLuint& numLoadedTextures)
     glGenSamplers(1, &sampler_id);
 
     // Texture mapping parameters
-    glSamplerParameteri(sampler_id, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glSamplerParameteri(sampler_id, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glSamplerParameteri(sampler_id, GL_TEXTURE_WRAP_S, wrappingMode);
+    glSamplerParameteri(sampler_id, GL_TEXTURE_WRAP_T, wrappingMode);
 
     // Texture sampling parameters
-    glSamplerParameteri(sampler_id, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glSamplerParameteri(sampler_id, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glSamplerParameteri(sampler_id, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
+    glSamplerParameteri(sampler_id, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
     // Send texture data to OpenGL
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);

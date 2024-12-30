@@ -24,6 +24,6 @@
 
 #include "graphics/core.h"
 
-void LoadTextureImage(const char* filename, GLuint& numLoadedTextures);
+void LoadTextureImage(const char* filename, GLuint& numLoadedTextures, GLint wrappingMode);
 
 #endif // TEXTURES_H

@@ -176,7 +176,7 @@ void Game::framebufferSizeCallback(int width, int height) {
 
 void Game::gameLoop() {
     while (!glfwWindowShouldClose(window)) {
-        glClearColor(0.2f, 0.1f, 0.3f, 1.0f);
+        glClearColor(0.0f, 0.0f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glUseProgram(gpuProgramId);
@@ -237,7 +237,7 @@ void Game::run() {
 
     // Load texture images
     numLoadedTextures = 0;
-    LoadTextureImage("../../assets/textures/wall.jpg", numLoadedTextures);
+    LoadTextureImage("../../assets/textures/stone.png", numLoadedTextures, GL_REPEAT);
     
     glm::mat4 model = Matrix_Identity();
 
