@@ -20,17 +20,17 @@ uniform mat4 projection;
 #define MAZE 2
 uniform int object_id;
 
-// Parâmetros da axis-aligned bounding box (AABB) do modelo
-uniform vec4 bbox_min;
-uniform vec4 bbox_max;
-
-// Variável para acesso da imagem de textura
-uniform sampler2D GoldTexture;
-
 // Identify the type of interpolation to be used
 #define GOURAUD_INTERPOLATION 0
 #define PHONG_INTERPOLATION 1
 uniform int interpolation_type;
+
+// Parâmetros da axis-aligned bounding box (AABB) do modelo
+uniform vec4 b_box_min;
+uniform vec4 b_box_max;
+
+// Variável para acesso da imagem de textura
+uniform sampler2D GoldTexture;
 
 out vec4 color;
 
@@ -57,7 +57,7 @@ void main()
         vec3 Ka; // Ambient reflectance
         float q; // Specular exponent for Blinn-Phong model
 
-        vec3 I = vec3(0.75, 0.75, 0.75);  // Light intensity (white light)
+        vec3 I = vec3(1.0, 1.0, 1.0);  // Light intensity (white light)
         vec3 Ia = vec3(0.25, 0.15, 0.2); // Ambient light intensity
 
         // Coordenadas de textura U e V
@@ -66,23 +66,22 @@ void main()
 
         if ( object_id == COW )
         {
+            float minx = b_box_min.x;
+            float maxx = b_box_max.x;
 
-            float minx = bbox_min.x;
-            float maxx = bbox_max.x;
+            float miny = b_box_min.y;
+            float maxy = b_box_max.y;
 
-            float miny = bbox_min.y;
-            float maxy = bbox_max.y;
-
-            float minz = bbox_min.z;
-            float maxz = bbox_max.z;
+            float minz = b_box_min.z;
+            float maxz = b_box_max.z;
 
             U = (position_model.x - minx) / (maxx - minx);
             V = (position_model.y - miny) / (maxy - miny);
 
             Kd = texture(GoldTexture, vec2(U,V)).rgb;
             //Kd = vec3(0.8,0.4,0.08);
-            Ks = vec3(0.8,0.8,0.8);
-            Ka = vec3(0.05, 0.05, 0.05);
+            Ks = vec3(0.0,0.0,0.0);
+            Ka = vec3(0.0, 0.0, 0.0);
             q = 32.0;
         }
         else if ( object_id == PLANE )

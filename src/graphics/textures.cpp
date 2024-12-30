@@ -1,15 +1,13 @@
-#include <glad/glad.h>
-#include <glm/vec4.hpp>
-#include <tiny_obj_loader.h>
+#include <string>
+#include <glad/glad.h>   // Criação de contexto OpenGL 3.3
 #include <stb_image.h>
-#include "graphics/textures.h"
-
-// Número de texturas carregadas pela função LoadTextureImage()
-GLuint g_NumLoadedTextures = 0;
 
 // Função que carrega uma imagem para ser utilizada como textura
 void LoadTextureImage(const char* filename)
 {
+    // Número de texturas carregadas pela função LoadTextureImage()
+    static GLuint g_NumLoadedTextures = 0;
+    
     printf("Carregando imagem \"%s\"... ", filename);
 
     // Primeiro fazemos a leitura da imagem do disco
@@ -56,5 +54,5 @@ void LoadTextureImage(const char* filename)
 
     stbi_image_free(data);
 
-    g_NumLoadedTextures += 1;
+    g_NumLoadedTextures += 1; // Increment the number of loaded textures
 }

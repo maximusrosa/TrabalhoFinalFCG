@@ -2,15 +2,27 @@
 #include <graphics/objmodel.h>
 #include <core/gameobject.h>
 
-void DrawVirtualObject(std::map<std::string, GameObject*>& virtualScene, const char* objectName)
+void DrawVirtualObject(std::map<std::string, GameObject*>& virtualScene, const char* objectName, GLint& bboxMin, GLint& bboxMax)
 {
     glBindVertexArray(virtualScene[objectName]->sceneObject.vertexArrayObjectId);
+
+    // Setamos as variáveis "bbox_min" e "bbox_max" do fragment shader
+    // com os parâmetros da axis-aligned bounding box (AABB) do modelo.
+    GameObject* game_obj = virtualScene[objectName];
+
+    glm::vec4 b_box_min = game_obj->aabb.min;
+    glm::vec4 b_box_max = game_obj->aabb.max;
+
+    glUniform4f(bboxMin, b_box_min.x, b_box_min.y, b_box_min.z, 1.0f);
+    glUniform4f(bboxMax, b_box_max.x, b_box_max.y, b_box_max.z, 1.0f);
+
     glDrawElements(
         virtualScene[objectName]->sceneObject.renderingMode,
         virtualScene[objectName]->sceneObject.numIndices,
         GL_UNSIGNED_INT,
         (void*)(virtualScene[objectName]->sceneObject.baseIndex * sizeof(GLuint))
     );
+
     glBindVertexArray(0);
 }
 
@@ -34,12 +46,6 @@ void BuildSceneTriangles(
         size_t first_index = indices.size();
         size_t num_triangles = model->shapes[shape].mesh.num_face_vertices.size();
 
-        const float minval = std::numeric_limits<float>::min();
-        const float maxval = std::numeric_limits<float>::max();
-
-        glm::vec3 bbox_min = glm::vec3(maxval,maxval,maxval);
-        glm::vec3 bbox_max = glm::vec3(minval,minval,minval);
-
         for (size_t triangle = 0; triangle < num_triangles; ++triangle)
         {
             assert(model->shapes[shape].mesh.num_face_vertices[triangle] == 3);
@@ -57,13 +63,6 @@ void BuildSceneTriangles(
                 model_coefficients.push_back( vy );
                 model_coefficients.push_back( vz );
                 model_coefficients.push_back( 1.0f );
-
-                bbox_min.x = std::min(bbox_min.x, vx);
-                bbox_min.y = std::min(bbox_min.y, vy);
-                bbox_min.z = std::min(bbox_min.z, vz);
-                bbox_max.x = std::max(bbox_max.x, vx);
-                bbox_max.y = std::max(bbox_max.y, vy);
-                bbox_max.z = std::max(bbox_max.z, vz);
 
                 if ( idx.normal_index != -1 )
                 {
@@ -95,7 +94,6 @@ void BuildSceneTriangles(
         sceneObject.vertexArrayObjectId = vertex_array_object_id;
 
         GameObject* theobject = new GameObject(*model, sceneObject, modelMatrix);
-
 
         virtualScene[model->shapes[shape].name] = theobject;
     }

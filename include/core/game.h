@@ -82,8 +82,8 @@ private:
     glm::vec4 cameraUp = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
     glm::vec4 cameraRight = glm::vec4(1.0f, 0.0f, 0.0f, 0.0f);
 
-    float walkingSpeed = 0.1f;
-    float runningSpeed = 0.175f;
+    float walkingSpeed = 1.0f;
+    float runningSpeed = 0.5f;
 
     float cameraYaw = 0.0f;
     float cameraPitch = 0.0f;
@@ -102,6 +102,8 @@ private:
     GLint projectionUniform;
     GLint objectIdUniform;
     GLint interpolationTypeUniform;
+    GLint bboxMin;
+    GLint bboxMax;
 
     void gameLoop();
 

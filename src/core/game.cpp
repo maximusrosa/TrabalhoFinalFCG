@@ -177,14 +177,14 @@ void Game::gameLoop() {
         glUniformMatrix4fv(modelUniform, 1 , GL_FALSE , glm::value_ptr(model));
         glUniform1i(objectIdUniform, COW);
         glUniform1i(interpolationTypeUniform, PHONG_INTERPOLATION);
-        DrawVirtualObject(virtualScene, "the_cow");
+        DrawVirtualObject(virtualScene, "the_cow", bboxMin, bboxMax);
 
         // Draw the plane
         model = Matrix_Identity();
         glUniformMatrix4fv(modelUniform, 1 , GL_FALSE , glm::value_ptr(model));
         glUniform1i(objectIdUniform, PLANE);
         glUniform1i(interpolationTypeUniform, PHONG_INTERPOLATION);
-        DrawVirtualObject(virtualScene, "Plane01");
+        DrawVirtualObject(virtualScene, "Plane01", bboxMin, bboxMax);
 
         // Draw the maze
         for (const auto& [name, obj] : virtualScene) {
@@ -193,18 +193,18 @@ void Game::gameLoop() {
                 glUniformMatrix4fv(modelUniform, 1 , GL_FALSE , glm::value_ptr(model));
                 glUniform1i(objectIdUniform, MAZE);
                 glUniform1i(interpolationTypeUniform, GOURAUD_INTERPOLATION);
-                DrawVirtualObject(virtualScene, name.c_str());
+                DrawVirtualObject(virtualScene, name.c_str(), bboxMin, bboxMax);
             }
         }
 
-        // Draw the cube (player)
+        // "Draw" the cube (player)
         model = Matrix_Translate(cameraPosition.x, cameraPosition.y, cameraPosition.z)
                 * Matrix_Rotate_Y(-cameraYaw)
                 * Matrix_Scale(0.1f, 0.1f, 0.1f);
         glUniformMatrix4fv(modelUniform, 1 , GL_FALSE , glm::value_ptr(model));
         glUniform1i(objectIdUniform, CUBE);
         glUniform1i(interpolationTypeUniform, GOURAUD_INTERPOLATION);
-        DrawVirtualObject(virtualScene, "Cube");
+        DrawVirtualObject(virtualScene, "Cube", bboxMin, bboxMax);
         
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -217,9 +217,9 @@ void Game::run() {
         std::exit(EXIT_FAILURE);
     }
     LoadShadersFromFiles(gpuProgramId, modelUniform, viewUniform, projectionUniform, 
-                         objectIdUniform, interpolationTypeUniform);
+                         objectIdUniform, interpolationTypeUniform, bboxMin, bboxMax);
 
-    LoadTextureImage("../../assets/textures/grass.png");
+    LoadTextureImage("../../assets/textures/wall.jpeg");
 
     glm::mat4 model = Matrix_Identity();
 

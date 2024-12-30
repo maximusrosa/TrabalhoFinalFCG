@@ -15,7 +15,9 @@ void LoadShadersFromFiles(
     GLint& viewUniform, 
     GLint& projectionUniform, 
     GLint& objectIdUniform,
-    GLint& interpolationTypeUniform
+    GLint& interpolationTypeUniform,
+    GLint& bboxMin,
+    GLint& bboxMax
 );
 
 // Load a vertex shader

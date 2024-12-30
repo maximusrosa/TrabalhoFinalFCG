@@ -13,9 +13,9 @@
 #include <glm/vec4.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include <graphics/objmodel.h>
-#include <utils/math_utils.h>
-#include <core/gameobject.h>
+#include "graphics/objmodel.h"
+#include "utils/math_utils.h"
+#include "core/gameobject.h"
 
 enum InterpolationType 
 {
@@ -24,12 +24,12 @@ enum InterpolationType
 }; 
 
 // Draw a virtual object
-void DrawVirtualObject(std::map<std::string, GameObject*>& virtualScene, const char* objectName);
+void DrawVirtualObject(std::map<std::string, GameObject*>& virtualScene, const char* objectName, GLint& bboxMin, GLint& bboxMax);
 // Build triangles from an ObjModel and add to the virtual scene
 void BuildSceneTriangles(
     std::map<std::string, GameObject*>& virtualScene, 
     ObjModel* model,
-    glm::mat4 modelMatrix = glm::mat4(1.0f)
+    glm::mat4 modelMatrix
 );
 // Compute normals for an ObjModel
 void ComputeNormals(ObjModel* model);

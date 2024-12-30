@@ -13,7 +13,9 @@ void LoadShadersFromFiles(
     GLint& viewUniform, 
     GLint& projectionUniform, 
     GLint& objectIdUniform,
-    GLint& interpolationTypeUniform
+    GLint& interpolationTypeUniform,
+    GLint& bboxMin,
+    GLint& bboxMax
 )
 {
     GLuint vertex_shader_id = LoadShader_Vertex("../../assets/shaders/shader_vertex.glsl");
@@ -30,6 +32,8 @@ void LoadShadersFromFiles(
     projectionUniform        = glGetUniformLocation(gpuProgramId, "projection");
     objectIdUniform          = glGetUniformLocation(gpuProgramId, "object_id");
     interpolationTypeUniform = glGetUniformLocation(gpuProgramId, "interpolation_type");
+    bboxMin                  = glGetUniformLocation(gpuProgramId, "b_box_min");
+    bboxMax                  = glGetUniformLocation(gpuProgramId, "b_box_max");
 
     // Variáveis em "shader_fragment.glsl" para acesso das imagens de textura
     glUseProgram(gpuProgramId);
