@@ -48,6 +48,17 @@ public:
         }
     }
 
+    AABB(const ObjModel& model, const glm::mat4& transformation) {
+        std::vector<glm::vec4> vertices = model.getVertices();
+        min = vertices[0];
+        max = vertices[0];
+        for (const auto& vertex : vertices) {
+            min = glm::min(min, vertex);
+            max = glm::max(max, vertex);
+        }
+        transform(transformation);
+    }
+
     // Getters
     glm::vec4 getMin() const { return min; }
     glm::vec4 getMax() const { return max; }

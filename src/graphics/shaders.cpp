@@ -5,31 +5,34 @@
 #include <stdexcept>
 #include <string>
 
+#include "core/game.h"
 #include "graphics/core.h"
 
-void LoadShadersFromFiles(
-    GLuint& gpuProgramId, 
-    GLint& modelUniform, 
-    GLint& viewUniform, 
-    GLint& projectionUniform, 
-    GLint& objectIdUniform,
-    GLint& interpolationTypeUniform
-)
+void LoadShadersFromFiles(GLuint& gpuProgramId, UniformMap& uniforms) 
 {
     GLuint vertex_shader_id = LoadShader_Vertex("../../assets/shaders/shader_vertex.glsl");
     GLuint fragment_shader_id = LoadShader_Fragment("../../assets/shaders/shader_fragment.glsl");
 
-    if ( gpuProgramId != 0 )
+    if (gpuProgramId != 0)
         glDeleteProgram(gpuProgramId);
-
+    
     gpuProgramId = CreateGpuProgram(vertex_shader_id, fragment_shader_id);
 
     // Defined in "shader_vertex.glsl" and "shader_fragment.glsl".
-    modelUniform             = glGetUniformLocation(gpuProgramId, "model");
-    viewUniform              = glGetUniformLocation(gpuProgramId, "view");
-    projectionUniform        = glGetUniformLocation(gpuProgramId, "projection");
-    objectIdUniform          = glGetUniformLocation(gpuProgramId, "object_id");
-    interpolationTypeUniform = glGetUniformLocation(gpuProgramId, "interpolation_type");
+    uniforms["model"] = glGetUniformLocation(gpuProgramId, "model");
+    uniforms["view"] = glGetUniformLocation(gpuProgramId, "view");
+    uniforms["projection"] = glGetUniformLocation(gpuProgramId, "projection");
+    uniforms["object_id"] = glGetUniformLocation(gpuProgramId, "object_id");
+    uniforms["interpolation_type"] = glGetUniformLocation(gpuProgramId, "interpolation_type");
+    uniforms["bbox_min"] = glGetUniformLocation(gpuProgramId, "bbox_min");
+    uniforms["bbox_max"] = glGetUniformLocation(gpuProgramId, "bbox_max");
+
+    uniforms["wall_texture"] = glGetUniformLocation(gpuProgramId, "wall_texture");
+
+    // Variables in "shader_fragment.glsl" for accessing textures.
+    glUseProgram(gpuProgramId);
+    glUniform1i(uniforms["wall_texture"], 0);
+    glUseProgram(0);
 }
 
 GLuint LoadShader_Vertex(const char* filename)

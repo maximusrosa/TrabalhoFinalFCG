@@ -7,12 +7,14 @@
 # ser compilados.
 set(SOURCES
   src/tiny_obj_loader.cpp
+  src/stb_image.cpp
   src/glad/glad.c
   src/utils/math_utils.cpp
   src/utils/file_utils.cpp
   src/graphics/core.cpp
   src/graphics/shaders.cpp
   src/graphics/renderer.cpp
+  src/graphics/textures.cpp
   src/physics/bounding.cpp
   src/physics/collisions.cpp
   src/core/gameobject.cpp

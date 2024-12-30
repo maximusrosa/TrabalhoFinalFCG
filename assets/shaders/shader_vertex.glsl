@@ -19,17 +19,28 @@ uniform int object_id;
 #define PHONG_INTERPOLATION 1
 uniform int interpolation_type;
 
+uniform vec4 bbox_min;
+uniform vec4 bbox_max;
+
+uniform sampler2D wall_texture;
+
 out vec4 position_world;
+out vec4 position_model;
 out vec4 normal;
+out vec2 texcoords;
 out vec4 vertex_color;
 
 void main()
 {
     gl_Position = projection * view * model * model_coefficients;
+
     position_world = model * model_coefficients;
+    position_model = model_coefficients;
 
     normal = inverse(transpose(model)) * normal_coefficients;
     normal.w = 0.0;
+
+    texcoords = texture_coefficients;
 
     if (interpolation_type == GOURAUD_INTERPOLATION)
     {
@@ -38,8 +49,8 @@ void main()
         vec4 p = position_world;
         vec4 n = normalize(normal);
         vec4 l = normalize(camera_position - p);
-        vec4 v = l;
-        vec4 half_vector = normalize(l + v);
+        vec4 d = l;
+        vec4 half_vector = normalize(l + d);
 
         vec3 Kd; // Diffuse reflectance
         vec3 Ks; // Specular reflectance

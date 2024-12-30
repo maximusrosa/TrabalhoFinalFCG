@@ -1,25 +1,34 @@
 #include "graphics/renderer.h"
+
+#include <cassert>
+
+#include "graphics/core.h"
 #include "graphics/objmodel.h"
 #include "core/gameobject.h"
 
-void DrawVirtualObject(std::map<std::string, GameObject*>& virtualScene, const char* objectName) {
+void DrawVirtualObject(UniformMap& uniforms, VirtualScene& virtualScene, const char* objectName) {
     GameObject* object = virtualScene[objectName];
     SceneObject sceneObject = object->getSceneObject();
+
     glBindVertexArray(sceneObject.vertexArrayObjectId);
+
+    glm::vec4 bbox_min = object->getAABB().getMin();
+    glm::vec4 bbox_max = object->getAABB().getMax();
+
+    glUniform4f(uniforms["bbox_min"], bbox_min.x, bbox_min.y, bbox_min.z, 1.0);
+    glUniform4f(uniforms["bbox_max"], bbox_max.x, bbox_max.y, bbox_max.z, 1.0);
+
     glDrawElements(
         sceneObject.renderingMode,
         sceneObject.numIndices,
         GL_UNSIGNED_INT,
         (void*)(sceneObject.baseIndex * sizeof(GLuint))
     );
+
     glBindVertexArray(0);
 }
 
-void BuildSceneTriangles(
-    std::map<std::string, GameObject*>& virtualScene, 
-    ObjModel* model,
-    glm::mat4 modelMatrix
-) {
+void BuildSceneTriangles(VirtualScene& virtualScene, ObjModel* model, glm::mat4 modelMatrix) {
     GLuint vertex_array_object_id;
     glGenVertexArrays(1, &vertex_array_object_id);
     glBindVertexArray(vertex_array_object_id);
@@ -128,7 +137,6 @@ void BuildSceneTriangles(
     }
 
     GLuint indices_id;
-    
     glGenBuffers(1, &indices_id);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_id);

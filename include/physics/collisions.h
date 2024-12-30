@@ -18,7 +18,7 @@
 
 void resolveCollision(GameObject& obj1, GameObject& obj2);
 void resolveCollisions(std::vector<GameObject>& objects);
-void resolveCollisionsWithStaticObjects(GameObject* movingObject, const std::map<std::string, GameObject*>& staticObjects);
-bool checkCollisionWithStaticObjects(GameObject* movingObject, const std::map<std::string, GameObject*>& staticObjects);
+void resolveCollisionsWithStaticObjects(GameObject* movingObject, const VirtualScene& staticObjects);
+bool checkCollisionWithStaticObjects(GameObject* movingObject, const VirtualScene& staticObjects);
 
 #endif // COLLISIONS_H

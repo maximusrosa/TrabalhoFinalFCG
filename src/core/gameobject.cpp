@@ -1,3 +1,5 @@
+#include "core/gameobject.h"
+
 #include <vector>
 #include <ctime>
 #include <map>
@@ -8,8 +10,6 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/mat4x4.hpp>
 #include <glm/vec4.hpp>
-
-#include "core/gameobject.h"
 
 void GameObject::rotate(float angle, const glm::vec4& axis) {
     aabb.rotate(angle, axis);

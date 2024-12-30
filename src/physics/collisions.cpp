@@ -22,9 +22,7 @@ static void reverseTranslation(GameObject& obj) {
 void resolveCollision(GameObject& obj1, GameObject& obj2) {
     if (obj1.intersects(obj2)) {
         // Undo the last translation of the object that moved most recently
-        time_t obj1Time = obj1.getLastMoveTime();
-        time_t obj2Time = obj2.getLastMoveTime();
-        if (difftime(obj1Time, obj2Time) > 0) {
+        if (difftime(obj1.getLastMoveTime(), obj2.getLastMoveTime()) > 0) {
             reverseTranslation(obj1);
         } else {
             reverseTranslation(obj2);
@@ -40,29 +38,29 @@ void resolveCollisions(std::vector<GameObject>& objects) {
     }
 }
 
-void resolveCollisionsWithStaticObjects(GameObject* movingObject, const std::map<std::string, GameObject*>& staticObjects) {
+void resolveCollisionsWithStaticObjects(GameObject* movingObject, const VirtualScene& staticObjects) {
     for (const auto& [name, staticObject] : staticObjects) {
-        SceneObject movingSceneObject = movingObject->getSceneObject();
-        SceneObject staticSceneObject = staticObject->getSceneObject();
-        if (movingSceneObject.name == staticSceneObject.name || staticSceneObject.name == "Plane01") {
+        std::string movingObjectName = movingObject->getSceneObject().name;
+        std::string staticObjectName = staticObject->getSceneObject().name;
+        if (movingObjectName == staticObjectName || staticObjectName == "Plane01") {
             continue;
         }
         if (movingObject->intersects(*staticObject)) {
-            std::cout << "Collision between " << movingSceneObject.name << " and " << staticSceneObject.name << std::endl;
+            std::cout << "Collision between " << staticObjectName << " and " << staticObjectName << std::endl;
             reverseTranslation(*movingObject); // Undo the last translation of the moving object
         }
     }
 }
 
-bool checkCollisionWithStaticObjects(GameObject* movingObject, const std::map<std::string, GameObject*>& staticObjects) {
+bool checkCollisionWithStaticObjects(GameObject* movingObject, const VirtualScene& staticObjects) {
     for (const auto& [name, staticObject] : staticObjects) {
-        SceneObject movingSceneObject = movingObject->getSceneObject();
-        SceneObject staticSceneObject = staticObject->getSceneObject();
-        if (movingSceneObject.name == staticSceneObject.name || staticSceneObject.name == "Plane01") {
+        std::string movingObjectName = movingObject->getSceneObject().name;
+        std::string staticObjectName = staticObject->getSceneObject().name;
+        if (movingObjectName == staticObjectName || staticObjectName == "Plane01") {
             continue;
         }
         if (movingObject->intersects(*staticObject)) {
-            std::cout << "Collision between " << movingSceneObject.name << " and " << staticSceneObject.name << std::endl;
+            std::cout << "Collision between " << staticObjectName << " and " << staticObjectName << std::endl;
             return true;
         }
     }

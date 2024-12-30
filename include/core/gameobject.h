@@ -19,8 +19,6 @@
 #include "graphics/objmodel.h"
 #include "physics/bounding.h"
 
-static const glm::mat4 matrixIdentity = glm::mat4(1.0f);
-
 /* Data structure that represents a virtual object in the scene */
 struct SceneObject {
     SceneObject() 
@@ -37,7 +35,7 @@ struct SceneObject {
 /* Class representing an object in the game scene */
 class GameObject {
 public:
-    GameObject() 
+    GameObject()
         : lastMoveTime(0.0), lastMove(0.0) {}
 
     GameObject(const AABB& aabb)
@@ -46,17 +44,20 @@ public:
     GameObject(const std::vector<glm::vec4>& vertices)
         : aabb(vertices), lastMoveTime(0.0), lastMove(0.0) {}
 
-    GameObject(const ObjModel& model, 
-               const glm::mat4& transformation=matrixIdentity)
-        : aabb(model), lastMoveTime(0.0), lastMove(0.0) {
-        this->aabb.transform(transformation);
-    }
+    GameObject(const ObjModel& model)
+        : aabb(model), lastMoveTime(0.0), lastMove(0.0) {}
+
+    GameObject(const ObjModel& model, const glm::mat4& transformation)
+        : aabb(model, transformation), lastMoveTime(0.0), lastMove(0.0) {}
+
+    GameObject(const ObjModel& model, const SceneObject& sceneObject)
+        : aabb(model), lastMoveTime(0.0), lastMove(0.0), 
+          sceneObject(sceneObject) {}
 
     GameObject(const ObjModel& model, const SceneObject& sceneObject, 
-               const glm::mat4& transformation=matrixIdentity)
-        : aabb(model), lastMoveTime(0.0), lastMove(0.0), sceneObject(sceneObject) {
-        this->aabb.transform(transformation);
-    }
+               const glm::mat4& transformation)
+        : aabb(model, transformation), lastMoveTime(0.0), lastMove(0.0), 
+          sceneObject(sceneObject) {}
 
     GameObject(const GameObject& other)
         : aabb(other.aabb), lastMoveTime(other.lastMoveTime),
@@ -101,5 +102,7 @@ private:
     glm::vec3 lastMove;      // Last movement vector
     time_t lastMoveTime;     // Time of the last movement
 };
+
+using VirtualScene = std::map<std::string, GameObject*>;
 
 #endif // GAMEOBJECT_H
