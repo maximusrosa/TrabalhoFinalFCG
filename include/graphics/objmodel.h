@@ -91,7 +91,8 @@ enum ObjectModelType
     COW,
     PLANE,
     MAZE,
-    CUBE
+    CUBE,
+    SPHERE
 };
 
 #endif // OBJMODEL_H

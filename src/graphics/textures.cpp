@@ -12,7 +12,7 @@ void LoadTextureImage(const char* filename, GLuint& numLoadedTextures, GLint wra
     int channels;
     unsigned char *data = stbi_load(filename, &width, &height, &channels, 3);
 
-    if ( data == NULL )
+    if ( data == nullptr )
     {
         fprintf(stderr, "ERROR: Cannot open image file \"%s\".\n", filename);
         std::exit(EXIT_FAILURE);
@@ -29,8 +29,8 @@ void LoadTextureImage(const char* filename, GLuint& numLoadedTextures, GLint wra
     glSamplerParameteri(sampler_id, GL_TEXTURE_WRAP_T, wrappingMode);
 
     // Texture sampling parameters
-    glSamplerParameteri(sampler_id, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
-    glSamplerParameteri(sampler_id, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glSamplerParameteri(sampler_id, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glSamplerParameteri(sampler_id, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     // Send texture data to OpenGL
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);

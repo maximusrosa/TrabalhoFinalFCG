@@ -9,3 +9,4 @@ bin/
 /cmake-build-debug
 ref/main-ref.cpp
 ref/shader_fragment-tarefa1.glsl
+/ref

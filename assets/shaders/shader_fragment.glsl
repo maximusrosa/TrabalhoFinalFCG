@@ -21,117 +21,136 @@ uniform int object_id;
 #define PHONG_INTERPOLATION 1
 uniform int interpolation_type;
 
+// Define the texture coordinates mapping type
+#define PREDEFINED 0
+#define PLANAR_PROJECTION 1
+
 uniform vec4 bbox_min;
 uniform vec4 bbox_max;
 
 uniform sampler2D wall_texture;
+uniform sampler2D gold_texture;
 
 out vec4 color;
 
-void main()
-{
-    // Color "alpha" value (transparency) is set to 1.0
-    color.a = 1.0;
-
-    // Texture coordinates
+vec3 textureMapping(vec4 position_model, vec4 bbox_min, vec4 bbox_max, sampler2D texture_image, int mapping_type) {
     float u = 0.0;
     float v = 0.0;
 
-    if (interpolation_type == GOURAUD_INTERPOLATION)
+    if ( mapping_type == PLANAR_PROJECTION )
     {
-        color.rgb = vertex_color.rgb;
+        float minx = bbox_min.x;
+        float maxx = bbox_max.x;
+        float miny = bbox_min.y;
+        float maxy = bbox_max.y;
+        float minz = bbox_min.z;
+        float maxz = bbox_max.z;
+
+        float px = position_model.x;
+        float py = position_model.y;
+        float pz = position_model.z;
+
+
+        u = (py - miny) / (maxy - miny);
+        v = (pz - minz) / (maxz - minz);
     }
-    else
+    else if ( mapping_type == PREDEFINED )
     {
-        vec4 origin = vec4(0.0,0.0,0.0,1.0);
+        // Texture coordinates obtained from the OBJ file.
+        u = texcoords.x;
+        v = texcoords.y;
+    }
+
+    return texture(texture_image, vec2(u, v)).rgb;
+}
+
+void main() {
+    color.a = 1.0;
+
+    if (interpolation_type == GOURAUD_INTERPOLATION) {
+
+        color.rgb = vertex_color.rgb;
+
+    } else { // PHONG_INTERPOLATION
+        vec4 origin = vec4(0.0, 0.0, 0.0, 1.0);
         vec4 camera_position = inverse(view) * origin;
         vec4 p = position_world;
         vec4 n = normalize(normal);
         vec4 l = normalize(camera_position - p);
-        vec4 d = l;
-        vec4 half_vector = normalize(l + d);
 
-        vec3 Kd; // Diffuse reflectance
-        vec3 Ks; // Specular reflectance
-        vec3 Ka; // Ambient reflectance
-        float q; // Specular exponent for Blinn-Phong model
+        vec3 I = vec3(1.0, 1.0, 1.0); // É igual pra todos?
 
-        if ( object_id == MAZE ) 
+        switch (object_id)
         {
-            float minx = bbox_min.x;
-            float maxx = bbox_max.x;
+            case MAZE:
+            { // Lambert Shading Model
 
-            float miny = bbox_min.y;
-            float maxy = bbox_max.y;
+                // Obtemos a refletância difusa a partir da leitura da imagem de textura
+                vec3 Kd = textureMapping(position_model, bbox_min, bbox_max, wall_texture, PREDEFINED);
+                vec3 lambert_diffuse_term = Kd * (max(dot(n, l), 0.0) + 0.1);
 
-            float minz = bbox_min.z;
-            float maxz = bbox_max.z;
+                color.rgb = lambert_diffuse_term;
 
-            float px = position_model.x;
-            float py = position_model.y;
-            float pz = position_model.z;
+                break;
+            }
 
-            if ( px == minx || px == maxx )
-            {
-                u = (pz - minz) / (maxz - minz);
-                v = (py - miny) / (maxy - miny);
-            }
-            else if ( py == miny || py == maxy )
-            {
-                u = (px - minx) / (maxx - minx);
-                v = (pz - minz) / (maxz - minz);
-            }
-            else if ( pz == minz || pz == maxz )
-            {
-                u = (px - minx) / (maxx - minx);
-                v = (py - miny) / (maxy - miny);
-            }
-            else
-            {
-                u = (py - miny) / (maxy - miny);
-                v = (pz - minz) / (maxz - minz);
-            }
-            
-            Kd = texture(wall_texture, vec2(u,v)).rgb;
-            float lambert = max(dot(n,l),0.0) + 0.1;
+            case COW:
+            { // Blinn-Phong Shading Model
+                vec3 Kd = textureMapping(position_model, bbox_min, bbox_max, gold_texture, PLANAR_PROJECTION);
 
-            color.rgb = Kd * lambert;
-        }
-        else
-        {
-            vec3 I = vec3(1.0, 1.0, 1.0);
-            vec3 Ia = vec3(0.25, 0.15, 0.2);
+                vec3 Ka = vec3(0.05, 0.05, 0.05);
+                vec3 Ia = vec3(0.25, 0.15, 0.2);
 
-            if ( object_id == COW )
-            {
-                Kd = vec3(0.8,0.4,0.08);
-                Ks = vec3(0.8,0.8,0.8);
-                Ka = vec3(0.05, 0.05, 0.05);
-                q = 32.0;
-            }
-            else if ( object_id == PLANE )
-            {   
-                Kd = vec3(0.0627, 0.2588, 0.0745);
-                Ks = vec3(0.0, 0.0, 0.0);
-                Ka = vec3(0.0, 0.0, 0.0);
-                q = 1.0;
-            }
-            else // Unknown object
-            {
-                Kd = vec3(0.0,0.0,0.0);
-                Ks = vec3(0.0,0.0,0.0);
-                Ka = vec3(0.0,0.0,0.0);
-                q = 1.0;
-            }
-            vec3 lambert_diffuse_term = Kd * I * max(dot(n,l),0.0);
-            vec3 ambient_term = Ka * Ia;
-            vec3 blinn_phong_specular_term = Ks * I * pow(max(dot(n,half_vector),0.0),q);
+                vec3 Ks = vec3(0.8, 0.8, 0.8);
+                vec4 d = l;
+                vec4 half_vector = normalize(l + d);
+                float q = 32.0;
 
-            color.rgb = lambert_diffuse_term + ambient_term + blinn_phong_specular_term;
+                vec3 lambert_diffuse_term = Kd * I * max(dot(n, l), 0.0);
+                vec3 ambient_term = Ka * Ia;
+                vec3 blinn_phong_specular_term = Ks * I * pow(max(dot(n, half_vector), 0.0), q);
+
+                color.rgb = lambert_diffuse_term + ambient_term + blinn_phong_specular_term;
+
+                //vec3 lambert_diffuse_term = Kd * (max(dot(n, l), 0.0) + 0.1);
+                //color.rgb = lambert_diffuse_term;
+
+                break;
+            }
+
+            case PLANE:
+            { // Blinn-Phong Shading Model
+                vec3 Kd = vec3(0.0627, 0.2588, 0.0745);
+
+                vec3 Ka = vec3(0.0, 0.0, 0.0);
+                vec3 Ia = vec3(0.25, 0.15, 0.2);
+
+                vec3 Ks = vec3(0.0, 0.0, 0.0);
+                vec4 d = l;
+                vec4 half_vector = normalize(l + d);
+                float q = 1.0;
+
+                vec3 lambert_diffuse_term = Kd * I * max(dot(n, l), 0.0);
+                vec3 ambient_term = Ka * Ia;
+                vec3 blinn_phong_specular_term = Ks * I * pow(max(dot(n, half_vector), 0.0), q);
+
+                color.rgb = lambert_diffuse_term + ambient_term + blinn_phong_specular_term;
+
+                break;
+            }
+
+            default:
+            { // Lambert Shading Model
+                vec3 Kd = vec3(0.0, 0.0, 0.0);
+                vec3 lambert_diffuse_term = Kd * (max(dot(n, l), 0.0) + 0.1);
+
+                color.rgb = lambert_diffuse_term;
+
+                break;
+            }
         }
 
         // Gamma correction
-        color.rgb = pow(color.rgb, vec3(1.0,1.0,1.0)/2.2);
+        color.rgb = pow(color.rgb, vec3(1.0, 1.0, 1.0) / 2.2);
     }
-} 
-
+}
