@@ -1,5 +1,12 @@
 #include "physics/bounding.h"
 
+AABB::AABB(const BSphere& bsphere) {
+    glm::vec4 center = bsphere.getCenter();
+    float radius = bsphere.getRadius();
+    min = center - glm::vec4(radius, radius, radius, 0.0f);
+    max = center + glm::vec4(radius, radius, radius, 0.0f);
+}
+
 std::vector<glm::vec4> AABB::getCorners() const {
     return {
         glm::vec4(min.x, min.y, min.z, 1.0f),
@@ -146,6 +153,12 @@ void AABB::transform(const glm::mat4& matrix) {
     max = newMax;
 }
 
+BSphere AABB::toBSphere() const {
+    glm::vec4 center = (min + max) / 2.0f;
+    float radius = glm::distance(center, max);
+    return BSphere(center, radius);
+}
+
 bool BSphere::contains(const glm::vec4& point) const {
     return glm::distance(center, point) <= radius;
 }
@@ -203,3 +216,8 @@ void BSphere::move(const glm::vec4& displacement) {
     center += displacement;
 }
 
+void BSphere::transform(const glm::mat4& matrix) {
+    AABB aabb = toAABB();
+    aabb.transform(matrix);
+    *this = BSphere(aabb);
+}

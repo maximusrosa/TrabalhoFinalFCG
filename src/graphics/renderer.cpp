@@ -28,7 +28,7 @@ void DrawVirtualObject(UniformMap& uniforms, VirtualScene& virtualScene, const c
     glBindVertexArray(0);
 }
 
-void BuildSceneTriangles(VirtualScene& virtualScene, ObjModel* model, glm::mat4 modelMatrix) {
+void BuildSceneTriangles(VirtualScene& virtualScene, ObjModel* model, glm::mat4 modelMatrix, bool useBSphere) {
     GLuint vertex_array_object_id;
     glGenVertexArrays(1, &vertex_array_object_id);
     glBindVertexArray(vertex_array_object_id);

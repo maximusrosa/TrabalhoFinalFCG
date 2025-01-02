@@ -245,7 +245,7 @@ void Game::run() {
             * Matrix_Scale(2.0f,2.0f,2.0f);
     ObjModel cowModel("../../assets/models/cow.obj");
     ComputeNormals(&cowModel);
-    BuildSceneTriangles(virtualScene, &cowModel, model);
+    BuildSceneTriangles(virtualScene, &cowModel, model, true);
 
     std::string mazeModelFolder("../../assets/models/maze/");
     std::vector<std::string> mazeModelFiles = getObjFiles(mazeModelFolder);

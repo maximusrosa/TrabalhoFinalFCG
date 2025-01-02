@@ -59,6 +59,8 @@ public:
         transform(transformation);
     }
 
+    AABB(const BSphere& bsphere); // Defined in bounding.cpp
+
     // Getters
     glm::vec4 getMin() const { return min; }
     glm::vec4 getMax() const { return max; }
@@ -112,6 +114,8 @@ public:
         return fromVertices(vertices);
     }
 
+    BSphere toBSphere() const; // Defined in bounding.cpp
+
     AABB operator=(const AABB& other) {
         min = other.min;
         max = other.max;
@@ -135,6 +139,11 @@ public:
     BSphere(const BSphere& other)
         : center(other.center), radius(other.radius) {}
 
+    BSphere(const AABB& aabb) {
+        center = (aabb.getMin() + aabb.getMax()) / 2.0f;
+        radius = glm::distance(center, aabb.getMax());
+    }
+
     BSphere(const std::vector<glm::vec4>& vertices) {
         glm::vec4 min = vertices[0];
         glm::vec4 max = vertices[0];
@@ -156,6 +165,20 @@ public:
         }
         center = (min + max) / 2.0f;
         radius = glm::distance(center, max);
+    }
+
+    BSphere(const ObjModel& model, const glm::mat4& transformation) {
+        std::vector<glm::vec4> vertices = model.getVertices();
+        glm::vec4 min = vertices[0];
+        glm::vec4 max = vertices[0];
+        for (const auto& vertex : vertices) {
+            min = glm::min(min, vertex);
+            max = glm::max(max, vertex);
+        }
+        AABB aabb(min, max);
+        aabb.transform(transformation);
+        center = (aabb.getMin() + aabb.getMax()) / 2.0f;
+        radius = glm::distance(center, aabb.getMax());
     }
 
     // Getters
@@ -190,6 +213,9 @@ public:
     // Move the BSphere by a displacement vector
     void move(const glm::vec4& displacement);
 
+    // Transform the BSphere with a 4x4 transformation matrix
+    void transform(const glm::mat4& matrix);
+
     static BSphere fromVertices(const std::vector<glm::vec4>& vertices) {
         glm::vec4 min = vertices[0];
         glm::vec4 max = vertices[0];
@@ -205,6 +231,11 @@ public:
     static BSphere fromModel(const ObjModel& model) {
         std::vector<glm::vec4> vertices = model.getVertices();
         return fromVertices(vertices);
+    }
+
+    AABB toAABB() const {
+        return AABB(center - glm::vec4(radius, radius, radius, 0.0f),
+                    center + glm::vec4(radius, radius, radius, 0.0f));
     }
 
     BSphere operator=(const BSphere& other) {
