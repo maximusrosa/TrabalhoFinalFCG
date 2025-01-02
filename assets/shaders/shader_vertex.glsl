@@ -23,6 +23,8 @@ uniform vec4 bbox_min;
 uniform vec4 bbox_max;
 
 uniform sampler2D wall_texture;
+uniform sampler2D grass_texture;
+uniform sampler2D gold_texture;
 
 out vec4 position_world;
 out vec4 position_model;
@@ -62,7 +64,47 @@ void main()
 
         if ( object_id == COW )
         {
-            Kd = vec3(0.8,0.4,0.08);
+            float u = 0.0;
+            float v = 0.0;
+            
+            float minx = bbox_min.x;
+            float maxx = bbox_max.x;
+
+            float miny = bbox_min.y;
+            float maxy = bbox_max.y;
+
+            float minz = bbox_min.z;
+            float maxz = bbox_max.z;
+
+            float px = position_model.x;
+            float py = position_model.y;
+            float pz = position_model.z;
+
+            float epsilon = 0.01; 
+
+            if (abs(px - minx) < epsilon || abs(px - maxx) < epsilon) 
+            {
+                u = pz;
+                v = py;
+            } 
+            else if (abs(pz - minz) < epsilon || abs(pz - maxz) < epsilon) 
+            {
+                u = px;
+                v = py;
+            } 
+            else if (abs(py - miny) < epsilon || abs(py - maxy) < epsilon) 
+            {
+                u = px;
+                v = pz;
+            } 
+            else 
+            {
+                // Default case (should not happen, it is just a safety measure)
+                u = pz;
+                v = py;
+            }
+
+            Kd = texture(gold_texture, vec2(u,v)).rgb;
             Ks = vec3(0.8,0.8,0.8);
             Ka = vec3(0.05, 0.05, 0.05);
             q = 32.0;

@@ -28,10 +28,14 @@ void LoadShadersFromFiles(GLuint& gpuProgramId, UniformMap& uniforms)
     uniforms["bbox_max"] = glGetUniformLocation(gpuProgramId, "bbox_max");
 
     uniforms["wall_texture"] = glGetUniformLocation(gpuProgramId, "wall_texture");
+    uniforms["grass_texture"] = glGetUniformLocation(gpuProgramId, "grass_texture");
+    uniforms["gold_texture"] = glGetUniformLocation(gpuProgramId, "gold_texture");
 
     // Variables in "shader_fragment.glsl" for accessing textures.
     glUseProgram(gpuProgramId);
     glUniform1i(uniforms["wall_texture"], 0);
+    glUniform1i(uniforms["grass_texture"], 1);
+    glUniform1i(uniforms["gold_texture"], 2);
     glUseProgram(0);
 }
 
