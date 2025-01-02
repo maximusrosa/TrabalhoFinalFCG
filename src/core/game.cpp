@@ -237,7 +237,7 @@ void Game::run() {
 
     // Load texture images
     numLoadedTextures = 0;
-    LoadTextureImage("../../assets/textures/stone.png", numLoadedTextures, GL_REPEAT);
+    LoadTextureImage("../../assets/textures/stonebrick.png", numLoadedTextures, GL_REPEAT);
     
     glm::mat4 model = Matrix_Identity();
 

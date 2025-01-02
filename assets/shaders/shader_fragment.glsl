@@ -71,31 +71,34 @@ void main()
             float py = position_model.y;
             float pz = position_model.z;
 
-            if ( px == minx || px == maxx )
-            {
-                u = (pz - minz) / (maxz - minz);
-                v = (py - miny) / (maxy - miny);
-            }
-            else if ( py == miny || py == maxy )
-            {
-                u = (px - minx) / (maxx - minx);
-                v = (pz - minz) / (maxz - minz);
-            }
-            else if ( pz == minz || pz == maxz )
-            {
-                u = (px - minx) / (maxx - minx);
-                v = (py - miny) / (maxy - miny);
-            }
-            else
-            {
-                u = (py - miny) / (maxy - miny);
-                v = (pz - minz) / (maxz - minz);
-            }
-            
-            Kd = texture(wall_texture, vec2(u,v)).rgb;
-            float lambert = max(dot(n,l),0.0) + 0.1;
+            float epsilon = 0.3; 
 
-            color.rgb = Kd * lambert;
+            if (abs(px - minx) < epsilon || abs(px - maxx) < epsilon) 
+            {
+                u = pz;
+                v = py;
+            } 
+            else if (abs(pz - minz) < epsilon || abs(pz - maxz) < epsilon) 
+            {
+                u = px;
+                v = py;
+            } 
+            else if (abs(py - miny) < epsilon || abs(py - maxy) < epsilon) 
+            {
+                u = px;
+                v = pz;
+            } 
+            else 
+            {
+                // Default case (should not happen, it is just a safety measure)
+                u = pz;
+                v = py;
+            }
+
+            Kd = texture(wall_texture, vec2(u,v)).rgb;
+            float lambert_coefficient = max(dot(n,l),0.05);
+
+            color.rgb = Kd * lambert_coefficient;
         }
         else
         {
@@ -123,7 +126,8 @@ void main()
                 Ka = vec3(0.0,0.0,0.0);
                 q = 1.0;
             }
-            vec3 lambert_diffuse_term = Kd * I * max(dot(n,l),0.0);
+
+            vec3 lambert_diffuse_term = Kd * I * max(dot(n,l),0.05);
             vec3 ambient_term = Ka * Ia;
             vec3 blinn_phong_specular_term = Ks * I * pow(max(dot(n,half_vector),0.0),q);
 
