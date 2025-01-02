@@ -195,14 +195,6 @@ void Game::gameLoop() {
         glUniform1i(uniforms["interpolation_type"], GOURAUD_INTERPOLATION);
         DrawVirtualObject(uniforms, virtualScene, "the_cow");
 
-        // Draw the sphere
-        model = Matrix_Translate(1.0f,1.0f,-90.0f)
-                * Matrix_Scale(2.0f,2.0f,2.0f);
-        glUniformMatrix4fv(uniforms["model"], 1 , GL_FALSE , glm::value_ptr(model));
-        glUniform1i(uniforms["object_id"], SPHERE);
-        glUniform1i(uniforms["interpolation_type"], GOURAUD_INTERPOLATION);
-        DrawVirtualObject(uniforms, virtualScene, "the_sphere");
-
         // Draw the plane
         model = Matrix_Identity();
         glUniformMatrix4fv(uniforms["model"], 1 , GL_FALSE , glm::value_ptr(model));
@@ -245,22 +237,17 @@ void Game::run() {
 
     // Load texture images
     numLoadedTextures = 0;
-    LoadTextureImage("../../assets/textures/wall.jpg", numLoadedTextures, GL_REPEAT);
-    LoadTextureImage("../../assets/textures/gold.jpeg", numLoadedTextures, GL_REPEAT);
-
+    LoadTextureImage("../../assets/textures/stonebrick.png", numLoadedTextures, GL_REPEAT);
+    LoadTextureImage("../../assets/textures/grass.png", numLoadedTextures, GL_REPEAT);
+    LoadTextureImage("../../assets/textures/gold.jpg", numLoadedTextures, GL_MIRRORED_REPEAT);
+    
     glm::mat4 model = Matrix_Identity();
 
     model = Matrix_Translate(4.0f,1.0f,-90.0f)
             * Matrix_Scale(2.0f,2.0f,2.0f);
     ObjModel cowModel("../../assets/models/cow.obj");
     ComputeNormals(&cowModel);
-    BuildSceneTriangles(virtualScene, &cowModel, model);
-
-    model = Matrix_Translate(1.0f,1.0f,-90.0f)
-            * Matrix_Scale(2.0f,2.0f,2.0f);
-    ObjModel sphereModel("../../assets/models/sphere.obj");
-    ComputeNormals(&sphereModel);
-    BuildSceneTriangles(virtualScene, &sphereModel, model);
+    BuildSceneTriangles(virtualScene, &cowModel, model, true);
 
     std::string mazeModelFolder("../../assets/models/maze/");
     std::vector<std::string> mazeModelFiles = getObjFiles(mazeModelFolder);

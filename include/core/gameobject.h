@@ -36,44 +36,57 @@ struct SceneObject {
 class GameObject {
 public:
     GameObject()
-        : lastMoveTime(0.0), lastMove(0.0) {}
+        : lastMoveTime(0.0), lastMove(0.0), useBSphere(false) {}
 
-    GameObject(const AABB& aabb)
-        : aabb(aabb), lastMoveTime(0.0), lastMove(0.0) {}
+    GameObject(const AABB& aabb, bool useBSphere=false)
+        : aabb(aabb), lastMoveTime(0.0), lastMove(0.0), 
+          bsphere(aabb), useBSphere(useBSphere) {}
 
-    GameObject(const std::vector<glm::vec4>& vertices)
-        : aabb(vertices), lastMoveTime(0.0), lastMove(0.0) {}
+    GameObject(const AABB& aabb, const BSphere& bsphere, bool useBSphere=false)
+        : aabb(aabb), lastMoveTime(0.0), lastMove(0.0), 
+          bsphere(bsphere), useBSphere(useBSphere) {}
 
-    GameObject(const ObjModel& model)
-        : aabb(model), lastMoveTime(0.0), lastMove(0.0) {}
+    GameObject(const std::vector<glm::vec4>& vertices, bool useBSphere=false)
+        : aabb(vertices), lastMoveTime(0.0), lastMove(0.0), 
+          bsphere(vertices), useBSphere(useBSphere) {}
 
-    GameObject(const ObjModel& model, const glm::mat4& transformation)
-        : aabb(model, transformation), lastMoveTime(0.0), lastMove(0.0) {}
-
-    GameObject(const ObjModel& model, const SceneObject& sceneObject)
+    GameObject(const ObjModel& model, bool useBSphere=false)
         : aabb(model), lastMoveTime(0.0), lastMove(0.0), 
-          sceneObject(sceneObject) {}
+          bsphere(model), useBSphere(useBSphere) {}
+
+    GameObject(const ObjModel& model, const glm::mat4& transformation, bool useBSphere=false)
+        : aabb(model, transformation), lastMoveTime(0.0), lastMove(0.0), 
+          bsphere(model, transformation), useBSphere(useBSphere) {}
+
+    GameObject(const ObjModel& model, const SceneObject& sceneObject, bool useBSphere=false)
+        : aabb(model), lastMoveTime(0.0), lastMove(0.0), sceneObject(sceneObject), 
+          bsphere(model), useBSphere(useBSphere) {}
 
     GameObject(const ObjModel& model, const SceneObject& sceneObject, 
-               const glm::mat4& transformation)
-        : aabb(model, transformation), lastMoveTime(0.0), lastMove(0.0), 
-          sceneObject(sceneObject) {}
+               const glm::mat4& transformation, bool useBSphere=false)
+        : aabb(model, transformation), lastMoveTime(0.0), lastMove(0.0), sceneObject(sceneObject), 
+          bsphere(model), useBSphere(useBSphere) {}
 
     GameObject(const GameObject& other)
-        : aabb(other.aabb), lastMoveTime(other.lastMoveTime),
-          lastMove(other.lastMove), sceneObject(other.sceneObject) {}
+        : aabb(other.aabb), lastMoveTime(other.lastMoveTime), 
+          lastMove(other.lastMove), sceneObject(other.sceneObject), 
+          bsphere(other.bsphere), useBSphere(other.useBSphere) {}
 
     // Getters
     AABB getAABB() const { return aabb; }
+    BSphere getBSphere() const { return bsphere; }
     glm::vec3 getLastMove() const { return lastMove; }
     time_t getLastMoveTime() const { return lastMoveTime; }
     SceneObject getSceneObject() const { return sceneObject; }
+    bool getUseBSphere() const { return useBSphere; }
 
     // Setters
     void setAABB(const AABB& aabb) { this->aabb = aabb; }
+    void setBSphere(const BSphere& bsphere) { this->bsphere = bsphere; }
     void setLastMove(const glm::vec3& lastMove) { this->lastMove = lastMove; }
     void setLastMoveTime(time_t lastMoveTime) { this->lastMoveTime = lastMoveTime; }
     void setSceneObject(const SceneObject& sceneObject) { this->sceneObject = sceneObject; }
+    void setUseBSphere(bool useBSphere) { this->useBSphere = useBSphere; }
 
     void rotate(float angle, const glm::vec4& axis);
     void translate(float tx, float ty, float tz);
@@ -90,6 +103,8 @@ public:
 
     GameObject operator=(const GameObject& other) {
         aabb = other.aabb;
+        bsphere = other.bsphere;
+        useBSphere = other.useBSphere;
         lastMove = other.lastMove;
         lastMoveTime = other.lastMoveTime;
         sceneObject = other.sceneObject;
@@ -98,7 +113,11 @@ public:
 
 private:
     SceneObject sceneObject; // SceneObject associated with the GameObject
+
     AABB aabb;               // Axis-Aligned Bounding Box (AABB) of the GameObject
+    BSphere bsphere;         // Bounding Sphere (BSphere) of the GameObject
+    bool useBSphere;         // Flag to use BSphere for collision detection
+
     glm::vec3 lastMove;      // Last movement vector
     time_t lastMoveTime;     // Time of the last movement
 };

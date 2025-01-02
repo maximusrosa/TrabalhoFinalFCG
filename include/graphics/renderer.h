@@ -26,7 +26,8 @@ enum InterpolationType {
 // Draw a virtual object
 void DrawVirtualObject(UniformMap& uniforms, VirtualScene& virtualScene, const char* objectName);
 // Build triangles from an ObjModel and add to the virtual scene
-void BuildSceneTriangles(VirtualScene& virtualScene, ObjModel* model, glm::mat4 modelMatrix);
+void BuildSceneTriangles(VirtualScene& virtualScene, ObjModel* model, glm::mat4 modelMatrix,
+                         bool useBSphere=false);
 // Compute normals for an ObjModel
 void ComputeNormals(ObjModel* model);
 // Push a matrix onto the matrix stack
