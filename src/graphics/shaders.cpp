@@ -4,6 +4,7 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#include "../include/utils/file_utils.h"
 
 #include "core/game.h"
 #include "graphics/core.h"
@@ -27,15 +28,24 @@ void LoadShadersFromFiles(GLuint& gpuProgramId, UniformMap& uniforms)
     uniforms["bbox_min"] = glGetUniformLocation(gpuProgramId, "bbox_min");
     uniforms["bbox_max"] = glGetUniformLocation(gpuProgramId, "bbox_max");
 
-    uniforms["wall_texture"] = glGetUniformLocation(gpuProgramId, "wall_texture");
-    uniforms["grass_texture"] = glGetUniformLocation(gpuProgramId, "grass_texture");
-    uniforms["gold_texture"] = glGetUniformLocation(gpuProgramId, "gold_texture");
+    std::vector<std::string> textureFiles = getFiles("../../assets/textures");
+    std::vector<std::string> textureUniforms;
 
-    // Variables in "shader_fragment.glsl" for accessing textures.
+    for (const auto& textureFile : textureFiles) {
+        std::string textureName = textureFile.substr(0, textureFile.find_last_of('.')) + "_texture";
+        textureUniforms.push_back(textureName);
+    }
+
+    for (size_t i = 0; i < textureFiles.size(); ++i) {
+        uniforms[textureUniforms[i]] = glGetUniformLocation(gpuProgramId, textureUniforms[i].c_str());
+    }
+
     glUseProgram(gpuProgramId);
-    glUniform1i(uniforms["wall_texture"], 0);
-    glUniform1i(uniforms["grass_texture"], 1);
-    glUniform1i(uniforms["gold_texture"], 2);
+
+    for (size_t i = 0; i < textureFiles.size(); ++i) {
+        glUniform1i(uniforms[textureUniforms[i]], i);
+    }
+
     glUseProgram(0);
 }
 

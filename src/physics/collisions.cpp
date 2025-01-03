@@ -42,7 +42,7 @@ void resolveCollisionsWithStaticObjects(GameObject* movingObject, const VirtualS
     for (const auto& [name, staticObject] : staticObjects) {
         std::string movingObjectName = movingObject->getSceneObject().name;
         std::string staticObjectName = staticObject->getSceneObject().name;
-        if (movingObjectName == staticObjectName || staticObjectName == "Plane01") {
+        if (movingObjectName == staticObjectName || staticObjectName == "the_plane") {
             continue;
         }
         if (movingObject->intersects(*staticObject)) {
@@ -56,7 +56,7 @@ bool checkCollisionWithStaticObjects(GameObject* movingObject, const VirtualScen
     for (const auto& [name, staticObject] : staticObjects) {
         std::string movingObjectName = movingObject->getSceneObject().name;
         std::string staticObjectName = staticObject->getSceneObject().name;
-        if (movingObjectName == staticObjectName || staticObjectName == "Plane01") {
+        if (movingObjectName == staticObjectName || staticObjectName == "the_plane") {
             continue;
         }
         if (movingObject->intersects(*staticObject)) {

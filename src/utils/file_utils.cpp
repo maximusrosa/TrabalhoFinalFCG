@@ -12,25 +12,31 @@ bool endsWith(const std::string& str, const std::string& suffix) {
            str.compare(str.size() - suffix.size(), suffix.size(), suffix) == 0;
 }
 
-std::vector<std::string> getObjFiles(const std::string& folderPath) {
+std::vector<std::string> getFiles(const std::string& folderPath) {
     std::vector<std::string> objFiles;
     WIN32_FIND_DATA findFileData;
     HANDLE hFind = FindFirstFile((folderPath + "\\*").c_str(), &findFileData);
+
     if (hFind == INVALID_HANDLE_VALUE) {
         std::cerr << "Failed to open directory: " << folderPath << std::endl;
         return objFiles;
     }
+
     do {
         if (!(findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
             std::string fileName = findFileData.cFileName;
-            if (endsWith(fileName, ".obj")) {
+
+            if (endsWith(fileName, ".obj") || endsWith(fileName, ".png") || endsWith(fileName, ".jpg") || endsWith(fileName, ".jpeg")) {
                 objFiles.push_back(fileName);
             }
         }
     } while (FindNextFile(hFind, &findFileData) != 0);
+
     FindClose(hFind);
+
     return objFiles;
 }
+
 
 #elif __linux__ || __APPLE__
 #include <dirent.h>

@@ -21,7 +21,7 @@
 enum InterpolationType {
     GOURAUD_INTERPOLATION,
     PHONG_INTERPOLATION
-}; 
+};
 
 // Draw a virtual object
 void DrawVirtualObject(UniformMap& uniforms, VirtualScene& virtualScene, const char* objectName);

@@ -2,7 +2,7 @@
 
 layout (location = 0) in vec4 model_coefficients;
 layout (location = 1) in vec4 normal_coefficients;
-layout (location = 2) in vec2 texture_coefficients;
+layout (location = 2) in vec2 texture_coefficients; // Texture coordinates defined in the OBJ file (if available)
 
 uniform mat4 model;
 uniform mat4 view;
@@ -22,9 +22,11 @@ uniform int interpolation_type;
 uniform vec4 bbox_min;
 uniform vec4 bbox_max;
 
-uniform sampler2D wall_texture;
-uniform sampler2D grass_texture;
 uniform sampler2D gold_texture;
+uniform sampler2D grass_texture;
+uniform sampler2D lava_texture;
+uniform sampler2D stonebrick_texture;
+uniform sampler2D galaxy_texture;
 
 out vec4 position_world;
 out vec4 position_model;
@@ -42,7 +44,7 @@ void main()
     normal = inverse(transpose(model)) * normal_coefficients;
     normal.w = 0.0;
 
-    texcoords = texture_coefficients;
+    float u,v;
 
     if (interpolation_type == GOURAUD_INTERPOLATION)
     {
@@ -64,65 +66,18 @@ void main()
 
         if ( object_id == COW )
         {
-            float u = 0.0;
-            float v = 0.0;
-            
-            float minx = bbox_min.x;
-            float maxx = bbox_max.x;
-
-            float miny = bbox_min.y;
-            float maxy = bbox_max.y;
-
-            float minz = bbox_min.z;
-            float maxz = bbox_max.z;
-
             float px = position_model.x;
             float py = position_model.y;
-            float pz = position_model.z;
 
-            float epsilon = 0.01; 
+            u = px;
+            v = py;
 
-            if (abs(px - minx) < epsilon || abs(px - maxx) < epsilon) 
-            {
-                u = pz;
-                v = py;
-            } 
-            else if (abs(pz - minz) < epsilon || abs(pz - maxz) < epsilon) 
-            {
-                u = px;
-                v = py;
-            } 
-            else if (abs(py - miny) < epsilon || abs(py - maxy) < epsilon) 
-            {
-                u = px;
-                v = pz;
-            } 
-            else 
-            {
-                // Default case (should not happen, it is just a safety measure)
-                u = pz;
-                v = py;
-            }
-
-            Kd = texture(gold_texture, vec2(u,v)).rgb;
+            Kd = texture(galaxy_texture, vec2(u,v)).rgb;
             Ks = vec3(0.8,0.8,0.8);
             Ka = vec3(0.05, 0.05, 0.05);
             q = 32.0;
         }
-        else if ( object_id == PLANE )
-        {   
-            Kd = vec3(0.1, 0.6, 0.3);
-            Ks = vec3(0.0, 0.0, 0.0);
-            Ka = vec3(0.01, 0.01, 0.01);
-            q = 1.0;
-        }
-        else if ( object_id == MAZE )
-        {
-            Kd = vec3(0.35,0.35,0.35);
-            Ks = vec3(0.01,0.01,0.01);
-            Ka = vec3(0.1, 0.1, 0.1);
-            q = 2.0;
-        }
+
         else // Unknown object
         {
             Kd = vec3(0.0,0.0,0.0);

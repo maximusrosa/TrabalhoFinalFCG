@@ -1,3 +1,4 @@
+#include <cmath>
 #include <cstdio>
 #include <cstdlib>
 
@@ -33,12 +34,12 @@ glm::mat4 Matrix(
     float m30, float m31, float m32, float m33  // LINHA 4
 )
 {
-    return glm::mat4(
+    return {
         m00, m10, m20, m30, // COLUNA 1
         m01, m11, m21, m31, // COLUNA 2
         m02, m12, m22, m32, // COLUNA 3
         m03, m13, m23, m33  // COLUNA 4
-    );
+    };
 }
 
 // Matriz identidade.
@@ -107,8 +108,8 @@ glm::mat4 Matrix_Scale(float sx, float sy, float sz)
 // onde 'c' e 's' são o cosseno e o seno do ângulo de rotação, respectivamente.
 glm::mat4 Matrix_Rotate_X(float angle)
 {
-    float c = cos(angle);
-    float s = sin(angle);
+    float c = std::cos(angle);
+    float s = std::sin(angle);
     return Matrix(
         1.0f , 0.0f , 0.0f , 0.0f ,
         0.0f ,  c   , -s   , 0.0f ,
@@ -127,8 +128,8 @@ glm::mat4 Matrix_Rotate_X(float angle)
 // onde 'c' e 's' são o cosseno e o seno do ângulo de rotação, respectivamente.
 glm::mat4 Matrix_Rotate_Y(float angle)
 {
-    float c = cos(angle);
-    float s = sin(angle);
+    float c = std::cos(angle);
+    float s = std::sin(angle);
     return Matrix(
          c   , 0.0f ,  s   , 0.0f ,
         0.0f , 1.0f , 0.0f , 0.0f ,
@@ -147,8 +148,8 @@ glm::mat4 Matrix_Rotate_Y(float angle)
 // onde 'c' e 's' são o cosseno e o seno do ângulo de rotação, respectivamente.
 glm::mat4 Matrix_Rotate_Z(float angle)
 {
-    float c = cos(angle);
-    float s = sin(angle);
+    float c = std::cos(angle);
+    float s = std::sin(angle);
     return Matrix(
          c   , -s   , 0.0f , 0.0f ,
          s   ,  c   , 0.0f , 0.0f ,
@@ -165,7 +166,7 @@ float norm(glm::vec4 v)
     float vy = v.y;
     float vz = v.z;
 
-    return sqrt( vx*vx + vy*vy + vz*vz );
+    return std::sqrt( vx*vx + vy*vy + vz*vz );
 }
 
 // Matriz R de "rotação de um ponto" em relação à origem do sistema de
@@ -174,8 +175,8 @@ float norm(glm::vec4 v)
 // eixo de rotação deve ser normalizado!
 glm::mat4 Matrix_Rotate(float angle, glm::vec4 axis)
 {
-    float c = cos(angle);
-    float s = sin(angle);
+    float c = std::cos(angle);
+    float s = std::sin(angle);
 
     glm::vec4 v = axis / norm(axis);
 
@@ -202,12 +203,12 @@ glm::vec4 crossproduct(glm::vec4 u, glm::vec4 v)
     float v2 = v.y;
     float v3 = v.z;
 
-    return glm::vec4(
+    return {
         u2*v3 - u3*v2, // Primeiro coeficiente
         u3*v1 - u1*v3, // Segundo coeficiente
         u1*v2 - u2*v1, // Terceiro coeficiente
         0.0f // w = 0 para vetores.
-    );
+    };
 }
 
 // Produto escalar entre dois vetores u e v definidos em um sistema de
@@ -280,7 +281,7 @@ glm::mat4 Matrix_Orthographic(float l, float r, float b, float t, float n, float
 // Matriz de projeção perspectiva
 glm::mat4 Matrix_Perspective(float field_of_view, float aspect, float n, float f)
 {
-    float t = fabs(n) * tanf(field_of_view / 2.0f);
+    float t = std::fabs(n) * tanf(field_of_view / 2.0f);
     float b = -t;
     float r = t * aspect;
     float l = -r;

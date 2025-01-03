@@ -1,6 +1,8 @@
 #ifndef THE_GAME_H
 #define THE_GAME_H
 
+#include <glm/gtc/matrix_transform.hpp>
+#include <stack>
 #include <iostream>
 #include <string>
 #include <memory>
@@ -44,6 +46,17 @@ public:
     virtual void cursorPosCallback(double xpos, double ypos);
     virtual void framebufferSizeCallback(int width, int height);
 
+    static void setCameraView(const glm::vec4& cameraPosition, const glm::vec4& cameraView, const glm::vec4& cameraUp,
+                       const UniformMap& uniforms);
+    static void setProjection(float fov, float screenRatio, float nearPlane, float farPlane,
+                          const UniformMap& uniforms);
+
+    void createModel(const std::string& objFilePath, glm::mat4 model);
+
+    void drawCow(glm::mat4 model, const UniformMap& uniforms);
+    void drawPlane(glm::mat4 model, const UniformMap& uniforms);
+    void drawMaze(glm::mat4 model, const UniformMap& uniforms);
+
     ~Game();
 
 private:
@@ -65,7 +78,7 @@ private:
         screenRatio = (float)screenWidth / screenHeight;
     }
 
-    GLFWwindow* window;
+    GLFWwindow* window{};
     const GLFWvidmode* videoMode;
 
     VirtualScene virtualScene;
@@ -99,19 +112,23 @@ private:
     float farPlane = -100.0f;
     float fov = M_PI / 3.0f;
 
+    float rotation = M_PI;
+
+    float cowPositionZ = -90.0f; // Posição inicial da vaca no eixo Z
+    float cowSpeedZ = 500.0f;      // Velocidade de movimento ao longo do eixo Z
+
     GLuint gpuProgramId = 0;
-    GLuint numLoadedTextures = 0;
-    UniformMap uniforms;
+    UniformMap uniforms = {};
 
     void gameLoop();
 
-    static void keyCallback(GLFWwindow* window, int key, int scancode, 
+    static void keyCallback(GLFWwindow* window, int key, int scancode,
                             int actions, int mods) {
         Game* obj = static_cast<Game*>(glfwGetWindowUserPointer(window));
         obj->keyCallback(key, scancode, actions, mods);
     }
 
-    static void mouseButtonCallback(GLFWwindow* window, int button, 
+    static void mouseButtonCallback(GLFWwindow* window, int button,
                                     int action, int mods) {
         Game* obj = static_cast<Game*>(glfwGetWindowUserPointer(window));
         obj->mouseButtonCallback(button, action, mods);
@@ -129,6 +146,18 @@ private:
 
     static void errorCallback(int error, const char* description) {
         fprintf(stderr, "Error: %s\n", description);
+    }
+
+    static void initialRendering(GLfloat R, GLfloat G, GLfloat B) {
+        glClearColor(R, G, B, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    }
+
+    static void setRenderConfig() {
+        glEnable(GL_DEPTH_TEST);
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
+        glFrontFace(GL_CCW);
     }
 };
 

@@ -4,7 +4,7 @@
 mtllib Maze.mtl
 
 #
-# object Plane01
+# object the_plane
 #
 
 v  -167.0092 0.0000 -125.1450
@@ -19,7 +19,7 @@ vt 1.0000 0.0000 0.0000
 vt 1.0000 1.0000 0.0000
 # 4 texture coords
 
-g Plane01
+g the_plane
 usemtl 07___Default
 s 1
 f 1/1 2/2 3/3 4/4 

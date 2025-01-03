@@ -20,6 +20,7 @@ set(SOURCES
         src/main.cpp
         src/graphics/textures.cpp
         src/stb_image.cpp
+        src/physics/animations.cpp
 )
 
 cmake_minimum_required(VERSION 3.5.0)

@@ -26,4 +26,6 @@
 
 void LoadTextureImage(const char* filename, GLuint& numLoadedTextures, GLint wrappingMode);
 
+void LoadTexturesFromFiles(const std::string& texturesDirPath);
+
 #endif // TEXTURES_H

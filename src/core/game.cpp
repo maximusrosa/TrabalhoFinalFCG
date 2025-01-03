@@ -1,3 +1,4 @@
+#include <cassert>
 #include <iostream>
 #include <string>
 #include <memory>
@@ -20,6 +21,7 @@
 #include "graphics/textures.h"
 #include "physics/bounding.h"
 #include "physics/collisions.h"
+#include "physics/animations.h"
 #include "utils/file_utils.h"
 
 #include "core/game.h"
@@ -174,45 +176,109 @@ void Game::framebufferSizeCallback(int width, int height) {
     screenRatio = (float)width / height;
 }
 
+void Game::setCameraView(const glm::vec4& cameraPosition, const glm::vec4& cameraView, const glm::vec4& cameraUp,
+                   const UniformMap& uniforms)
+{
+    glm::mat4 view = Matrix_Camera_View(cameraPosition, cameraView, cameraUp);
+    glUniformMatrix4fv(uniforms.at("view"), 1, GL_FALSE, glm::value_ptr(view));
+}
+
+void Game::setProjection(float fov, float screenRatio, float nearPlane, float farPlane,
+                   const UniformMap& uniforms)
+{
+    glm::mat4 projection = Matrix_Perspective(fov, screenRatio, nearPlane, farPlane);
+    glUniformMatrix4fv(uniforms.at("projection"), 1, GL_FALSE, glm::value_ptr(projection));
+}
+
+void Game::createModel(const std::string& objFilePath, glm::mat4 model) {
+    bool isMaze = objFilePath.find("maze") != std::string::npos;
+    bool isCow = objFilePath.find("cow") != std::string::npos;
+
+    if (isMaze) {
+        const std::string& mazeModelFolder = objFilePath;
+
+        std::vector<std::string> mazeModelFiles = getFiles(mazeModelFolder);
+
+        for (const auto& mazeModelFile : mazeModelFiles) {
+            std::string mazeModelFilePath = mazeModelFolder + mazeModelFile;
+            ObjModel mazeModel(mazeModelFilePath.c_str());
+
+            ComputeNormals(&mazeModel);
+            BuildSceneTriangles(virtualScene, &mazeModel, Matrix_Identity());
+        }
+    }
+    else {
+        ObjModel objModel(objFilePath.c_str());
+        ComputeNormals(&objModel);
+
+        if (isCow)
+            BuildSceneTriangles(virtualScene, &objModel, model, true);
+        else
+            BuildSceneTriangles(virtualScene, &objModel, model);
+    }
+}
+
+void Game::drawCow(glm::mat4 model, const UniformMap& uniforms) {
+    glUniformMatrix4fv(uniforms.at("model"), 1, GL_FALSE, glm::value_ptr(model));
+    glUniform1i(uniforms.at("object_id"), COW);
+    glUniform1i(uniforms.at("interpolation_type"), GOURAUD_INTERPOLATION);
+
+    DrawVirtualObject(const_cast<UniformMap&>(uniforms), virtualScene, "the_cow");
+}
+
+void Game::drawPlane(glm::mat4 model, const UniformMap& uniforms) {
+    glUniformMatrix4fv(uniforms.at("model"), 1 , GL_FALSE , glm::value_ptr(model));
+    glUniform1i(uniforms.at("object_id"), PLANE);
+    glUniform1i(uniforms.at("interpolation_type"), PHONG_INTERPOLATION);
+    DrawVirtualObject(const_cast<UniformMap&>(uniforms), virtualScene, "the_plane");
+}
+
+void Game::drawMaze(glm::mat4 model, const UniformMap& uniforms) {
+    for (const auto& [name, obj] : virtualScene) {
+        bool isMazePart = name.find("maze") != std::string::npos;
+
+        if (isMazePart) {
+            glUniformMatrix4fv(uniforms.at("model"), 1 , GL_FALSE , glm::value_ptr(model));
+            glUniform1i(uniforms.at("object_id"), MAZE);
+            glUniform1i(uniforms.at("interpolation_type"), PHONG_INTERPOLATION);
+            DrawVirtualObject(const_cast<UniformMap&>(uniforms), virtualScene, name.c_str());
+        }
+    }
+}
+
 void Game::gameLoop() {
     while (!glfwWindowShouldClose(window)) {
-        glClearColor(0.0f, 0.0f, 0.1f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        float lastTime = glfwGetTime();
+
+        // Sets the background color
+        initialRendering(0.0f, 0.0f, 0.1f);
 
         glUseProgram(gpuProgramId);
 
-        glm::mat4 view = Matrix_Camera_View(cameraPosition, cameraView, cameraUp);
-        glm::mat4 projection = Matrix_Perspective(fov, screenRatio, nearPlane, farPlane);
+        setCameraView(cameraPosition, cameraView, cameraUp, uniforms);
+
+        setProjection(fov, screenRatio, nearPlane, farPlane, uniforms);
+
         glm::mat4 model = Matrix_Identity();
-        glUniformMatrix4fv(uniforms["view"], 1, GL_FALSE, glm::value_ptr(view));
-        glUniformMatrix4fv(uniforms["projection"], 1, GL_FALSE, glm::value_ptr(projection));
 
-        // Draw the cow
-        model = Matrix_Translate(4.0f,1.0f,-90.0f)
-                * Matrix_Scale(2.0f,2.0f,2.0f);
-        glUniformMatrix4fv(uniforms["model"], 1 , GL_FALSE , glm::value_ptr(model));
-        glUniform1i(uniforms["object_id"], COW);
-        glUniform1i(uniforms["interpolation_type"], GOURAUD_INTERPOLATION);
-        DrawVirtualObject(uniforms, virtualScene, "the_cow");
+        float currentTime = glfwGetTime();
+        float deltaTime = currentTime - lastTime;
 
-        // Draw the plane
-        model = Matrix_Identity();
-        glUniformMatrix4fv(uniforms["model"], 1 , GL_FALSE , glm::value_ptr(model));
-        glUniform1i(uniforms["object_id"], PLANE);
-        glUniform1i(uniforms["interpolation_type"], PHONG_INTERPOLATION);
-        DrawVirtualObject(uniforms, virtualScene, "Plane01");
+        cowPositionZ += cowSpeedZ * deltaTime;
 
-        // Draw the maze
-        for (const auto& [name, obj] : virtualScene) {
-            if (name.find("maze") != std::string::npos) {
-                model = Matrix_Identity();
-                glUniformMatrix4fv(uniforms["model"], 1 , GL_FALSE , glm::value_ptr(model));
-                glUniform1i(uniforms["object_id"], MAZE);
-                glUniform1i(uniforms["interpolation_type"], PHONG_INTERPOLATION);
-                DrawVirtualObject(uniforms, virtualScene, name.c_str());
-            }
+        rotation += 314.0f * deltaTime; // Velocidade de rotação
+
+        if (cowPositionZ > 10.0f || cowPositionZ < -90.0f) {
+            cowSpeedZ = -cowSpeedZ; // Inverter a direção
         }
+        
+        glm::mat4 animation = Matrix_Translate(4.0f,1.0f, cowPositionZ) * Matrix_Scale(2.0f,2.0f,2.0f) * Matrix_Rotate_Y(rotation);
 
+        drawCow(animation, uniforms);
+        drawPlane(model, uniforms);
+        drawMaze(model, uniforms);
+
+/*
         // Draw the cube (player)
         model = Matrix_Translate(cameraPosition.x, cameraPosition.y, cameraPosition.z)
                 * Matrix_Rotate_Y(-cameraYaw);
@@ -220,7 +286,8 @@ void Game::gameLoop() {
         glUniform1i(uniforms["object_id"], CUBE);
         glUniform1i(uniforms["interpolation_type"], GOURAUD_INTERPOLATION);
         DrawVirtualObject(uniforms, virtualScene, "Cube");
-        
+*/
+
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
@@ -232,44 +299,34 @@ void Game::run() {
         std::exit(EXIT_FAILURE);
     }
 
-    // Load shaders
     LoadShadersFromFiles(gpuProgramId, uniforms);
 
-    // Load texture images
-    numLoadedTextures = 0;
-    LoadTextureImage("../../assets/textures/stonebrick.png", numLoadedTextures, GL_REPEAT);
-    LoadTextureImage("../../assets/textures/grass.png", numLoadedTextures, GL_REPEAT);
-    LoadTextureImage("../../assets/textures/gold.jpg", numLoadedTextures, GL_MIRRORED_REPEAT);
-    
+    LoadTexturesFromFiles("../../assets/textures");
+
     glm::mat4 model = Matrix_Identity();
 
+                         /* Loading the OBJ models */
+
+    // ----------------------------- COW ----------------------------- //
     model = Matrix_Translate(4.0f,1.0f,-90.0f)
             * Matrix_Scale(2.0f,2.0f,2.0f);
-    ObjModel cowModel("../../assets/models/cow.obj");
-    ComputeNormals(&cowModel);
-    BuildSceneTriangles(virtualScene, &cowModel, model, true);
 
-    std::string mazeModelFolder("../../assets/models/maze/");
-    std::vector<std::string> mazeModelFiles = getObjFiles(mazeModelFolder);
+    createModel("../../assets/models/cow.obj", model);
 
-    for (const auto& mazeModelFile : mazeModelFiles) {
-        std::string mazeModelFilePath = mazeModelFolder + mazeModelFile;
-        ObjModel mazeModel(mazeModelFilePath.c_str());
-        ComputeNormals(&mazeModel);
-        BuildSceneTriangles(virtualScene, &mazeModel, Matrix_Identity());
-    }
 
+    // ----------------------------- MAZE ----------------------------- //
+    model = Matrix_Identity();
+
+    createModel("../../assets/models/maze/", model);
+
+    // ----------------------------- CUBE (PLAYER) ----------------------------- //
     model = Matrix_Translate(cameraPosition.x, cameraPosition.y, cameraPosition.z)
             * Matrix_Rotate_Y(-cameraYaw)
             * Matrix_Scale(0.1f, 0.1f, 0.1f);
-    ObjModel cubeModel("../../assets/models/cube.obj");
-    ComputeNormals(&cubeModel);
-    BuildSceneTriangles(virtualScene, &cubeModel, model);
 
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_BACK);
-    glFrontFace(GL_CCW);
+    createModel("../../assets/models/cube.obj", model);
+
+    setRenderConfig();
 
     gameLoop();
 

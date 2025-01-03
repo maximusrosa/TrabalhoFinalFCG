@@ -5,6 +5,6 @@
 #include <string>
 #include <vector>
 
-std::vector<std::string> getObjFiles(const std::string& folderPath);
+std::vector<std::string> getFiles(const std::string& folderPath);
 
 #endif // FILE_UTILS_H
