@@ -6,7 +6,11 @@
 #include "graphics/objmodel.h"
 #include "core/gameobject.h"
 
-void DrawVirtualObject(UniformMap& uniforms, VirtualScene& virtualScene, const char* objectName) {
+void DrawVirtualObject(
+    UniformMap& uniforms, 
+    VirtualScene& virtualScene, 
+    const char* objectName
+) {
     GameObject* object = virtualScene[objectName];
     SceneObject sceneObject = object->getSceneObject();
 
@@ -28,7 +32,12 @@ void DrawVirtualObject(UniformMap& uniforms, VirtualScene& virtualScene, const c
     glBindVertexArray(0);
 }
 
-void BuildSceneTriangles(VirtualScene& virtualScene, ObjModel* model, glm::mat4 modelMatrix, bool useBSphere) {
+void BuildSceneTriangles(
+    VirtualScene& virtualScene, 
+    ObjModel* model, 
+    glm::mat4 modelMatrix, 
+    bool useBSphere
+) {
     GLuint vertex_array_object_id;
     glGenVertexArrays(1, &vertex_array_object_id);
     glBindVertexArray(vertex_array_object_id);

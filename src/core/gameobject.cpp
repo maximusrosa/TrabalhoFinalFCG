@@ -13,7 +13,6 @@
 
 void GameObject::rotate(float angle, const glm::vec4& axis) {
     aabb.rotate(angle, axis);
-    bsphere.rotate(angle, axis);
 }
 
 void GameObject::translate(float tx, float ty, float tz) {
@@ -49,5 +48,5 @@ bool GameObject::intersects(const GameObject& other) const {
 }
 
 void GameObject::updateMoveTime() {
-    lastMoveTime = time(0);
+    lastMoveTime = glfwGetTime();
 }

@@ -176,16 +176,23 @@ void Game::framebufferSizeCallback(int width, int height) {
     screenRatio = (float)width / height;
 }
 
-void Game::setCameraView(const glm::vec4& cameraPosition, const glm::vec4& cameraView, const glm::vec4& cameraUp,
-                   const UniformMap& uniforms)
-{
+void Game::setCameraView(
+    const glm::vec4& cameraPosition, 
+    const glm::vec4& cameraView, 
+    const glm::vec4& cameraUp,
+    const UniformMap& uniforms
+) {
     glm::mat4 view = Matrix_Camera_View(cameraPosition, cameraView, cameraUp);
     glUniformMatrix4fv(uniforms.at("view"), 1, GL_FALSE, glm::value_ptr(view));
 }
 
-void Game::setProjection(float fov, float screenRatio, float nearPlane, float farPlane,
-                   const UniformMap& uniforms)
-{
+void Game::setProjection(
+    float fov, 
+    float screenRatio, 
+    float nearPlane, 
+    float farPlane,
+    const UniformMap& uniforms
+) {
     glm::mat4 projection = Matrix_Perspective(fov, screenRatio, nearPlane, farPlane);
     glUniformMatrix4fv(uniforms.at("projection"), 1, GL_FALSE, glm::value_ptr(projection));
 }
@@ -222,7 +229,6 @@ void Game::drawCow(glm::mat4 model, const UniformMap& uniforms) {
     glUniformMatrix4fv(uniforms.at("model"), 1, GL_FALSE, glm::value_ptr(model));
     glUniform1i(uniforms.at("object_id"), COW);
     glUniform1i(uniforms.at("interpolation_type"), GOURAUD_INTERPOLATION);
-
     DrawVirtualObject(const_cast<UniformMap&>(uniforms), virtualScene, "the_cow");
 }
 
@@ -247,32 +253,38 @@ void Game::drawMaze(glm::mat4 model, const UniformMap& uniforms) {
 }
 
 void Game::gameLoop() {
-    while (!glfwWindowShouldClose(window)) {
-        float lastTime = glfwGetTime();
+    float lastTime = glfwGetTime();
+    float currentTime;
+    float deltaTime;
 
+    while (!glfwWindowShouldClose(window)) {
         // Sets the background color
         initialRendering(0.0f, 0.0f, 0.1f);
 
         glUseProgram(gpuProgramId);
 
         setCameraView(cameraPosition, cameraView, cameraUp, uniforms);
-
         setProjection(fov, screenRatio, nearPlane, farPlane, uniforms);
 
         glm::mat4 model = Matrix_Identity();
 
-        float currentTime = glfwGetTime();
-        float deltaTime = currentTime - lastTime;
+        currentTime = glfwGetTime();
+        deltaTime = currentTime - lastTime;
+        lastTime = currentTime;
 
         cowPositionZ += cowSpeedZ * deltaTime;
 
-        rotation += 314.0f * deltaTime; // Velocidade de rotação
+        glm::vec3 cowTranslation = glm::vec3(0, 0, cowSpeedZ * deltaTime);
+
+        rotation += 10.0f * deltaTime; // Velocidade de rotação
 
         if (cowPositionZ > 10.0f || cowPositionZ < -90.0f) {
             cowSpeedZ = -cowSpeedZ; // Inverter a direção
         }
         
-        glm::mat4 animation = Matrix_Translate(4.0f,1.0f, cowPositionZ) * Matrix_Scale(2.0f,2.0f,2.0f) * Matrix_Rotate_Y(rotation);
+        glm::mat4 animation = Matrix_Translate(4.0f, 1.2f, cowPositionZ) 
+                              * Matrix_Scale(2.0f, 2.0f, 2.0f) 
+                              * Matrix_Rotate_Y(rotation);
 
         drawCow(animation, uniforms);
         drawPlane(model, uniforms);
@@ -301,14 +313,18 @@ void Game::run() {
 
     LoadShadersFromFiles(gpuProgramId, uniforms);
 
-    LoadTexturesFromFiles("../../assets/textures");
+    LoadTexturesFromFiles(
+        "../../assets/textures", 
+        numLoadedTextures, 
+        GL_REPEAT
+    );
 
     glm::mat4 model = Matrix_Identity();
 
                          /* Loading the OBJ models */
 
     // ----------------------------- COW ----------------------------- //
-    model = Matrix_Translate(4.0f,1.0f,-90.0f)
+    model = Matrix_Translate(4.0f,1.2f,-90.0f)
             * Matrix_Scale(2.0f,2.0f,2.0f);
 
     createModel("../../assets/models/cow.obj", model);
@@ -321,8 +337,7 @@ void Game::run() {
 
     // ----------------------------- CUBE (PLAYER) ----------------------------- //
     model = Matrix_Translate(cameraPosition.x, cameraPosition.y, cameraPosition.z)
-            * Matrix_Rotate_Y(-cameraYaw)
-            * Matrix_Scale(0.1f, 0.1f, 0.1f);
+            * Matrix_Rotate_Y(-cameraYaw);
 
     createModel("../../assets/models/cube.obj", model);
 

@@ -2,8 +2,11 @@
 #include "utils/file_utils.h"
 
 /* Loads a texture image and creates an OpenGL texture object. */
-void LoadTextureImage(const char* filename, GLuint& numLoadedTextures, GLint wrappingMode)
-{
+void LoadTextureImage(
+    const char* filename, 
+    GLuint& numLoadedTextures, 
+    GLint wrappingMode
+) {
     printf("Loading image \"%s\"... ", filename);
 
     // Loads image data from disk
@@ -51,17 +54,23 @@ void LoadTextureImage(const char* filename, GLuint& numLoadedTextures, GLint wra
     numLoadedTextures += 1;
 }
 
-void LoadTexturesFromFiles(const std::string& texturesDirPath) {
-    GLuint numLoadedTextures = 0;
+void LoadTexturesFromFiles(
+    const std::string& texturesDirPath, 
+    GLuint& numLoadedTextures, 
+    GLint wrappingMode
+) {
+    GLuint initialNumLoadedTextures = numLoadedTextures;
     const std::vector<std::string> textureFiles = getFiles(texturesDirPath);
 
     for (const auto& textureFile : textureFiles) {
-        LoadTextureImage((texturesDirPath + "/" + textureFile).c_str(), numLoadedTextures, GL_REPEAT);
+        LoadTextureImage(
+            (texturesDirPath + "/" + textureFile).c_str(), 
+            numLoadedTextures, 
+            wrappingMode
+        );
     }
 
-    int numTextures = textureFiles.size();
-
-    if (numLoadedTextures != numTextures) {
+    if (numLoadedTextures - initialNumLoadedTextures != textureFiles.size()) {
         fprintf(stderr, "ERROR: Failed to load all texture images.\n");
         std::exit(EXIT_FAILURE);
     }

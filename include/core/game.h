@@ -46,10 +46,19 @@ public:
     virtual void cursorPosCallback(double xpos, double ypos);
     virtual void framebufferSizeCallback(int width, int height);
 
-    static void setCameraView(const glm::vec4& cameraPosition, const glm::vec4& cameraView, const glm::vec4& cameraUp,
-                       const UniformMap& uniforms);
-    static void setProjection(float fov, float screenRatio, float nearPlane, float farPlane,
-                          const UniformMap& uniforms);
+    void setCameraView(
+        const glm::vec4& cameraPosition, 
+        const glm::vec4& cameraView, 
+        const glm::vec4& cameraUp,
+        const UniformMap& uniforms
+    );
+    void setProjection(
+        float fov, 
+        float screenRatio, 
+        float nearPlane, 
+        float farPlane,
+        const UniformMap& uniforms
+    );
 
     void createModel(const std::string& objFilePath, glm::mat4 model);
 
@@ -90,7 +99,7 @@ private:
     float screenRatio;
     bool fullScreen = false;
 
-    glm::vec4 cameraPosition = glm::vec4(0.0f, 2.0f, 0.0f, 1.0f);
+    glm::vec4 cameraPosition = glm::vec4(4.0f, 2.0f, 0.0f, 1.0f);
     glm::vec4 cameraLookAt = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
     glm::vec4 cameraView = cameraLookAt - cameraPosition;
     glm::vec4 cameraUp = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
@@ -113,33 +122,44 @@ private:
     float fov = M_PI / 3.0f;
 
     float rotation = M_PI;
-
     float cowPositionZ = -90.0f; // Posição inicial da vaca no eixo Z
-    float cowSpeedZ = 500.0f;      // Velocidade de movimento ao longo do eixo Z
+    float cowSpeedZ = 10.0f;     // Velocidade de movimento ao longo do eixo Z
 
     GLuint gpuProgramId = 0;
+    GLuint numLoadedTextures = 0;
     UniformMap uniforms = {};
 
     void gameLoop();
 
-    static void keyCallback(GLFWwindow* window, int key, int scancode,
-                            int actions, int mods) {
+    static void keyCallback(
+        GLFWwindow* window, 
+        int key, int scancode,
+        int actions, int mods
+    ) {
         Game* obj = static_cast<Game*>(glfwGetWindowUserPointer(window));
         obj->keyCallback(key, scancode, actions, mods);
     }
 
-    static void mouseButtonCallback(GLFWwindow* window, int button,
-                                    int action, int mods) {
+    static void mouseButtonCallback(
+        GLFWwindow* window, int button,
+        int action, int mods
+    ) {
         Game* obj = static_cast<Game*>(glfwGetWindowUserPointer(window));
         obj->mouseButtonCallback(button, action, mods);
     }
 
-    static void cursorPosCallback(GLFWwindow* window, double xpos, double ypos) {
+    static void cursorPosCallback(
+        GLFWwindow* window, 
+        double xpos, double ypos
+    ) {
         Game* obj = static_cast<Game*>(glfwGetWindowUserPointer(window));
         obj->cursorPosCallback(xpos, ypos);
     }
 
-    static void framebufferSizeCallback(GLFWwindow* window, int width, int height) {
+    static void framebufferSizeCallback(
+        GLFWwindow* window, 
+        int width, int height
+    ) {
         Game* obj = static_cast<Game*>(glfwGetWindowUserPointer(window));
         obj->framebufferSizeCallback(width, height);
     }

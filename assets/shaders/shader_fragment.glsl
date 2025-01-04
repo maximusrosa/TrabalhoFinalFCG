@@ -39,7 +39,7 @@ void main()
     color.a = 1.0;
 
     // Texture coordinates
-    float u,v;
+    float u, v;
 
     if (interpolation_type == GOURAUD_INTERPOLATION)
     {
@@ -60,6 +60,10 @@ void main()
         vec3 Ka; // Ambient reflectance
         float q; // Specular exponent for Blinn-Phong model
 
+        float px = position_model.x;
+        float py = position_model.y;
+        float pz = position_model.z;
+
         switch (object_id)
         {
             case MAZE:
@@ -72,10 +76,6 @@ void main()
 
                 float minz = bbox_min.z;
                 float maxz = bbox_max.z;
-
-                float px = position_model.x;
-                float py = position_model.y;
-                float pz = position_model.z;
 
                 float epsilon = 0.3;
 
@@ -96,65 +96,46 @@ void main()
                 }
                 else
                 {
-                    // Default case (should not happen, it is just a safety measure)
+                    // Default case (should not happen, just a safety measure)
                     u = pz;
                     v = py;
                 }
 
                 Kd = texture(stonebrick_texture, vec2(u,v)).rgb;
-                float lambert_coefficient = max(dot(n,l),0.05);
 
-                color.rgb = Kd * lambert_coefficient;
-
+                color.rgb = Kd * max(dot(n,l),0.05);;
                 break;
             }
-
             case PLANE:
             {
-                float px = position_model.x;
-                float pz = position_model.z;
-
                 u = px;
                 v = pz;
 
                 Kd = texture(grass_texture, vec2(u, v)).rgb;
-                float lambert_coefficient = max(dot(n, l), 0.05);
 
-                color.rgb = Kd * lambert_coefficient;
+                color.rgb = Kd * max(dot(n,l),0.05);;
                 break;
             }
-
             case COW:
             {
-                float px = position_model.x;
-                float py = position_model.y;
-
                 u = px;
                 v = py;
 
                 Kd = texture(galaxy_texture, vec2(u,v)).rgb;
-                Ks = vec3(0.8,0.8,0.8);
-                Ka = vec3(0.0125, 0.0125, 0.0125);
-                q = 16.0;
+                Ks = vec3(0.2314, 0.0039, 0.2039);
+                Ka = vec3(0.0902, 0.0039, 0.102);
+                q = 64.0;
 
                 vec3 lambert_diffuse_term = Kd * max(dot(n,l),0.05);
                 vec3 ambient_term = Ka;
                 vec3 blinn_phong_specular_term = Ks * pow(max(dot(n,half_vector),0.0),q);
 
                 color.rgb = lambert_diffuse_term + ambient_term + blinn_phong_specular_term;
-
                 break;
             }
-
             default:
             {
-                Kd = vec3(0.0, 0.0, 0.0);
-                vec3 I = vec3(1.0, 1.0, 1.0);
-
-                vec3 lambert_diffuse_term = Kd * I * max(dot(n, l), 0.0);
-
-                color.rgb = lambert_diffuse_term;
-
+                color.rgb = vec3(0.0, 0.0, 0.0);
                 break;
             }
         }

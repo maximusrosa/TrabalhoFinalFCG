@@ -47,6 +47,15 @@ bool endsWith(const std::string& str, const std::string& suffix) {
            str.compare(str.size() - suffix.size(), suffix.size(), suffix) == 0;
 }
 
+bool endsWith(const std::string& str, const std::vector<std::string>& suffixes) {
+    for (const std::string& suffix : suffixes) {
+        if (endsWith(str, suffix)) {
+            return true;
+        }
+    }
+    return false;
+}
+
 std::vector<std::string> getObjFiles(const std::string& folderPath) {
     std::vector<std::string> objFiles;
     DIR* dir = opendir(folderPath.c_str());
@@ -67,6 +76,29 @@ std::vector<std::string> getObjFiles(const std::string& folderPath) {
     closedir(dir);
     return objFiles;
 }
+
+std::vector<std::string> getFiles(const std::string& folderPath) {
+    std::vector<std::string> objFiles;
+    DIR* dir = opendir(folderPath.c_str());
+    if (dir == nullptr) {
+        std::cerr << "Failed to open directory: " << folderPath << std::endl;
+        return objFiles;
+    }
+    const std::vector<std::string> suffixes = {".obj", ".png", ".jpg", ".jpeg"};
+    struct dirent* entry;
+    while ((entry = readdir(dir)) != nullptr) {
+        // Skip directories (entry->d_type == DT_DIR)
+        if (entry->d_type == DT_REG || entry->d_type == DT_UNKNOWN) {
+            std::string fileName = entry->d_name;
+            if (endsWith(fileName, suffixes)) {
+                objFiles.push_back(fileName);
+            }
+        }
+    }
+    closedir(dir);
+    return objFiles;
+}
+
 #else
 #error "Unsupported platform"
 #endif

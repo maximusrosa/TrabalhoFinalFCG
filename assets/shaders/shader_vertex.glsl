@@ -44,7 +44,9 @@ void main()
     normal = inverse(transpose(model)) * normal_coefficients;
     normal.w = 0.0;
 
-    float u,v;
+    texcoords = texture_coefficients;
+
+    float u, v;
 
     if (interpolation_type == GOURAUD_INTERPOLATION)
     {
@@ -61,8 +63,8 @@ void main()
         vec3 Ka; // Ambient reflectance
         float q; // Specular exponent for Blinn-Phong model
 
-        vec3 I = vec3(0.75, 0.75, 0.75);  // Light intensity (white light)
-        vec3 Ia = vec3(0.25, 0.15, 0.2); // Ambient light intensity
+        vec3 I = vec3(1.0, 1.0, 1.0);  // Light intensity (white light)
+        vec3 Ia = vec3(0.1686, 0.0039, 0.0863); // Ambient light intensity
 
         if ( object_id == COW )
         {
@@ -73,11 +75,24 @@ void main()
             v = py;
 
             Kd = texture(galaxy_texture, vec2(u,v)).rgb;
-            Ks = vec3(0.8,0.8,0.8);
-            Ka = vec3(0.05, 0.05, 0.05);
-            q = 32.0;
+            Ks = vec3(0.2314, 0.0039, 0.2039);
+            Ka = vec3(0.0902, 0.0039, 0.102);
+            q = 64.0;
         }
-
+        else if ( object_id == PLANE )
+        {   
+            Kd = vec3(0.1, 0.6, 0.3);
+            Ks = vec3(0.0, 0.0, 0.0);
+            Ka = vec3(0.01, 0.01, 0.01);
+            q = 1.0;
+        }
+        else if ( object_id == MAZE )
+        {
+            Kd = vec3(0.35,0.35,0.35);
+            Ks = vec3(0.01,0.01,0.01);
+            Ka = vec3(0.1, 0.1, 0.1);
+            q = 2.0;
+        }
         else // Unknown object
         {
             Kd = vec3(0.0,0.0,0.0);
@@ -89,7 +104,7 @@ void main()
         vec3 ambient_term = Ka * Ia;
         vec3 blinn_phong_specular_term = Ks * I * pow(max(dot(n,half_vector),0.0),q);
 
-        vertex_color.a = 1;
+        vertex_color.a = 1.0;
         vertex_color.rgb = lambert_diffuse_term + ambient_term + blinn_phong_specular_term;
 
         // Gamma correction

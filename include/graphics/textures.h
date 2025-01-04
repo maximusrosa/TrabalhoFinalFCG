@@ -24,8 +24,16 @@
 
 #include "graphics/core.h"
 
-void LoadTextureImage(const char* filename, GLuint& numLoadedTextures, GLint wrappingMode);
+void LoadTextureImage(
+    const char* filename, 
+    GLuint& numLoadedTextures, 
+    GLint wrappingMode
+);
 
-void LoadTexturesFromFiles(const std::string& texturesDirPath);
+void LoadTexturesFromFiles(
+    const std::string& texturesDirPath, 
+    GLuint& numLoadedTextures, 
+    GLint wrappingMode
+);
 
 #endif // TEXTURES_H
