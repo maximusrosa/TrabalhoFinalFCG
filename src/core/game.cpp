@@ -1,16 +1,29 @@
+#include <cassert>
 #include <iostream>
 #include <string>
+#include <memory>
+#include <vector>
+#include <map>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
-
 #include <glm/mat4x4.hpp>
+#include <glm/vec4.hpp>
 
 #include "utils/math_utils.h"
+#include "core/gameobject.h"
 #include "graphics/objmodel.h"
 #include "graphics/renderer.h"
 #include "graphics/shaders.h"
+#include "graphics/core.h"
+#include "graphics/textures.h"
+#include "physics/bounding.h"
+#include "physics/collisions.h"
+#include "physics/animations.h"
+#include "utils/file_utils.h"
+
 #include "core/game.h"
 
 void Game::createWindow(const std::string& title, int width, int height) {
@@ -51,41 +64,62 @@ void Game::keyCallback(int key, int scancode, int actions, int mods) {
         glfwSetWindowShouldClose(window, GL_TRUE);
     }
     if (actions == GLFW_PRESS || actions == GLFW_REPEAT) {
-        if (key == GLFW_KEY_W || key == GLFW_KEY_S || 
-            key == GLFW_KEY_A || key == GLFW_KEY_D) {
-            glm::vec4 displacement;
-            if (key == GLFW_KEY_W) {
-                displacement = cameraView;
-            }
-            if (key == GLFW_KEY_S) {
-                displacement = -cameraView;
-            }
-            if (key == GLFW_KEY_A) {
-                displacement = -cameraRight;
-            }
-            if (key == GLFW_KEY_D) {
-                displacement = cameraRight;
-            }
-            displacement.y = 0;
-            displacement = normalize(displacement);
-            
-            if (mods & GLFW_MOD_SHIFT) {
-                displacement *= runningSpeed;
-            } else {
-                displacement *= walkingSpeed;
-            }
-            cameraPosition += displacement;
+        if (mods & GLFW_MOD_SHIFT) {
+            currentSpeed = baseSpeed * speedMultiplier;
+        } else {
+            currentSpeed = baseSpeed;
         }
-        // F11: toggle full screen
-        if (key == GLFW_KEY_F11) {
-            if (!fullScreen) {
-                glfwSetWindowMonitor(window, nullptr, 0, 0,
-                                     fullScreenWidth, fullScreenHeight, GLFW_DONT_CARE);
-            } else {
-                glfwSetWindowMonitor(window, nullptr, windowX, windowY,
-                                     normalWindowWidth, normalWindowHeight, GLFW_DONT_CARE);
+        if (key == GLFW_KEY_W) {
+            glm::vec4 offset = currentSpeed * cameraView;
+            offset.y = 0;
+            cameraPosition += offset;
+            virtualScene["Cube"]->translate(offset.x, offset.y, offset.z);
+            if (checkCollisionWithStaticObjects(virtualScene["Cube"], virtualScene)) {
+                cameraPosition -= offset;
+                virtualScene["Cube"]->translate(-offset.x, -offset.y, -offset.z);
             }
+        }
+        if (key == GLFW_KEY_S) {
+            glm::vec4 offset = -currentSpeed * cameraView;
+            offset.y = 0;
+            cameraPosition += offset;
+            virtualScene["Cube"]->translate(offset.x, offset.y, offset.z);
+            if (checkCollisionWithStaticObjects(virtualScene["Cube"], virtualScene)) {
+                cameraPosition -= offset;
+                virtualScene["Cube"]->translate(-offset.x, -offset.y, -offset.z);
+            }
+        }
+        if (key == GLFW_KEY_A) {
+            glm::vec4 offset = -currentSpeed * cameraRight;
+            offset.y = 0;
+            cameraPosition += offset;
+            virtualScene["Cube"]->translate(offset.x, offset.y, offset.z);
+            if (checkCollisionWithStaticObjects(virtualScene["Cube"], virtualScene)) {
+                cameraPosition -= offset;
+                virtualScene["Cube"]->translate(-offset.x, -offset.y, -offset.z);
+            }
+        }
+        if (key == GLFW_KEY_D) {
+            glm::vec4 offset = currentSpeed * cameraRight;
+            offset.y = 0;
+            cameraPosition += offset;
+            virtualScene["Cube"]->translate(offset.x, offset.y, offset.z);
+            if (checkCollisionWithStaticObjects(virtualScene["Cube"], virtualScene)) {
+                cameraPosition -= offset;
+                virtualScene["Cube"]->translate(-offset.x, -offset.y, -offset.z);
+            }
+        }
+
+        // F11 key toggles full screen
+        if (actions == GLFW_PRESS && key == GLFW_KEY_F11) {
             fullScreen = !fullScreen;
+            if (fullScreen) {
+                glfwSetWindowMonitor(window, glfwGetPrimaryMonitor(), 0, 0, 
+                                     screenWidth, screenHeight, GLFW_DONT_CARE);
+            } else {
+                glfwSetWindowMonitor(window, nullptr, windowX, windowY, 
+                                     windowWidth, windowHeight, GLFW_DONT_CARE);
+            }
         }
     }
 }
@@ -142,41 +176,117 @@ void Game::framebufferSizeCallback(int width, int height) {
     screenRatio = (float)width / height;
 }
 
+void Game::setCameraView() {
+    glm::mat4 view = Matrix_Camera_View(cameraPosition, cameraView, cameraUp);
+    glUniformMatrix4fv(uniforms.at("view"), 1, GL_FALSE, glm::value_ptr(view));
+}
+
+void Game::setProjection() {
+    glm::mat4 projection = Matrix_Perspective(fov, screenRatio, nearPlane, farPlane);
+    glUniformMatrix4fv(uniforms.at("projection"), 1, GL_FALSE, glm::value_ptr(projection));
+}
+
+void Game::createModel(const std::string& objFilePath, glm::mat4 model) {
+    bool isMaze = objFilePath.find("maze") != std::string::npos;
+    bool isCow = objFilePath.find("cow") != std::string::npos;
+
+    if (isMaze) {
+        const std::string& mazeModelFolder = objFilePath;
+
+        std::vector<std::string> mazeModelFiles = getFiles(mazeModelFolder);
+
+        for (const auto& mazeModelFile : mazeModelFiles) {
+            std::string mazeModelFilePath = mazeModelFolder + mazeModelFile;
+            ObjModel mazeModel(mazeModelFilePath.c_str());
+
+            ComputeNormals(&mazeModel);
+            BuildSceneTriangles(virtualScene, &mazeModel, Matrix_Identity());
+        }
+    }
+    else {
+        ObjModel objModel(objFilePath.c_str());
+        ComputeNormals(&objModel);
+
+        if (isCow)
+            BuildSceneTriangles(virtualScene, &objModel, model, true);
+        else
+            BuildSceneTriangles(virtualScene, &objModel, model);
+    }
+}
+
+void Game::drawCow(glm::mat4 model, const UniformMap& uniforms) {
+    glUniformMatrix4fv(uniforms.at("model"), 1, GL_FALSE, glm::value_ptr(model));
+    glUniform1i(uniforms.at("object_id"), COW);
+    glUniform1i(uniforms.at("interpolation_type"), GOURAUD_INTERPOLATION);
+    DrawVirtualObject(const_cast<UniformMap&>(uniforms), virtualScene, "the_cow");
+}
+
+void Game::drawPlane(glm::mat4 model, const UniformMap& uniforms) {
+    glUniformMatrix4fv(uniforms.at("model"), 1 , GL_FALSE , glm::value_ptr(model));
+    glUniform1i(uniforms.at("object_id"), PLANE);
+    glUniform1i(uniforms.at("interpolation_type"), PHONG_INTERPOLATION);
+    DrawVirtualObject(const_cast<UniformMap&>(uniforms), virtualScene, "the_plane");
+}
+
+void Game::drawMaze(glm::mat4 model, const UniformMap& uniforms) {
+    for (const auto& [name, obj] : virtualScene) {
+        bool isMazePart = name.find("maze") != std::string::npos;
+
+        if (isMazePart) {
+            glUniformMatrix4fv(uniforms.at("model"), 1 , GL_FALSE , glm::value_ptr(model));
+            glUniform1i(uniforms.at("object_id"), MAZE);
+            glUniform1i(uniforms.at("interpolation_type"), PHONG_INTERPOLATION);
+            DrawVirtualObject(const_cast<UniformMap&>(uniforms), virtualScene, name.c_str());
+        }
+    }
+}
+
 void Game::gameLoop() {
+    float lastTime = glfwGetTime();
+    float currentTime;
+    float deltaTime;
+
     while (!glfwWindowShouldClose(window)) {
-        glClearColor(0.2f, 0.1f, 0.3f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        // Sets the background color
+        initialRendering(0.0f, 0.0f, 0.1f);
 
         glUseProgram(gpuProgramId);
 
-        glm::mat4 view = Matrix_Camera_View(cameraPosition, cameraView, cameraUp);
-        glm::mat4 projection = Matrix_Perspective(fov, screenRatio, nearPlane, farPlane);
+        setCameraView();
+        setProjection();
+
         glm::mat4 model = Matrix_Identity();
-        glUniformMatrix4fv(viewUniform, 1, GL_FALSE, glm::value_ptr(view));
-        glUniformMatrix4fv(projectionUniform, 1, GL_FALSE, glm::value_ptr(projection));
 
-        // Draw the cow
-        model = Matrix_Translate(4.0f,1.05f,-100.0f)
-                * Matrix_Scale(2.0f,2.0f,2.0f);
-        glUniformMatrix4fv(modelUniform, 1 , GL_FALSE , glm::value_ptr(model));
-        glUniform1i(objectIdUniform, COW);
-        glUniform1i(interpolationTypeUniform, PHONG_INTERPOLATION);
-        DrawVirtualObject(virtualScene, "the_cow");
+        currentTime = glfwGetTime();
+        deltaTime = currentTime - lastTime;
+        lastTime = currentTime;
 
-        // Draw the plane
-        model = Matrix_Identity();
-        glUniformMatrix4fv(modelUniform, 1 , GL_FALSE , glm::value_ptr(model));
-        glUniform1i(objectIdUniform, PLANE);
-        glUniform1i(interpolationTypeUniform, PHONG_INTERPOLATION);
-        DrawVirtualObject(virtualScene, "Plane01");
+        cowPositionZ += cowSpeedZ * deltaTime;
 
-        // Draw the maze
-        model = Matrix_Identity();
-        glUniformMatrix4fv(modelUniform, 1 , GL_FALSE , glm::value_ptr(model));
-        glUniform1i(objectIdUniform, MAZE);
-        glUniform1i(interpolationTypeUniform, GOURAUD_INTERPOLATION);
-        DrawVirtualObject(virtualScene, "maze");
+        rotation += 10.0f * deltaTime; // Velocidade de rotação
+
+        if (cowPositionZ > 10.0f || cowPositionZ < -90.0f) {
+            cowSpeedZ = -cowSpeedZ; // Inverter a direção
+        }
         
+        glm::mat4 animation = Matrix_Translate(4.0f, 1.2f, cowPositionZ) 
+                              * Matrix_Scale(2.0f, 2.0f, 2.0f) 
+                              * Matrix_Rotate_Y(rotation);
+
+        drawCow(animation, uniforms);
+        drawPlane(model, uniforms);
+        drawMaze(model, uniforms);
+
+/*
+        // Draw the cube (player)
+        model = Matrix_Translate(cameraPosition.x, cameraPosition.y, cameraPosition.z)
+                * Matrix_Rotate_Y(-cameraYaw);
+        glUniformMatrix4fv(uniforms["model"], 1 , GL_FALSE , glm::value_ptr(model));
+        glUniform1i(uniforms["object_id"], CUBE);
+        glUniform1i(uniforms["interpolation_type"], GOURAUD_INTERPOLATION);
+        DrawVirtualObject(uniforms, virtualScene, "Cube");
+*/
+
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
@@ -187,21 +297,38 @@ void Game::run() {
         fprintf(stderr, "ERROR: window is not initialized.\n");
         std::exit(EXIT_FAILURE);
     }
-    LoadShadersFromFiles(gpuProgramId, modelUniform, viewUniform, projectionUniform, 
-                         objectIdUniform, interpolationTypeUniform);
 
-    ObjModel cowModel("../../assets/models/cow.obj");
-    ComputeNormals(&cowModel);
-    BuildSceneTriangles(virtualScene, &cowModel);
+    LoadShadersFromFiles(gpuProgramId, uniforms);
 
-    ObjModel mazeModel("../../assets/models/maze.obj");
-    ComputeNormals(&mazeModel);
-    BuildSceneTriangles(virtualScene, &mazeModel);
+    LoadTexturesFromFiles(
+        "../../assets/textures", 
+        numLoadedTextures, 
+        GL_REPEAT
+    );
 
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_BACK);
-    glFrontFace(GL_CCW);
+    glm::mat4 model = Matrix_Identity();
+
+                         /* Loading the OBJ models */
+
+    // ----------------------------- COW ----------------------------- //
+    model = Matrix_Translate(4.0f,1.2f,-90.0f)
+            * Matrix_Scale(2.0f,2.0f,2.0f);
+
+    createModel("../../assets/models/cow.obj", model);
+
+
+    // ----------------------------- MAZE ----------------------------- //
+    model = Matrix_Identity();
+
+    createModel("../../assets/models/maze/", model);
+
+    // ----------------------------- CUBE (PLAYER) ----------------------------- //
+    model = Matrix_Translate(cameraPosition.x, cameraPosition.y, cameraPosition.z)
+            * Matrix_Rotate_Y(-cameraYaw);
+
+    createModel("../../assets/models/cube.obj", model);
+
+    setRenderConfig();
 
     gameLoop();
 
@@ -210,4 +337,8 @@ void Game::run() {
 
 Game::~Game() {
     glfwDestroyWindow(window);
+    for (auto& obj : virtualScene) {
+        delete obj.second;
+    }
+    virtualScene.clear();
 }

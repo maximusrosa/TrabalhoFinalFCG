@@ -22,14 +22,10 @@
 #include <glm/gtc/type_ptr.hpp>
 
 // tinyobjloader: load models from OBJ files
-#include <tiny_obj_loader.h>
+#include "tiny_obj_loader.h"
 
 // Local headers 
-#include <core/game.h>
-#include <graphics/objmodel.h>
-#include <graphics/renderer.h>
-#include <graphics/shaders.h>
-#include <utils/math_utils.h>
+#include "core/game.h"
 
 int main()
 {

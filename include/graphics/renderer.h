@@ -7,30 +7,27 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/mat4x4.hpp>
+#include <glm/vec4.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 #include "graphics/objmodel.h"
+#include "graphics/core.h"
 #include "utils/math_utils.h"
+#include "core/gameobject.h"
 
-// Data structure that represents a virtual object in the scene
-struct SceneObject 
-{
-    std::string name;
-    size_t baseIndex;
-    size_t numIndices;
-    GLenum renderingMode;
-    GLuint vertexArrayObjectId;
-};
-
-enum InterpolationType 
-{
+enum InterpolationType {
     GOURAUD_INTERPOLATION,
     PHONG_INTERPOLATION
-}; 
+};
 
 // Draw a virtual object
-void DrawVirtualObject(std::map<std::string, SceneObject>& virtualScene, char* objectName);
+void DrawVirtualObject(UniformMap& uniforms, VirtualScene& virtualScene, const char* objectName);
 // Build triangles from an ObjModel and add to the virtual scene
-void BuildSceneTriangles(std::map<std::string, SceneObject>& virtualScene, ObjModel* model);
+void BuildSceneTriangles(VirtualScene& virtualScene, ObjModel* model, glm::mat4 modelMatrix,
+                         bool useBSphere=false);
 // Compute normals for an ObjModel
 void ComputeNormals(ObjModel* model);
 // Push a matrix onto the matrix stack

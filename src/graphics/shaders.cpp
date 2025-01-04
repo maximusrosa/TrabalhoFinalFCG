@@ -4,32 +4,49 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#include "../include/utils/file_utils.h"
 
+#include "core/game.h"
 #include "graphics/core.h"
 
-void LoadShadersFromFiles(
-    GLuint& gpuProgramId, 
-    GLint& modelUniform, 
-    GLint& viewUniform, 
-    GLint& projectionUniform, 
-    GLint& objectIdUniform,
-    GLint& interpolationTypeUniform
-)
+void LoadShadersFromFiles(GLuint& gpuProgramId, UniformMap& uniforms) 
 {
     GLuint vertex_shader_id = LoadShader_Vertex("../../assets/shaders/shader_vertex.glsl");
     GLuint fragment_shader_id = LoadShader_Fragment("../../assets/shaders/shader_fragment.glsl");
 
-    if ( gpuProgramId != 0 )
+    if (gpuProgramId != 0)
         glDeleteProgram(gpuProgramId);
-
+    
     gpuProgramId = CreateGpuProgram(vertex_shader_id, fragment_shader_id);
 
     // Defined in "shader_vertex.glsl" and "shader_fragment.glsl".
-    modelUniform             = glGetUniformLocation(gpuProgramId, "model");
-    viewUniform              = glGetUniformLocation(gpuProgramId, "view");
-    projectionUniform        = glGetUniformLocation(gpuProgramId, "projection");
-    objectIdUniform          = glGetUniformLocation(gpuProgramId, "object_id");
-    interpolationTypeUniform = glGetUniformLocation(gpuProgramId, "interpolation_type");
+    uniforms["model"] = glGetUniformLocation(gpuProgramId, "model");
+    uniforms["view"] = glGetUniformLocation(gpuProgramId, "view");
+    uniforms["projection"] = glGetUniformLocation(gpuProgramId, "projection");
+    uniforms["object_id"] = glGetUniformLocation(gpuProgramId, "object_id");
+    uniforms["interpolation_type"] = glGetUniformLocation(gpuProgramId, "interpolation_type");
+    uniforms["bbox_min"] = glGetUniformLocation(gpuProgramId, "bbox_min");
+    uniforms["bbox_max"] = glGetUniformLocation(gpuProgramId, "bbox_max");
+
+    std::vector<std::string> textureFiles = getFiles("../../assets/textures");
+    std::vector<std::string> textureUniforms;
+
+    for (const auto& textureFile : textureFiles) {
+        std::string textureName = textureFile.substr(0, textureFile.find_last_of('.')) + "_texture";
+        textureUniforms.push_back(textureName);
+    }
+
+    for (size_t i = 0; i < textureFiles.size(); ++i) {
+        uniforms[textureUniforms[i]] = glGetUniformLocation(gpuProgramId, textureUniforms[i].c_str());
+    }
+
+    glUseProgram(gpuProgramId);
+
+    for (size_t i = 0; i < textureFiles.size(); ++i) {
+        glUniform1i(uniforms[textureUniforms[i]], i);
+    }
+
+    glUseProgram(0);
 }
 
 GLuint LoadShader_Vertex(const char* filename)

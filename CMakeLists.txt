@@ -6,21 +6,28 @@
 # Arquivos fonte C/C++. Inclua nesta lista todos os arquivos que devem
 # ser compilados.
 set(SOURCES
-  src/tiny_obj_loader.cpp
-  src/glad/glad.c
-  src/utils/math_utils.cpp
-  src/graphics/core.cpp
-  src/graphics/shaders.cpp
-  src/graphics/renderer.cpp
-  src/core/game.cpp
-  src/main.cpp
+    src/tiny_obj_loader.cpp
+    src/glad/glad.c
+    src/utils/math_utils.cpp
+    src/utils/file_utils.cpp
+    src/graphics/core.cpp
+    src/graphics/shaders.cpp
+    src/graphics/renderer.cpp
+    src/physics/bounding.cpp
+    src/physics/collisions.cpp
+    src/core/gameobject.cpp
+    src/core/game.cpp
+    src/main.cpp
+    src/graphics/textures.cpp
+    src/stb_image.cpp
+    src/physics/animations.cpp
 )
 
 cmake_minimum_required(VERSION 3.5.0)
 
 project(CowQuest VERSION 1.0.0)
 
-set(CMAKE_CXX_STANDARD          11)
+set(CMAKE_CXX_STANDARD          17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS        OFF)
 
