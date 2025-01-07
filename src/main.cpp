@@ -27,8 +27,7 @@
 // Local headers 
 #include "core/game.h"
 
-int main()
-{
+int main() {
     auto game = Game::getInstance("Game", 800, 600);
     game->run();
     return EXIT_SUCCESS;

@@ -69,8 +69,15 @@ void Game::keyCallback(int key, int scancode, int actions, int mods) {
         } else {
             currentSpeed = baseSpeed;
         }
+
         if (key == GLFW_KEY_W) {
-            glm::vec4 offset = currentSpeed * cameraView;
+            float speed;
+            if (actions == GLFW_REPEAT) {
+                speed = currentSpeed * deltaTime;
+            } else {
+                speed = deltaTime;
+            }
+            glm::vec4 offset = speed * cameraView;
             offset.y = 0;
             cameraPosition += offset;
             virtualScene["Cube"]->translate(offset.x, offset.y, offset.z);
@@ -80,7 +87,13 @@ void Game::keyCallback(int key, int scancode, int actions, int mods) {
             }
         }
         if (key == GLFW_KEY_S) {
-            glm::vec4 offset = -currentSpeed * cameraView;
+            float speed;
+            if (actions == GLFW_REPEAT) {
+                speed = currentSpeed * deltaTime;
+            } else {
+                speed = deltaTime;
+            }
+            glm::vec4 offset = speed * cameraView;
             offset.y = 0;
             cameraPosition += offset;
             virtualScene["Cube"]->translate(offset.x, offset.y, offset.z);
@@ -90,7 +103,13 @@ void Game::keyCallback(int key, int scancode, int actions, int mods) {
             }
         }
         if (key == GLFW_KEY_A) {
-            glm::vec4 offset = -currentSpeed * cameraRight;
+            float speed;
+            if (actions == GLFW_REPEAT) {
+                speed = currentSpeed * deltaTime;
+            } else {
+                speed = deltaTime;
+            }
+            glm::vec4 offset = speed * cameraView;
             offset.y = 0;
             cameraPosition += offset;
             virtualScene["Cube"]->translate(offset.x, offset.y, offset.z);
@@ -100,7 +119,13 @@ void Game::keyCallback(int key, int scancode, int actions, int mods) {
             }
         }
         if (key == GLFW_KEY_D) {
-            glm::vec4 offset = currentSpeed * cameraRight;
+            float speed;
+            if (actions == GLFW_REPEAT) {
+                speed = currentSpeed * deltaTime;
+            } else {
+                speed = deltaTime;
+            }
+            glm::vec4 offset = speed * cameraView;
             offset.y = 0;
             cameraPosition += offset;
             virtualScene["Cube"]->translate(offset.x, offset.y, offset.z);
@@ -242,11 +267,13 @@ void Game::drawMaze(glm::mat4 model, const UniformMap& uniforms) {
 }
 
 void Game::gameLoop() {
-    float lastTime = glfwGetTime();
-    float currentTime;
-    float deltaTime;
-
     while (!glfwWindowShouldClose(window)) {
+        // Update time
+        static double lastTime = glfwGetTime();
+        double currentTime = glfwGetTime();
+        deltaTime = currentTime - lastTime;
+        lastTime = currentTime;
+
         // Sets the background color
         initialRendering(0.0f, 0.0f, 0.1f);
 

@@ -88,13 +88,13 @@ private:
     float screenRatio;
     bool fullScreen = false;
 
-    glm::vec4 cameraPosition = glm::vec4(4.0f, 20.0f, 0.0f, 1.0f);
+    glm::vec4 cameraPosition = glm::vec4(4.0f, 2.0f, 0.0f, 1.0f);
     glm::vec4 cameraLookAt = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
     glm::vec4 cameraView = cameraLookAt - cameraPosition;
     glm::vec4 cameraUp = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
     glm::vec4 cameraRight = glm::vec4(1.0f, 0.0f, 0.0f, 0.0f);
 
-    const float baseSpeed = 0.7f;
+    const float baseSpeed = 10.0f;
     const float speedMultiplier = 1.75f;
     float currentSpeed = baseSpeed;
 
@@ -106,13 +106,15 @@ private:
     const float mouseSensitivityX = 0.005f;
     const float mouseSensitivityY = 0.005f;
 
-    float nearPlane = -0.1f;
-    float farPlane = -100.0f;
-    float fov = M_PI / 3.0f;
+    const float nearPlane = -0.1f;
+    const float farPlane = -100.0f;
+    const float fov = M_PI / 3.0f;
 
     float rotation = M_PI;
     float cowPositionZ = -90.0f; // Posição inicial da vaca no eixo Z
     float cowSpeedZ = 10.0f;     // Velocidade de movimento ao longo do eixo Z
+
+    float deltaTime = 0.0f;
 
     GLuint gpuProgramId = 0;
     GLuint numLoadedTextures = 0;
