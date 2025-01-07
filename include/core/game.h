@@ -51,9 +51,10 @@ public:
 
     void createModel(const std::string& objFilePath, glm::mat4 model);
 
-    void drawCow(glm::mat4 model, const UniformMap& uniforms);
-    void drawPlane(glm::mat4 model, const UniformMap& uniforms);
-    void drawMaze(glm::mat4 model, const UniformMap& uniforms);
+    void drawCow(glm::mat4 model);
+    void drawPlane(glm::mat4 model);
+    void drawMaze(glm::mat4 model);
+    void drawChest(glm::mat4 model);
 
     ~Game();
 

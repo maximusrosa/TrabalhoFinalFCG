@@ -91,6 +91,8 @@ enum ObjectModelType
     COW,
     PLANE,
     MAZE,
+    CHEST,
+    CHEST_LID
 };
 
 #endif // OBJMODEL_H

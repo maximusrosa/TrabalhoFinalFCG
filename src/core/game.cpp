@@ -239,21 +239,21 @@ void Game::createModel(const std::string& objFilePath, glm::mat4 model) {
     }
 }
 
-void Game::drawCow(glm::mat4 model, const UniformMap& uniforms) {
+void Game::drawCow(glm::mat4 model) {
     glUniformMatrix4fv(uniforms.at("model"), 1, GL_FALSE, glm::value_ptr(model));
     glUniform1i(uniforms.at("object_id"), COW);
     glUniform1i(uniforms.at("interpolation_type"), GOURAUD_INTERPOLATION);
     DrawVirtualObject(const_cast<UniformMap&>(uniforms), virtualScene, "the_cow");
 }
 
-void Game::drawPlane(glm::mat4 model, const UniformMap& uniforms) {
+void Game::drawPlane(glm::mat4 model) {
     glUniformMatrix4fv(uniforms.at("model"), 1 , GL_FALSE , glm::value_ptr(model));
     glUniform1i(uniforms.at("object_id"), PLANE);
     glUniform1i(uniforms.at("interpolation_type"), PHONG_INTERPOLATION);
     DrawVirtualObject(const_cast<UniformMap&>(uniforms), virtualScene, "the_plane");
 }
 
-void Game::drawMaze(glm::mat4 model, const UniformMap& uniforms) {
+void Game::drawMaze(glm::mat4 model) {
     for (const auto& [name, obj] : virtualScene) {
         bool isMazePart = name.find("maze") != std::string::npos;
 
@@ -264,6 +264,21 @@ void Game::drawMaze(glm::mat4 model, const UniformMap& uniforms) {
             DrawVirtualObject(const_cast<UniformMap&>(uniforms), virtualScene, name.c_str());
         }
     }
+}
+
+void Game::drawChest(glm::mat4 model) {
+    // Draw the chest base
+    glUniformMatrix4fv(uniforms.at("model"), 1 , GL_FALSE , glm::value_ptr(model));
+    glUniform1i(uniforms.at("object_id"), CHEST);
+    glUniform1i(uniforms.at("interpolation_type"), PHONG_INTERPOLATION);
+    DrawVirtualObject(const_cast<UniformMap&>(uniforms), virtualScene, "the_chest");
+
+    // Draw the chest lid
+    model = Matrix_Translate(0.0f, 0.1f, 0.0f) * model;
+    glUniformMatrix4fv(uniforms.at("model"), 1 , GL_FALSE , glm::value_ptr(model));
+    glUniform1i(uniforms.at("object_id"), CHEST_LID);
+    glUniform1i(uniforms.at("interpolation_type"), PHONG_INTERPOLATION);
+    DrawVirtualObject(const_cast<UniformMap&>(uniforms), virtualScene, "the_chest_lid");
 }
 
 void Game::gameLoop() {
@@ -296,13 +311,17 @@ void Game::gameLoop() {
             cowSpeedZ = -cowSpeedZ; // Inverter a direção
         }
         
-        glm::mat4 animation = Matrix_Translate(4.0f, 1.2f, cowPositionZ) 
+        glm::mat4 cowModelAnimated = Matrix_Translate(4.0f, 1.2f, cowPositionZ) 
                               * Matrix_Scale(2.0f, 2.0f, 2.0f) 
                               * Matrix_Rotate_Y(rotation);
+        
+        glm::mat4 chestModel = Matrix_Translate(4.0f, 1.0f, -20.0f)
+                               * Matrix_Rotate_Y(M_PI/2);
 
-        drawCow(animation, uniforms);
-        drawPlane(model, uniforms);
-        drawMaze(model, uniforms);
+        drawCow(cowModelAnimated);
+        drawPlane(model);
+        drawMaze(model);
+        drawChest(chestModel);
 
 /*
         // Draw the cube (player)
@@ -351,15 +370,13 @@ void Game::run() {
 
     // ----------------------------- CHEST ----------------------------- //
     model = Matrix_Translate(-80.626f, 1.0f, 5.211f)
-            * Matrix_Rotate_Z(M_PI/2)
-            * Matrix_Scale(2.0f, 2.0f, 2.0f);
+            * Matrix_Rotate_Y(M_PI/2);
     
     createModel("../../assets/models/chest.obj", model);
     createModel("../../assets/models/chest_lid.obj", model);
 
     model = Matrix_Translate(4.0f, 1.0f, -20.0f)
-            * Matrix_Rotate_Z(M_PI/2)
-            * Matrix_Scale(2.0f, 2.0f, 2.0f);
+            * Matrix_Rotate_Y(M_PI/2);
     
     createModel("../../assets/models/chest.obj", model);
     createModel("../../assets/models/chest_lid.obj", model);

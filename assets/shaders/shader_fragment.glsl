@@ -14,6 +14,8 @@ uniform mat4 projection;
 #define COW 0
 #define PLANE 1
 #define MAZE 2
+#define CHEST 3
+#define CHEST_LID 4
 uniform int object_id;
 
 // Identify the type of interpolation to be used
@@ -125,6 +127,40 @@ void main()
                 v = py;
 
                 Kd = texture(galaxy_texture, vec2(u,v)).rgb;
+                Ks = vec3(0.2314, 0.0039, 0.2039);
+                Ka = vec3(0.0902, 0.0039, 0.102);
+                q = 64.0;
+
+                vec3 lambert_diffuse_term = Kd * I * max(dot(n,l),0.05);
+                vec3 ambient_term = Ka * Ia;
+                vec3 blinn_phong_specular_term = Ks * I * pow(max(dot(n,half_vector),0.0),q);
+
+                color.rgb = lambert_diffuse_term + ambient_term + blinn_phong_specular_term;
+                break;
+            }
+            case CHEST:
+            {
+                u = texcoords.x;
+                v = texcoords.y;
+
+                Kd = texture(gold_texture, vec2(u,v)).rgb;
+                Ks = vec3(0.2314, 0.0039, 0.2039);
+                Ka = vec3(0.0902, 0.0039, 0.102);
+                q = 64.0;
+
+                vec3 lambert_diffuse_term = Kd * I * max(dot(n,l),0.05);
+                vec3 ambient_term = Ka * Ia;
+                vec3 blinn_phong_specular_term = Ks * I * pow(max(dot(n,half_vector),0.0),q);
+
+                color.rgb = lambert_diffuse_term + ambient_term + blinn_phong_specular_term;
+                break;
+            }
+            case CHEST_LID:
+            {
+                u = texcoords.x;
+                v = texcoords.y;
+
+                Kd = texture(gold_texture, vec2(u,v)).rgb;
                 Ks = vec3(0.2314, 0.0039, 0.2039);
                 Ka = vec3(0.0902, 0.0039, 0.102);
                 q = 64.0;
