@@ -93,7 +93,7 @@ void Game::keyCallback(int key, int scancode, int actions, int mods) {
             } else {
                 speed = deltaTime;
             }
-            glm::vec4 offset = speed * cameraView;
+            glm::vec4 offset = -speed * cameraView;
             offset.y = 0;
             cameraPosition += offset;
             virtualScene["Cube"]->translate(offset.x, offset.y, offset.z);
@@ -109,7 +109,7 @@ void Game::keyCallback(int key, int scancode, int actions, int mods) {
             } else {
                 speed = deltaTime;
             }
-            glm::vec4 offset = speed * cameraView;
+            glm::vec4 offset = -speed * cameraRight;
             offset.y = 0;
             cameraPosition += offset;
             virtualScene["Cube"]->translate(offset.x, offset.y, offset.z);
@@ -125,7 +125,7 @@ void Game::keyCallback(int key, int scancode, int actions, int mods) {
             } else {
                 speed = deltaTime;
             }
-            glm::vec4 offset = speed * cameraView;
+            glm::vec4 offset = speed * cameraRight;
             offset.y = 0;
             cameraPosition += offset;
             virtualScene["Cube"]->translate(offset.x, offset.y, offset.z);
@@ -348,6 +348,21 @@ void Game::run() {
     model = Matrix_Identity();
 
     createModel("../../assets/models/maze/", model);
+
+    // ----------------------------- CHEST ----------------------------- //
+    model = Matrix_Translate(-80.626f, 1.0f, 5.211f)
+            * Matrix_Rotate_Z(M_PI/2)
+            * Matrix_Scale(2.0f, 2.0f, 2.0f);
+    
+    createModel("../../assets/models/chest.obj", model);
+    createModel("../../assets/models/chest_lid.obj", model);
+
+    model = Matrix_Translate(4.0f, 1.0f, -20.0f)
+            * Matrix_Rotate_Z(M_PI/2)
+            * Matrix_Scale(2.0f, 2.0f, 2.0f);
+    
+    createModel("../../assets/models/chest.obj", model);
+    createModel("../../assets/models/chest_lid.obj", model);
 
     // ----------------------------- CUBE (PLAYER) ----------------------------- //
     model = Matrix_Translate(cameraPosition.x, cameraPosition.y, cameraPosition.z)
