@@ -46,25 +46,15 @@ public:
     virtual void cursorPosCallback(double xpos, double ypos);
     virtual void framebufferSizeCallback(int width, int height);
 
-    void setCameraView(
-        const glm::vec4& cameraPosition, 
-        const glm::vec4& cameraView, 
-        const glm::vec4& cameraUp,
-        const UniformMap& uniforms
-    );
-    void setProjection(
-        float fov, 
-        float screenRatio, 
-        float nearPlane, 
-        float farPlane,
-        const UniformMap& uniforms
-    );
+    void setCameraView();
+
+    void setProjection();
 
     void createModel(const std::string& objFilePath, glm::mat4 model);
 
-    void drawCow(glm::mat4 model, const UniformMap& uniforms);
-    void drawPlane(glm::mat4 model, const UniformMap& uniforms);
-    void drawMaze(glm::mat4 model, const UniformMap& uniforms);
+    void drawCow(glm::mat4 model);
+    void drawPlane(glm::mat4 model);
+    void drawMaze(glm::mat4 model);
 
     ~Game();
 
@@ -168,12 +158,12 @@ private:
         fprintf(stderr, "Error: %s\n", description);
     }
 
-    static void initialRendering(GLfloat R, GLfloat G, GLfloat B) {
+    void initialRendering(GLfloat R, GLfloat G, GLfloat B) {
         glClearColor(R, G, B, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
-    static void setRenderConfig() {
+    void setRenderConfig() {
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);

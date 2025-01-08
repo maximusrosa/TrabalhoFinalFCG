@@ -1,5 +1,4 @@
 #include <cassert>
-#include <iostream>
 #include <string>
 #include <memory>
 #include <vector>
@@ -176,23 +175,12 @@ void Game::framebufferSizeCallback(int width, int height) {
     screenRatio = (float)width / height;
 }
 
-void Game::setCameraView(
-    const glm::vec4& cameraPosition, 
-    const glm::vec4& cameraView, 
-    const glm::vec4& cameraUp,
-    const UniformMap& uniforms
-) {
+void Game::setCameraView(){
     glm::mat4 view = Matrix_Camera_View(cameraPosition, cameraView, cameraUp);
     glUniformMatrix4fv(uniforms.at("view"), 1, GL_FALSE, glm::value_ptr(view));
 }
 
-void Game::setProjection(
-    float fov, 
-    float screenRatio, 
-    float nearPlane, 
-    float farPlane,
-    const UniformMap& uniforms
-) {
+void Game::setProjection() {
     glm::mat4 projection = Matrix_Perspective(fov, screenRatio, nearPlane, farPlane);
     glUniformMatrix4fv(uniforms.at("projection"), 1, GL_FALSE, glm::value_ptr(projection));
 }
@@ -225,21 +213,23 @@ void Game::createModel(const std::string& objFilePath, glm::mat4 model) {
     }
 }
 
-void Game::drawCow(glm::mat4 model, const UniformMap& uniforms) {
+void Game::drawCow(glm::mat4 model) {
     glUniformMatrix4fv(uniforms.at("model"), 1, GL_FALSE, glm::value_ptr(model));
     glUniform1i(uniforms.at("object_id"), COW);
     glUniform1i(uniforms.at("interpolation_type"), GOURAUD_INTERPOLATION);
+
     DrawVirtualObject(const_cast<UniformMap&>(uniforms), virtualScene, "the_cow");
 }
 
-void Game::drawPlane(glm::mat4 model, const UniformMap& uniforms) {
+void Game::drawPlane(glm::mat4 model) {
     glUniformMatrix4fv(uniforms.at("model"), 1 , GL_FALSE , glm::value_ptr(model));
     glUniform1i(uniforms.at("object_id"), PLANE);
     glUniform1i(uniforms.at("interpolation_type"), PHONG_INTERPOLATION);
+
     DrawVirtualObject(const_cast<UniformMap&>(uniforms), virtualScene, "the_plane");
 }
 
-void Game::drawMaze(glm::mat4 model, const UniformMap& uniforms) {
+void Game::drawMaze(glm::mat4 model) {
     for (const auto& [name, obj] : virtualScene) {
         bool isMazePart = name.find("maze") != std::string::npos;
 
@@ -247,6 +237,7 @@ void Game::drawMaze(glm::mat4 model, const UniformMap& uniforms) {
             glUniformMatrix4fv(uniforms.at("model"), 1 , GL_FALSE , glm::value_ptr(model));
             glUniform1i(uniforms.at("object_id"), MAZE);
             glUniform1i(uniforms.at("interpolation_type"), PHONG_INTERPOLATION);
+
             DrawVirtualObject(const_cast<UniformMap&>(uniforms), virtualScene, name.c_str());
         }
     }
@@ -263,8 +254,8 @@ void Game::gameLoop() {
 
         glUseProgram(gpuProgramId);
 
-        setCameraView(cameraPosition, cameraView, cameraUp, uniforms);
-        setProjection(fov, screenRatio, nearPlane, farPlane, uniforms);
+        setCameraView();
+        setProjection();
 
         glm::mat4 model = Matrix_Identity();
 
@@ -286,9 +277,9 @@ void Game::gameLoop() {
                               * Matrix_Scale(2.0f, 2.0f, 2.0f) 
                               * Matrix_Rotate_Y(rotation);
 
-        drawCow(animation, uniforms);
-        drawPlane(model, uniforms);
-        drawMaze(model, uniforms);
+        drawCow(animation);
+        drawPlane(model);
+        drawMaze(model);
 
 /*
         // Draw the cube (player)
