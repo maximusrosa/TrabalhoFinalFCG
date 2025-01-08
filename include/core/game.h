@@ -47,7 +47,6 @@ public:
     virtual void framebufferSizeCallback(int width, int height);
 
     void setCameraView();
-
     void setProjection();
 
     void createModel(const std::string& objFilePath, glm::mat4 model);
@@ -55,6 +54,7 @@ public:
     void drawCow(glm::mat4 model);
     void drawPlane(glm::mat4 model);
     void drawMaze(glm::mat4 model);
+    void drawChest(glm::mat4 model);
 
     ~Game();
 
@@ -95,7 +95,7 @@ private:
     glm::vec4 cameraUp = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
     glm::vec4 cameraRight = glm::vec4(1.0f, 0.0f, 0.0f, 0.0f);
 
-    const float baseSpeed = 0.2f;
+    const float baseSpeed = 10.0f;
     const float speedMultiplier = 1.75f;
     float currentSpeed = baseSpeed;
 
@@ -107,13 +107,15 @@ private:
     const float mouseSensitivityX = 0.005f;
     const float mouseSensitivityY = 0.005f;
 
-    float nearPlane = -0.1f;
-    float farPlane = -100.0f;
-    float fov = M_PI / 3.0f;
+    const float nearPlane = -0.1f;
+    const float farPlane = -100.0f;
+    const float fov = M_PI / 3.0f;
 
     float rotation = M_PI;
     float cowPositionZ = -90.0f; // Posição inicial da vaca no eixo Z
     float cowSpeedZ = 10.0f;     // Velocidade de movimento ao longo do eixo Z
+
+    float deltaTime = 0.0f;
 
     GLuint gpuProgramId = 0;
     GLuint numLoadedTextures = 0;
@@ -158,12 +160,12 @@ private:
         fprintf(stderr, "Error: %s\n", description);
     }
 
-    void initialRendering(GLfloat R, GLfloat G, GLfloat B) {
+    static void initialRendering(GLfloat R, GLfloat G, GLfloat B) {
         glClearColor(R, G, B, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
-    void setRenderConfig() {
+    static void setRenderConfig() {
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);

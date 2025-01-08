@@ -1,4 +1,5 @@
 #include <cassert>
+#include <iostream>
 #include <string>
 #include <memory>
 #include <vector>
@@ -68,8 +69,15 @@ void Game::keyCallback(int key, int scancode, int actions, int mods) {
         } else {
             currentSpeed = baseSpeed;
         }
+
         if (key == GLFW_KEY_W) {
-            glm::vec4 offset = currentSpeed * cameraView;
+            float speed;
+            if (actions == GLFW_REPEAT) {
+                speed = currentSpeed * deltaTime;
+            } else {
+                speed = deltaTime;
+            }
+            glm::vec4 offset = speed * cameraView;
             offset.y = 0;
             cameraPosition += offset;
             virtualScene["Cube"]->translate(offset.x, offset.y, offset.z);
@@ -79,7 +87,13 @@ void Game::keyCallback(int key, int scancode, int actions, int mods) {
             }
         }
         if (key == GLFW_KEY_S) {
-            glm::vec4 offset = -currentSpeed * cameraView;
+            float speed;
+            if (actions == GLFW_REPEAT) {
+                speed = currentSpeed * deltaTime;
+            } else {
+                speed = deltaTime;
+            }
+            glm::vec4 offset = -speed * cameraView;
             offset.y = 0;
             cameraPosition += offset;
             virtualScene["Cube"]->translate(offset.x, offset.y, offset.z);
@@ -89,7 +103,13 @@ void Game::keyCallback(int key, int scancode, int actions, int mods) {
             }
         }
         if (key == GLFW_KEY_A) {
-            glm::vec4 offset = -currentSpeed * cameraRight;
+            float speed;
+            if (actions == GLFW_REPEAT) {
+                speed = currentSpeed * deltaTime;
+            } else {
+                speed = deltaTime;
+            }
+            glm::vec4 offset = -speed * cameraRight;
             offset.y = 0;
             cameraPosition += offset;
             virtualScene["Cube"]->translate(offset.x, offset.y, offset.z);
@@ -99,7 +119,13 @@ void Game::keyCallback(int key, int scancode, int actions, int mods) {
             }
         }
         if (key == GLFW_KEY_D) {
-            glm::vec4 offset = currentSpeed * cameraRight;
+            float speed;
+            if (actions == GLFW_REPEAT) {
+                speed = currentSpeed * deltaTime;
+            } else {
+                speed = deltaTime;
+            }
+            glm::vec4 offset = speed * cameraRight;
             offset.y = 0;
             cameraPosition += offset;
             virtualScene["Cube"]->translate(offset.x, offset.y, offset.z);
@@ -175,7 +201,7 @@ void Game::framebufferSizeCallback(int width, int height) {
     screenRatio = (float)width / height;
 }
 
-void Game::setCameraView(){
+void Game::setCameraView() {
     glm::mat4 view = Matrix_Camera_View(cameraPosition, cameraView, cameraUp);
     glUniformMatrix4fv(uniforms.at("view"), 1, GL_FALSE, glm::value_ptr(view));
 }
@@ -217,7 +243,6 @@ void Game::drawCow(glm::mat4 model) {
     glUniformMatrix4fv(uniforms.at("model"), 1, GL_FALSE, glm::value_ptr(model));
     glUniform1i(uniforms.at("object_id"), COW);
     glUniform1i(uniforms.at("interpolation_type"), GOURAUD_INTERPOLATION);
-
     DrawVirtualObject(const_cast<UniformMap&>(uniforms), virtualScene, "the_cow");
 }
 
@@ -225,7 +250,6 @@ void Game::drawPlane(glm::mat4 model) {
     glUniformMatrix4fv(uniforms.at("model"), 1 , GL_FALSE , glm::value_ptr(model));
     glUniform1i(uniforms.at("object_id"), PLANE);
     glUniform1i(uniforms.at("interpolation_type"), PHONG_INTERPOLATION);
-
     DrawVirtualObject(const_cast<UniformMap&>(uniforms), virtualScene, "the_plane");
 }
 
@@ -237,18 +261,34 @@ void Game::drawMaze(glm::mat4 model) {
             glUniformMatrix4fv(uniforms.at("model"), 1 , GL_FALSE , glm::value_ptr(model));
             glUniform1i(uniforms.at("object_id"), MAZE);
             glUniform1i(uniforms.at("interpolation_type"), PHONG_INTERPOLATION);
-
             DrawVirtualObject(const_cast<UniformMap&>(uniforms), virtualScene, name.c_str());
         }
     }
 }
 
-void Game::gameLoop() {
-    float lastTime = glfwGetTime();
-    float currentTime;
-    float deltaTime;
+void Game::drawChest(glm::mat4 model) {
+    // Draw the chest base
+    glUniformMatrix4fv(uniforms.at("model"), 1 , GL_FALSE , glm::value_ptr(model));
+    glUniform1i(uniforms.at("object_id"), CHEST);
+    glUniform1i(uniforms.at("interpolation_type"), PHONG_INTERPOLATION);
+    DrawVirtualObject(const_cast<UniformMap&>(uniforms), virtualScene, "the_chest");
 
+    // Draw the chest lid
+    model = Matrix_Translate(0.0f, 0.1f, 0.0f) * model;
+    glUniformMatrix4fv(uniforms.at("model"), 1 , GL_FALSE , glm::value_ptr(model));
+    glUniform1i(uniforms.at("object_id"), CHEST_LID);
+    glUniform1i(uniforms.at("interpolation_type"), PHONG_INTERPOLATION);
+    DrawVirtualObject(const_cast<UniformMap&>(uniforms), virtualScene, "the_chest_lid");
+}
+
+void Game::gameLoop() {
     while (!glfwWindowShouldClose(window)) {
+        // Update time
+        static double lastTime = glfwGetTime();
+        double currentTime = glfwGetTime();
+        deltaTime = currentTime - lastTime;
+        lastTime = currentTime;
+
         // Sets the background color
         initialRendering(0.0f, 0.0f, 0.1f);
 
@@ -265,21 +305,23 @@ void Game::gameLoop() {
 
         cowPositionZ += cowSpeedZ * deltaTime;
 
-        glm::vec3 cowTranslation = glm::vec3(0, 0, cowSpeedZ * deltaTime);
-
         rotation += 10.0f * deltaTime; // Velocidade de rotação
 
         if (cowPositionZ > 10.0f || cowPositionZ < -90.0f) {
             cowSpeedZ = -cowSpeedZ; // Inverter a direção
         }
         
-        glm::mat4 animation = Matrix_Translate(4.0f, 1.2f, cowPositionZ) 
+        glm::mat4 cowModelAnimated = Matrix_Translate(4.0f, 1.2f, cowPositionZ) 
                               * Matrix_Scale(2.0f, 2.0f, 2.0f) 
                               * Matrix_Rotate_Y(rotation);
+        
+        glm::mat4 chestModel = Matrix_Translate(4.0f, 1.0f, -20.0f)
+                               * Matrix_Rotate_Y(M_PI/2);
 
-        drawCow(animation);
+        drawCow(cowModelAnimated);
         drawPlane(model);
         drawMaze(model);
+        drawChest(chestModel);
 
 /*
         // Draw the cube (player)
@@ -325,6 +367,19 @@ void Game::run() {
     model = Matrix_Identity();
 
     createModel("../../assets/models/maze/", model);
+
+    // ----------------------------- CHEST ----------------------------- //
+    model = Matrix_Translate(-80.626f, 1.0f, 5.211f)
+            * Matrix_Rotate_Y(M_PI/2);
+    
+    createModel("../../assets/models/chest.obj", model);
+    createModel("../../assets/models/chest_lid.obj", model);
+
+    model = Matrix_Translate(4.0f, 1.0f, -20.0f)
+            * Matrix_Rotate_Y(M_PI/2);
+    
+    createModel("../../assets/models/chest.obj", model);
+    createModel("../../assets/models/chest_lid.obj", model);
 
     // ----------------------------- CUBE (PLAYER) ----------------------------- //
     model = Matrix_Translate(cameraPosition.x, cameraPosition.y, cameraPosition.z)

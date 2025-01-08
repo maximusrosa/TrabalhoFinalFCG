@@ -14,6 +14,8 @@ uniform mat4 projection;
 #define COW 0
 #define PLANE 1
 #define MAZE 2
+#define CHEST 3
+#define CHEST_LID 4
 uniform int object_id;
 
 // Identify the type of interpolation to be used
@@ -60,6 +62,9 @@ void main()
         vec3 Ka; // Ambient reflectance
         float q; // Specular exponent for Blinn-Phong model
 
+        vec3 I = vec3(1.0, 1.0, 1.0);  // Light intensity (white light)
+        vec3 Ia = vec3(0.1686, 0.0039, 0.0863); // Ambient light intensity
+
         float px = position_model.x;
         float py = position_model.y;
         float pz = position_model.z;
@@ -77,7 +82,7 @@ void main()
                 float minz = bbox_min.z;
                 float maxz = bbox_max.z;
 
-                float epsilon = 0.3;
+                float epsilon = 0.525;
 
                 if (abs(px - minx) < epsilon || abs(px - maxx) < epsilon)
                 {
@@ -91,19 +96,19 @@ void main()
                 }
                 else if (abs(py - miny) < epsilon || abs(py - maxy) < epsilon)
                 {
-                    u = px;
-                    v = pz;
+                    u = pz;
+                    v = px;
                 }
                 else
                 {
                     // Default case (should not happen, just a safety measure)
-                    u = pz;
+                    u = px;
                     v = py;
                 }
 
                 Kd = texture(stonebrick_texture, vec2(u,v)).rgb;
 
-                color.rgb = Kd * max(dot(n,l),0.05);;
+                color.rgb = Kd * I * max(dot(n,l),0.05);;
                 break;
             }
             case PLANE:
@@ -113,7 +118,7 @@ void main()
 
                 Kd = texture(grass_texture, vec2(u, v)).rgb;
 
-                color.rgb = Kd * max(dot(n,l),0.05);;
+                color.rgb = Kd * I * max(dot(n,l),0.05);;
                 break;
             }
             case COW:
@@ -126,9 +131,43 @@ void main()
                 Ka = vec3(0.0902, 0.0039, 0.102);
                 q = 64.0;
 
-                vec3 lambert_diffuse_term = Kd * max(dot(n,l),0.05);
-                vec3 ambient_term = Ka;
-                vec3 blinn_phong_specular_term = Ks * pow(max(dot(n,half_vector),0.0),q);
+                vec3 lambert_diffuse_term = Kd * I * max(dot(n,l),0.05);
+                vec3 ambient_term = Ka * Ia;
+                vec3 blinn_phong_specular_term = Ks * I * pow(max(dot(n,half_vector),0.0),q);
+
+                color.rgb = lambert_diffuse_term + ambient_term + blinn_phong_specular_term;
+                break;
+            }
+            case CHEST:
+            {
+                u = texcoords.x;
+                v = texcoords.y;
+
+                Kd = texture(gold_texture, vec2(u,v)).rgb;
+                Ks = vec3(0.2314, 0.0039, 0.2039);
+                Ka = vec3(0.0902, 0.0039, 0.102);
+                q = 64.0;
+
+                vec3 lambert_diffuse_term = Kd * I * max(dot(n,l),0.05);
+                vec3 ambient_term = Ka * Ia;
+                vec3 blinn_phong_specular_term = Ks * I * pow(max(dot(n,half_vector),0.0),q);
+
+                color.rgb = lambert_diffuse_term + ambient_term + blinn_phong_specular_term;
+                break;
+            }
+            case CHEST_LID:
+            {
+                u = texcoords.x;
+                v = texcoords.y;
+
+                Kd = texture(gold_texture, vec2(u,v)).rgb;
+                Ks = vec3(0.2314, 0.0039, 0.2039);
+                Ka = vec3(0.0902, 0.0039, 0.102);
+                q = 64.0;
+
+                vec3 lambert_diffuse_term = Kd * I * max(dot(n,l),0.05);
+                vec3 ambient_term = Ka * Ia;
+                vec3 blinn_phong_specular_term = Ks * I * pow(max(dot(n,half_vector),0.0),q);
 
                 color.rgb = lambert_diffuse_term + ambient_term + blinn_phong_specular_term;
                 break;

@@ -102,4 +102,3 @@ std::vector<std::string> getFiles(const std::string& folderPath) {
 #else
 #error "Unsupported platform"
 #endif
-
