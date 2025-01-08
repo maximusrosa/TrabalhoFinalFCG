@@ -1,5 +1,5 @@
 # Este arquivo CMakeLists.txt foi adaptado a partir do projeto castor
-# do PET INF/UFRGS (https://github.com/petcomputacaoufrgs/castor-fcg),
+# do PET Computação UFRGS (https://github.com/petcomputacaoufrgs/castor-fcg),
 # com algumas modificações vindas do arquivo CMakeLists.txt criado
 # pelos alunos Luis Melo e Santiago Gonzaga em 2023/1.
 
@@ -21,6 +21,7 @@ set(SOURCES
     src/graphics/textures.cpp
     src/stb_image.cpp
     src/physics/animations.cpp
+    src/utils/textrendering.cpp
 )
 
 cmake_minimum_required(VERSION 3.5.0)

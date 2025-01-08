@@ -54,7 +54,8 @@ public:
     void drawCow(glm::mat4 model);
     void drawPlane(glm::mat4 model);
     void drawMaze(glm::mat4 model);
-    void drawChest(glm::mat4 model);
+    void drawChestBase(glm::mat4 model);
+    void drawChestLid(glm::mat4 model);
 
     ~Game();
 
@@ -110,10 +111,6 @@ private:
     const float nearPlane = -0.1f;
     const float farPlane = -100.0f;
     const float fov = M_PI / 3.0f;
-
-    float rotation = M_PI;
-    float cowPositionZ = -90.0f; // Posição inicial da vaca no eixo Z
-    float cowSpeedZ = 10.0f;     // Velocidade de movimento ao longo do eixo Z
 
     float deltaTime = 0.0f;
 

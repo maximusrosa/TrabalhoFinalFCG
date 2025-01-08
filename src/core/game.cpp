@@ -1,4 +1,5 @@
 #include <cassert>
+#include <cmath>
 #include <iostream>
 #include <string>
 #include <memory>
@@ -23,6 +24,7 @@
 #include "physics/collisions.h"
 #include "physics/animations.h"
 #include "utils/file_utils.h"
+#include "utils/textrendering.h"
 
 #include "core/game.h"
 
@@ -139,10 +141,10 @@ void Game::keyCallback(int key, int scancode, int actions, int mods) {
         if (actions == GLFW_PRESS && key == GLFW_KEY_F11) {
             fullScreen = !fullScreen;
             if (fullScreen) {
-                glfwSetWindowMonitor(window, glfwGetPrimaryMonitor(), 0, 0, 
+                glfwSetWindowMonitor(window, glfwGetPrimaryMonitor(), 0, 0,
                                      screenWidth, screenHeight, GLFW_DONT_CARE);
             } else {
-                glfwSetWindowMonitor(window, nullptr, windowX, windowY, 
+                glfwSetWindowMonitor(window, nullptr, windowX, windowY,
                                      windowWidth, windowHeight, GLFW_DONT_CARE);
             }
         }
@@ -183,9 +185,9 @@ void Game::cursorPosCallback(double xpos, double ypos) {
     if (cameraYaw < 0) cameraYaw += 2 * M_PI;
 
     // Compute new camera view direction
-    double viewX = cos(cameraPitch) * sin(cameraYaw);
-    double viewY = sin(cameraPitch);
-    double viewZ = cos(cameraPitch) * cos(cameraYaw);
+    double viewX = std::cos(cameraPitch) * std::sin(cameraYaw);
+    double viewY = std::sin(cameraPitch);
+    double viewZ = std::cos(cameraPitch) * std::cos(cameraYaw);
 
     // Update camera view vector and look at point
     cameraView = glm::vec4(viewX, viewY, viewZ, 0.0f);
@@ -266,31 +268,51 @@ void Game::drawMaze(glm::mat4 model) {
     }
 }
 
-void Game::drawChest(glm::mat4 model) {
+void Game::drawChestBase(glm::mat4 model) {
     // Draw the chest base
     glUniformMatrix4fv(uniforms.at("model"), 1 , GL_FALSE , glm::value_ptr(model));
     glUniform1i(uniforms.at("object_id"), CHEST);
     glUniform1i(uniforms.at("interpolation_type"), PHONG_INTERPOLATION);
-    DrawVirtualObject(const_cast<UniformMap&>(uniforms), virtualScene, "the_chest");
 
-    // Draw the chest lid
-    model = Matrix_Translate(0.0f, 0.1f, 0.0f) * model;
+    DrawVirtualObject(const_cast<UniformMap&>(uniforms), virtualScene, "the_chest");
+}
+
+void Game::drawChestLid(glm::mat4 model) {
     glUniformMatrix4fv(uniforms.at("model"), 1 , GL_FALSE , glm::value_ptr(model));
     glUniform1i(uniforms.at("object_id"), CHEST_LID);
     glUniform1i(uniforms.at("interpolation_type"), PHONG_INTERPOLATION);
+
     DrawVirtualObject(const_cast<UniformMap&>(uniforms), virtualScene, "the_chest_lid");
 }
 
+void TextRendering_ShowHelloWorld(GLFWwindow* window)
+{
+    const char* message = "Hello World";
+    float lineheight = TextRendering_LineHeight(window);
+    float charwidth = TextRendering_CharWidth(window);
+
+    TextRendering_PrintString(window, message, 0.5f - (strlen(message) / 2.0f) * charwidth, 0.5f - lineheight / 2.0f, 1.0f);
+}
+
 void Game::gameLoop() {
+    float cowRotation = 0.0f;    // Rotação inicial da vaca
+    float cowPositionZ = -90.0f; // Posição inicial da vaca no eixo Z
+    float cowSpeedZ = 10.0f;     // Velocidade de movimento ao longo do eixo Z
+
+    double lastTime = glfwGetTime();
+    double currentTime = lastTime;
+
     while (!glfwWindowShouldClose(window)) {
         // Update time
-        static double lastTime = glfwGetTime();
-        double currentTime = glfwGetTime();
+        currentTime = glfwGetTime();
         deltaTime = currentTime - lastTime;
         lastTime = currentTime;
 
         // Sets the background color
         initialRendering(0.0f, 0.0f, 0.1f);
+        TextRendering_Init();
+
+        TextRendering_ShowHelloWorld(window);
 
         glUseProgram(gpuProgramId);
 
@@ -299,29 +321,29 @@ void Game::gameLoop() {
 
         glm::mat4 model = Matrix_Identity();
 
-        currentTime = glfwGetTime();
-        deltaTime = currentTime - lastTime;
-        lastTime = currentTime;
-
-        cowPositionZ += cowSpeedZ * deltaTime;
-
-        rotation += 10.0f * deltaTime; // Velocidade de rotação
+        cowPositionZ += cowSpeedZ * deltaTime; // Velocidade de movimento
+        cowRotation += 10.0f * deltaTime; // Velocidade de rotação
 
         if (cowPositionZ > 10.0f || cowPositionZ < -90.0f) {
             cowSpeedZ = -cowSpeedZ; // Inverter a direção
         }
-        
-        glm::mat4 cowModelAnimated = Matrix_Translate(4.0f, 1.2f, cowPositionZ) 
-                              * Matrix_Scale(2.0f, 2.0f, 2.0f) 
-                              * Matrix_Rotate_Y(rotation);
-        
-        glm::mat4 chestModel = Matrix_Translate(4.0f, 1.0f, -20.0f)
-                               * Matrix_Rotate_Y(M_PI/2);
+
+        glm::mat4 cowModelAnimated = Matrix_Translate(4.0f, 1.2f, cowPositionZ)
+                                     * Matrix_Scale(2.0f, 2.0f, 2.0f)
+                                     * Matrix_Rotate_Y(cowRotation);
+
+        glm::mat4 chestBase = Matrix_Translate(4.0f, 0.5f, -20.0f)
+                              * Matrix_Rotate_Y(M_PI/2) * Matrix_Scale(0.8f, 0.8f, 0.8f);
+
+        glm::mat4 chestLid = Matrix_Translate(4.0f, 0.6f, -20.0f)
+                             * Matrix_Rotate_Y(M_PI/2) * Matrix_Scale(0.8f, 0.8f, 0.8f) * Matrix_Rotate_Z(0.5f);
 
         drawCow(cowModelAnimated);
         drawPlane(model);
         drawMaze(model);
-        drawChest(chestModel);
+        drawChestBase(chestBase);
+        drawChestLid(chestLid);
+
 
 /*
         // Draw the cube (player)
