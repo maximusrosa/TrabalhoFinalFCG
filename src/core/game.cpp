@@ -306,10 +306,35 @@ void TextRendering_ShowHelloWorld(GLFWwindow* window)
     TextRendering_PrintString(window, message, 0.5f - (strlen(message) / 2.0f) * charwidth, 0.5f - lineheight / 2.0f, 1.0f);
 }
 
+// Cálculo da Curva de Bezier 2D
+glm::vec3 get2DBezierCurve(glm::vec2 p0, glm::vec2 p1, glm::vec2 p2, glm::vec2 p3, float t){
+
+    float x = pow(1-t,3)*p0.x + 3*t*pow(1-t,2)*p1.x + 3*pow(t,2)*(1-t)*p2.x + pow(t,3)*p3.x;
+    float z = pow(1-t,3)*p0.y + 3*t*pow(1-t,2)*p1.y + 3*pow(t,2)*(1-t)*p2.y + pow(t,3)*p3.y;
+
+    return glm::vec3(x, 0.0f, z);
+}
+
+// Cálculo da Curva de Bezier 3D
+glm::vec3 get3DBezierCurve(glm::vec3 p0, glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, float t){
+
+    float x = pow(1-t,3)*p0.x + 3*t*pow(1-t,2)*p1.x + 3*pow(t,2)*(1-t)*p2.x + pow(t,3)*p3.x;
+    float y = pow(1-t,3)*p0.y + 3*t*pow(1-t,2)*p1.y + 3*pow(t,2)*(1-t)*p2.y + pow(t,3)*p3.y;
+    float z = pow(1-t,3)*p0.z + 3*t*pow(1-t,2)*p1.z + 3*pow(t,2)*(1-t)*p2.z + pow(t,3)*p3.z;
+
+    return glm::vec3(x, y, z);
+}
+
 void Game::gameLoop() {
     float cowRotation = 0.0f;    // Rotação inicial da vaca
+    float cowPositionX = 4.0f;   // Posição inicial da vaca no eixo X
+    float cowPositionY = 1.2f;   // Posição inicial da vaca no eixo Y
     float cowPositionZ = -90.0f; // Posição inicial da vaca no eixo Z
     float cowSpeedZ = 10.0f;     // Velocidade de movimento ao longo do eixo Z
+
+    float chestLidRotation = 0.0f;
+    float chestLidZTranslation = 0.0f;
+    float chestLidYTranslation = 0.0f;
 
     double lastTime = glfwGetTime();
     double currentTime = lastTime;
@@ -337,9 +362,20 @@ void Game::gameLoop() {
 
         setCameraView();
         setProjection();
+        
+        glm::mat4 model = Matrix_Identity();
 
+        
         glm::mat4 cowModel = Matrix_Translate(cowPosition.x, cowPosition.y, cowPosition.z)
                              * Matrix_Scale(2.0f, 2.0f, 2.0f);
+
+        glm::vec3 bezierPosition = get2DBezierCurve(glm::vec2(4.0f, 1.2f), glm::vec2(4.0f, 2.0f), glm::vec2(4.0f, 3.0f), glm::vec2(4.0f, 4.0f), cowPositionZ / 100.0f);
+
+        glm::mat4 cowModelAnimated = Matrix_Translate(bezierPosition.x, bezierPosition.y, cowPositionZ)
+                                     * Matrix_Scale(2.0f, 2.0f, 2.0f)
+                                     * Matrix_Rotate_Y(cowRotation);
+
+
 
         glm::mat4 chestBaseModel = Matrix_Translate(4.0f, 0.5f, -20.0f)
                                    * Matrix_Rotate_Y(M_PI/2) 
@@ -350,11 +386,41 @@ void Game::gameLoop() {
                                   * Matrix_Scale(0.8f, 0.8f, 0.8f) 
                                   * Matrix_Rotate_Z(0.5f);
 
-        drawCow(cowModel);
-        drawPlane(identity);
-        drawMaze(identity);
-        drawChestBase(chestBaseModel);
-        drawChestLid(chestLidModel);
+        glm::mat4 chestBase = Matrix_Translate(4.0f, 0.5f, -20.0f)
+                              * Matrix_Rotate_Y(M_PI/2) * Matrix_Scale(0.8f, 0.8f, 0.8f);
+
+        if (chestLidRotation < M_PI_2) { // Abrir até 90 graus
+            chestLidRotation += 1.0f * deltaTime; // Velocidade de abertura
+        }
+
+        // Definir a transformação para a tampa do baú
+        glm::mat4 chestLid = Matrix_Translate(4.0f, 0.5f + 0.4f, -20.0f)  // Posição inicial
+                             * Matrix_Rotate_Y(M_PI/2)                   // Alinhamento com o baú
+                             * Matrix_Scale(0.8f, 0.8f, 0.8f);
+
+        // Adiciona a rotação da tampa
+        glm::mat4 lidOpening =       // Translada para a dobradiça
+                                Matrix_Rotate_Z(chestLidRotation)      // Gira em torno da dobradiça
+                               * Matrix_Translate(0.3f, 0.8f, 0.0f);     // Volta à posição original
+
+        chestLid *= lidOpening;
+
+        drawCow(cowModelAnimated);
+        drawPlane(model);
+        drawMaze(model);
+        drawChestBase(chestBase);
+        drawChestLid(chestLid);
+
+
+/*
+        // Draw the cube (player)
+        model = Matrix_Translate(cameraPosition.x, cameraPosition.y, cameraPosition.z)
+                * Matrix_Rotate_Y(-cameraYaw);
+        glUniformMatrix4fv(uniforms["model"], 1 , GL_FALSE , glm::value_ptr(model));
+        glUniform1i(uniforms["object_id"], CUBE);
+        glUniform1i(uniforms["interpolation_type"], GOURAUD_INTERPOLATION);
+        DrawVirtualObject(uniforms, virtualScene, "Cube");
+*/
 
         glfwSwapBuffers(window);
         glfwPollEvents();
