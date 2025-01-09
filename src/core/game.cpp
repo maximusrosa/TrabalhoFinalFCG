@@ -156,6 +156,19 @@ void Game::keyCallback(int key, int scancode, int actions, int mods) {
                 cameraLookAt = cowPosition;
                 distanceCameraCow = glm::distance(cameraPosition, cowPosition);
             }
+
+            // Space key opens the chest (if the player is close enough)
+            if (key == GLFW_KEY_SPACE) {
+                for (int i = 0; i < chestCoordinates.size(); i++) {
+                    if (glm::distance(glm::vec3(cameraPosition), chestCoordinates[i]) < 5.0f) {
+                        chestOpened[i] = true;
+                        if (playerLife < maxLife) {
+                            playerLife++;
+                        }
+                        timeStarving = 0.0f;
+                    }
+                }
+            }
         }
     }
 }
@@ -228,6 +241,8 @@ void Game::setProjection() {
 void Game::createModel(const std::string& objFilePath, glm::mat4 model) {
     bool isMaze = objFilePath.find("maze") != std::string::npos;
     bool isCow = objFilePath.find("cow") != std::string::npos;
+    bool isChestLid = objFilePath.find("chest_lid") != std::string::npos;
+    bool isChest = objFilePath.find("chest") != std::string::npos;
 
     if (isMaze) {
         const std::string& mazeModelFolder = objFilePath;
@@ -245,6 +260,20 @@ void Game::createModel(const std::string& objFilePath, glm::mat4 model) {
     else {
         ObjModel objModel(objFilePath.c_str());
         ComputeNormals(&objModel);
+
+        printf("Creating model: %s\n", objFilePath.c_str());
+
+        if (isChestLid) {
+            std::string chestName = "the_chest_lid" + std::to_string(numChests);
+            for (tinyobj::shape_t& shape : objModel.shapes) {
+                shape.name = chestName;
+            }
+        } else if (isChest) {
+            std::string chestName = "the_chest" + std::to_string(numChests);
+            for (tinyobj::shape_t& shape : objModel.shapes) {
+                shape.name = chestName;
+            }
+        }
 
         if (isCow)
             BuildSceneTriangles(virtualScene, &objModel, model, true);
@@ -280,25 +309,26 @@ void Game::drawMaze(glm::mat4 model) {
     }
 }
 
-void Game::drawChestBase(glm::mat4 model) {
+void Game::drawChestBase(glm::mat4 model, int chestIndex) {
     // Draw the chest base
     glUniformMatrix4fv(uniforms.at("model"), 1 , GL_FALSE , glm::value_ptr(model));
     glUniform1i(uniforms.at("object_id"), CHEST);
     glUniform1i(uniforms.at("interpolation_type"), PHONG_INTERPOLATION);
 
-    DrawVirtualObject(const_cast<UniformMap&>(uniforms), virtualScene, "the_chest");
+    std::string chestName = "the_chest" + std::to_string(chestIndex);
+    DrawVirtualObject(const_cast<UniformMap&>(uniforms), virtualScene, chestName.c_str());
 }
 
-void Game::drawChestLid(glm::mat4 model) {
+void Game::drawChestLid(glm::mat4 model, int chestIndex) {
     glUniformMatrix4fv(uniforms.at("model"), 1 , GL_FALSE , glm::value_ptr(model));
     glUniform1i(uniforms.at("object_id"), CHEST_LID);
     glUniform1i(uniforms.at("interpolation_type"), PHONG_INTERPOLATION);
 
-    DrawVirtualObject(const_cast<UniformMap&>(uniforms), virtualScene, "the_chest_lid");
+    std::string chestLidName = "the_chest_lid" + std::to_string(chestIndex);
+    DrawVirtualObject(const_cast<UniformMap&>(uniforms), virtualScene, chestLidName.c_str());
 }
 
-void TextRendering_ShowHelloWorld(GLFWwindow* window)
-{
+void RenderHelloWorldText(GLFWwindow* window) {
     const char* message = "Hello World";
     float lineheight = TextRendering_LineHeight(window);
     float charwidth = TextRendering_CharWidth(window);
@@ -306,35 +336,68 @@ void TextRendering_ShowHelloWorld(GLFWwindow* window)
     TextRendering_PrintString(window, message, 0.5f - (strlen(message) / 2.0f) * charwidth, 0.5f - lineheight / 2.0f, 1.0f);
 }
 
-// Cálculo da Curva de Bezier 2D
-glm::vec4 bezierCurve2D(glm::vec2 p0, glm::vec2 p1, glm::vec2 p2, glm::vec2 p3, float t){
+void Game::RenderPlayerLife(GLFWwindow* window) {
+    const float scale = 2.5f;
 
-    float x = pow(1-t,3)*p0.x + 3*t*pow(1-t,2)*p1.x + 3*pow(t,2)*(1-t)*p2.x + pow(t,3)*p3.x;
-    float z = pow(1-t,3)*p0.y + 3*t*pow(1-t,2)*p1.y + 3*pow(t,2)*(1-t)*p2.y + pow(t,3)*p3.y;
+    std::string buffer = "[";
+
+    for (int i = 0; i < playerLife; i++) {
+        buffer += "+++";
+    }
+    for (int i = 0; i < maxLife - playerLife; i++) {
+        buffer += "   ";
+    }
+    buffer += "]";
+
+    float lineheight = TextRendering_LineHeight(window, scale);
+    float charwidth = TextRendering_CharWidth(window, scale);
+
+    TextRendering_PrintString(window, buffer, -1.0f, -lineheight - 0.85, scale);
+}
+
+// Cálculo da Curva de Bezier 2D
+glm::vec4 bezierCurve2D(glm::vec2 p0, glm::vec2 p1, glm::vec2 p2, glm::vec2 p3, float t) {
+    float x = pow(1-t,3) * p0.x 
+              + 3 * t * pow(1-t,2) * p1.x 
+              + 3 * (1-t) * pow(t,2) * p2.x 
+              + pow(t,3) * p3.x;
+    float z = pow(1-t,3) * p0.y 
+              + 3 * t * pow(1-t,2) * p1.y 
+              + 3 * (1-t) * pow(t,2) * p2.y 
+              + pow(t,3)*p3.y;
 
     return {x, 1.2f, z, 1.0f};
 }
 
 // Cálculo da Curva de Bezier 3D
-glm::vec4 bezierCurve3D(glm::vec3 p0, glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, float t){
-
-    float x = pow(1-t,3)*p0.x + 3*t*pow(1-t,2)*p1.x + 3*pow(t,2)*(1-t)*p2.x + pow(t,3)*p3.x;
-    float y = pow(1-t,3)*p0.y + 3*t*pow(1-t,2)*p1.y + 3*pow(t,2)*(1-t)*p2.y + pow(t,3)*p3.y;
-    float z = pow(1-t,3)*p0.z + 3*t*pow(1-t,2)*p1.z + 3*pow(t,2)*(1-t)*p2.z + pow(t,3)*p3.z;
-
+glm::vec4 bezierCurve3D(glm::vec3 p0, glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, float t) {
+    float x = pow(1-t,3) * p0.x 
+              + 3 * t * pow(1-t,2) * p1.x 
+              + 3 * pow(t,2) * (1-t) * p2.x 
+              + pow(t,3) * p3.x;
+    float y = pow(1-t,3) * p0.y 
+              + 3 * t * pow(1-t,2) * p1.y 
+              + 3 * pow(t,2) * (1-t) * p2.y 
+              + pow(t,3) * p3.y;
+    float z = pow(1-t,3) * p0.z 
+              + 3 * t * pow(1-t,2) * p1.z 
+              + 3 * pow(t,2) * (1-t) * p2.z 
+              + pow(t,3) * p3.z;
     return {x, y, z, 1.0f};
 }
 
 void Game::gameLoop() {
-    float cowRotation = 0.0f;    // Rotação inicial da vaca
-    float cowPositionX = 4.0f;   // Posição inicial da vaca no eixo X
-    float cowPositionY = 1.2f;   // Posição inicial da vaca no eixo Y
-    float cowPositionZ = -90.0f; // Posição inicial da vaca no eixo Z
-    float cowSpeedZ = 10.0f;     // Velocidade de movimento ao longo do eixo Z
-
     float chestLidRotation = 0.0f;
     float chestLidZTranslation = 0.0f;
     float chestLidYTranslation = 0.0f;
+    
+    float t = 0.0f;       // Parâmetro "t" da curva de Bézier
+    bool turn_1 = false;  // Controle do sentido (ida ou volta)
+
+    glm::vec2 p0(4.0f, -90.0f);   // Ponto inicial
+    glm::vec2 p1(6.0f, -92.0f);   // Primeiro ponto de controle
+    glm::vec2 p2(8.0f, -96.0f);   // Segundo ponto de controle
+    glm::vec2 p3(10.0f, -100.0f); // Ponto final
 
     double lastTime = glfwGetTime();
     double currentTime = lastTime;
@@ -348,30 +411,8 @@ void Game::gameLoop() {
     glm::vec2 p3(10.0f, -100.0f); // Ponto final
 
     while (!glfwWindowShouldClose(window)) {
-        static const glm::mat4 identity = Matrix_Identity();
-
-        distanceCameraCow = glm::distance(cameraPosition, cowPosition);
-        if (lookAtMode && distanceCameraCow < distanceCameraCowThreshold) {
-            cameraView = normalize(cowPosition - cameraPosition);
-        }
-
-        // Update time
-        currentTime = glfwGetTime();
-        deltaTime = currentTime - lastTime;
-        lastTime = currentTime;
-
-        // Sets the background color
-        initialRendering(0.0f, 0.0f, 0.1f);
-        TextRendering_Init();
-
-        TextRendering_ShowHelloWorld(window);
-
-        glUseProgram(gpuProgramId);
-
-        setCameraView();
-        setProjection();
-
-        glm::mat4 model = Matrix_Identity();
+        // Atualiza o parâmetro "t" da curva de Bézier
+        t += 0.1f * deltaTime;
 
         // Atualiza os pontos de controle da curva de Bézier para alternar entre ida e volta
         if (t >= 1.0f) {
@@ -394,33 +435,83 @@ void Game::gameLoop() {
             turn_1 = !turn_1; // Alterna a direção
         }
 
-        // Calcula a posição da vaca na curva de Bézier
+        // Atualiza a posição da vaca
         cowPosition = bezierCurve2D(p0, p1, p2, p3, t);
 
-        // Atualiza o modelo da vaca
-        glm::mat4 cowModelAnimated = Matrix_Translate(cowPosition.x, cowPosition.y, cowPosition.z)
-                                     * Matrix_Scale(2.0f, 2.0f, 2.0f)
-                                     * Matrix_Rotate_Y(cowRotation);
+        distanceCameraCow = glm::distance(cameraPosition, cowPosition);
+        if (lookAtMode && distanceCameraCow < distanceCameraCowThreshold) {
+            cameraView = normalize(cowPosition - cameraPosition);
+        }
 
-        // Incrementa o parâmetro "t" para a próxima posição na curva
-        t += 0.1f * deltaTime; // Ajuste o multiplicador para alterar a velocidade
+        // Update time
+        currentTime = glfwGetTime();
+        deltaTime = currentTime - lastTime;
+        lastTime = currentTime;
 
-        // Modelos de outros objetos
-        glm::mat4 chestBaseModel = Matrix_Translate(4.0f, 0.5f, -20.0f)
-                                   * Matrix_Rotate_Y(M_PI / 2)
-                                   * Matrix_Scale(0.8f, 0.8f, 0.8f);
+        timeStarving += deltaTime;
+        if (timeStarving > starvationLimit) {
+            playerLife--;
+            timeStarving = 0.0f;
+        }
 
-        glm::mat4 chestLidModel = Matrix_Translate(4.0f, 0.6f, -20.0f)
-                                  * Matrix_Rotate_Y(M_PI / 2)
-                                  * Matrix_Scale(0.8f, 0.8f, 0.8f)
-                                  * Matrix_Rotate_Z(0.5f);
+        // Sets the background color
+        initialRendering(0.0f, 0.0f, 0.1f);
 
-        // Desenha os objetos na cena
-        drawCow(cowModelAnimated);
+        glUseProgram(gpuProgramId);
+
+        setCameraView();
+        setProjection();
+
+        glm::mat4 model = Matrix_Identity();
+
+        glm::mat4 cowModel = Matrix_Translate(cowPosition.x, cowPosition.y, cowPosition.z)
+                             * Matrix_Scale(2.0f, 2.0f, 2.0f);
+
+        for (int i = 1; i <= numChests; i++) {
+            std::string chestName = "the_chest" + std::to_string(i);
+            std::string chestLidName = "the_chest_lid" + std::to_string(i);
+
+            glm::vec4 chestBaseAABBMin = virtualScene[chestName]->getAABB().getMin();
+            glm::vec4 chestBaseAABBMax = virtualScene[chestName]->getAABB().getMax();
+
+            glm::vec4 chestLidAABBMin = virtualScene[chestLidName]->getAABB().getMin();
+            glm::vec4 chestLidAABBMax = virtualScene[chestLidName]->getAABB().getMax();
+
+            float chestDepth = chestBaseAABBMax.z - chestBaseAABBMin.z;
+            float chestBaseHeight = chestBaseAABBMax.y - chestBaseAABBMin.y;
+            float chestLidHeight = chestLidAABBMax.y - chestLidAABBMin.y;
+
+            // Desloca o baú de modo que a dobradiça fique no centro
+            float chestLidOffsetX = chestDepth / 2.0f;
+            float chestLidOffsetY = (chestBaseHeight - 2.0f * chestLidHeight) / 2.0f;
+            
+            if (chestLidRotation < M_PI_2) {   // Abrir até 90 graus
+                chestLidRotation += deltaTime; // Velocidade de abertura
+            }
+
+            glm::vec3 coord = chestCoordinates[i-1];
+            glm::mat4 chestBaseModel = Matrix_Translate(coord.x, coord.y, coord.z);
+
+            glm::mat4 chestLidModel;
+
+            if (chestOpened[i-1]) {
+                chestLidModel = Matrix_Translate(coord.x, coord.y, coord.z)
+                              * Matrix_Translate(-chestLidOffsetX, -chestLidOffsetY, 0.0f)
+                              * Matrix_Rotate_Z(chestLidRotation)
+                              * Matrix_Translate(chestLidOffsetX, chestLidOffsetY, 0.0f);
+            } else {
+                chestLidModel = Matrix_Translate(coord.x, coord.y, coord.z)
+                              * Matrix_Translate(-chestLidOffsetX, -chestLidOffsetY, 0.0f)
+                              * Matrix_Translate(chestLidOffsetX, chestLidOffsetY, 0.0f);
+            }                     
+            drawChestBase(chestBaseModel, i);
+            drawChestLid(chestLidModel, i);
+        }
+        drawCow(cowModel);
         drawPlane(model);
         drawMaze(model);
-        drawChestBase(chestBaseModel);
-        drawChestLid(chestLidModel);
+
+        RenderPlayerLife(window);
 
         // Renderiza e processa eventos
         glfwSwapBuffers(window);
@@ -460,17 +551,12 @@ void Game::run() {
     createModel("../../assets/models/maze/", model);
 
     // ----------------------------- CHEST ----------------------------- //
-    model = Matrix_Translate(-80.626f, 1.0f, 5.211f)
-            * Matrix_Rotate_Y(M_PI/2);
-    
-    createModel("../../assets/models/chest.obj", model);
-    createModel("../../assets/models/chest_lid.obj", model);
-
-    model = Matrix_Translate(4.0f, 1.0f, -20.0f)
-            * Matrix_Rotate_Y(M_PI/2);
-    
-    createModel("../../assets/models/chest.obj", model);
-    createModel("../../assets/models/chest_lid.obj", model);
+    for (glm::vec3 coord : chestCoordinates) {
+        model = Matrix_Translate(coord.x, coord.y, coord.z);
+        numChests++;
+        createModel("../../assets/models/chest.obj", model);
+        createModel("../../assets/models/chest_lid.obj", model);
+    }
 
     // ----------------------------- CUBE (PLAYER) ----------------------------- //
     model = Matrix_Translate(cameraPosition.x, cameraPosition.y, cameraPosition.z)
@@ -479,6 +565,8 @@ void Game::run() {
     createModel("../../assets/models/cube.obj", model);
 
     setRenderConfig();
+
+    TextRendering_Init();
 
     gameLoop();
 
