@@ -423,7 +423,7 @@ void Game::renderGameOver(GLFWwindow* window) {
     TextRendering_PrintString(
         window, 
         buffer, 
-        -(charwidth * buffer.length()) / 2.0f, 
+        -1.1 * (charwidth * buffer.length()) / 2.0f, 
         lineheight, 
         scale
     );
@@ -438,7 +438,7 @@ void Game::renderGameOver(GLFWwindow* window) {
     TextRendering_PrintString(
         window, 
         exitBuffer, 
-        -(charwidth * buffer.length()) / 2.0f, 
+        -0.9f * (charwidth * buffer.length()) / 2.0f, 
         lineheight - exitLineHeight - 0.2, 
         exitScale
     );
@@ -501,7 +501,7 @@ void Game::gameLoop() {
             glfwSwapBuffers(window);
             continue;
         }
-        if (gameOver) {
+        if (true) {
             renderGameOver(window);
             glfwSwapBuffers(window);
             continue;
