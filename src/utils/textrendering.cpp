@@ -142,11 +142,8 @@ void TextRendering_Init()
     glCheckError();
 }
 
-float textscale = 1.5f;
-
 void TextRendering_PrintString(GLFWwindow* window, const std::string &str, float x, float y, float scale = 1.0f)
 {
-    scale *= textscale;
     int width, height;
     glfwGetWindowSize(window, &width, &height);
     float sx = scale / width;
@@ -211,18 +208,18 @@ void TextRendering_PrintString(GLFWwindow* window, const std::string &str, float
     }
 }
 
-float TextRendering_LineHeight(GLFWwindow* window)
+float TextRendering_LineHeight(GLFWwindow* window, float scale = 1.0f)
 {
     int width, height;
     glfwGetWindowSize(window, &width, &height);
-    return dejavufont.height / height * textscale;
+    return dejavufont.height / height * scale;
 }
 
-float TextRendering_CharWidth(GLFWwindow* window)
+float TextRendering_CharWidth(GLFWwindow* window, float scale = 1.0f)
 {
     int width, height;
     glfwGetWindowSize(window, &width, &height);
-    return dejavufont.glyphs[32].advance_x / width * textscale;
+    return dejavufont.glyphs[32].advance_x / width * scale;
 }
 
 void TextRendering_PrintMatrix(GLFWwindow* window, glm::mat4 M, float x, float y, float scale = 1.0f)

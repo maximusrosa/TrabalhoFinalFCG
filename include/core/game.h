@@ -46,6 +46,8 @@ public:
     virtual void cursorPosCallback(double xpos, double ypos);
     virtual void framebufferSizeCallback(int width, int height);
 
+    void RenderPlayerLife(GLFWwindow* window);
+
     void setCameraView();
     void setProjection();
 
@@ -54,8 +56,8 @@ public:
     void drawCow(glm::mat4 model);
     void drawPlane(glm::mat4 model);
     void drawMaze(glm::mat4 model);
-    void drawChestBase(glm::mat4 model);
-    void drawChestLid(glm::mat4 model);
+    void drawChestBase(glm::mat4 model, int chestIndex);
+    void drawChestLid(glm::mat4 model, int chestIndex);
 
     ~Game();
 
@@ -83,6 +85,11 @@ private:
 
     VirtualScene virtualScene;
 
+    const int maxLife = 5;
+    int playerLife = maxLife;
+    float timeStarving = 0.0f;
+    const float starvationLimit = 120.0f;
+
     int windowWidth, windowHeight;
     int windowX, windowY;
     int screenWidth, screenHeight;
@@ -92,10 +99,20 @@ private:
 
     bool lookAtMode = false;
     const float distanceCameraCowThreshold = 20.0f;
-    glm::vec4 cowPosition = glm::vec4(4.0f, 1.2f, -90.0f, 1.0f);
+    glm::vec4 cowPosition = glm::vec4(0.0f, 1.2f, -90.0f, 1.0f);
     float distanceCameraCow = 0.0f;
 
-    glm::vec4 cameraPosition = glm::vec4(4.0f, 2.0f, 0.0f, 1.0f);
+    const std::vector<glm::vec3> chestCoordinates = {
+        glm::vec3(29.390f, 1.0f, -39.671f),
+        glm::vec3(-54.558f, 1.0f, 77.954f),
+        glm::vec3(64.719f, 1.0f, -75.398f),
+        glm::vec3(-9.232f, 1.0f, 53.063f),
+        glm::vec3(4.0f, 1.0f, -20.0f)
+    };
+    std::vector<bool> chestOpened = {false, false, false, false, false};
+    int numChests = 0;
+
+    glm::vec4 cameraPosition = glm::vec4(4.0f, 2.0f, -30.0f, 1.0f);
     glm::vec4 cameraLookAt = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
     glm::vec4 cameraView = cameraLookAt - cameraPosition;
     glm::vec4 cameraUp = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
@@ -122,6 +139,12 @@ private:
     GLuint gpuProgramId = 0;
     GLuint numLoadedTextures = 0;
     UniformMap uniforms = {};
+
+    void printVirtualScene() {
+        for (auto& obj : virtualScene) {
+            std::cout << obj.first << std::endl;
+        }
+    }
 
     void gameLoop();
 
@@ -169,8 +192,8 @@ private:
 
     static void setRenderConfig() {
         glEnable(GL_DEPTH_TEST);
-        glEnable(GL_CULL_FACE);
-        glCullFace(GL_BACK);
+        //glEnable(GL_CULL_FACE);
+        //glCullFace(GL_BACK);
         glFrontFace(GL_CCW);
     }
 };

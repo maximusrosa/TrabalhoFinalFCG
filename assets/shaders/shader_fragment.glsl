@@ -32,6 +32,7 @@ uniform sampler2D lava_texture;
 uniform sampler2D stonebrick_texture;
 uniform sampler2D galaxy_texture;
 uniform sampler2D glowstone_texture;
+uniform sampler2D wood_texture;
 
 out vec4 color;
 
@@ -143,9 +144,9 @@ void main()
                 u = texcoords.x;
                 v = texcoords.y;
 
-                Kd = texture(gold_texture, vec2(u,v)).rgb;
-                Ks = vec3(0.2314, 0.0039, 0.2039);
-                Ka = vec3(0.0902, 0.0039, 0.102);
+                Kd = texture(wood_texture, vec2(u,v)).rgb;
+                Ks = vec3(0.0118, 0.0078, 0.0);
+                Ka = vec3(0.0275, 0.0118, 0.0039);
                 q = 64.0;
 
                 vec3 lambert_diffuse_term = Kd * I * max(dot(n,l),0.05);
@@ -160,9 +161,9 @@ void main()
                 u = texcoords.x;
                 v = texcoords.y;
 
-                Kd = texture(gold_texture, vec2(u,v)).rgb;
-                Ks = vec3(0.2314, 0.0039, 0.2039);
-                Ka = vec3(0.0902, 0.0039, 0.102);
+                Kd = texture(wood_texture, vec2(u,v)).rgb;
+                Ks = vec3(0.0118, 0.0078, 0.0);
+                Ka = vec3(0.0275, 0.0118, 0.0039);
                 q = 64.0;
 
                 vec3 lambert_diffuse_term = Kd * I * max(dot(n,l),0.05);
