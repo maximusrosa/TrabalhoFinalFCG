@@ -46,7 +46,10 @@ public:
     virtual void cursorPosCallback(double xpos, double ypos);
     virtual void framebufferSizeCallback(int width, int height);
 
-    void RenderPlayerLife(GLFWwindow* window);
+    void renderPlayerLife(GLFWwindow* window);
+
+    void renderGameOver(GLFWwindow* window);
+    void renderVictory(GLFWwindow* window);
 
     void setCameraView();
     void setProjection();
@@ -88,7 +91,7 @@ private:
     const int maxLife = 5;
     int playerLife = maxLife;
     float timeStarving = 0.0f;
-    const float starvationLimit = 120.0f;
+    const float starvationLimit = 90.0f;
 
     int windowWidth, windowHeight;
     int windowX, windowY;
@@ -102,16 +105,21 @@ private:
     glm::vec4 cowPosition = glm::vec4(0.0f, 1.2f, -90.0f, 1.0f);
     float distanceCameraCow = 0.0f;
 
+    bool gameOver = false;
+    bool victory = false;
+
     const std::vector<glm::vec3> chestCoordinates = {
         glm::vec3(29.390f, 1.0f, -39.671f),
         glm::vec3(-54.558f, 1.0f, 77.954f),
         glm::vec3(64.719f, 1.0f, -75.398f),
-        glm::vec3(-9.232f, 1.0f, 53.063f),
-        glm::vec3(4.0f, 1.0f, -20.0f)
+        glm::vec3(-9.232f, 1.0f, 53.063f)
     };
-    std::vector<bool> chestOpened = {false, false, false, false, false};
+    std::vector<bool> chestOpened = {false, false, false, false};
     int numChests = 0;
 
+    const glm::vec4 initialCameraPosition = glm::vec4(4.0f, 2.0f, -30.0f, 1.0f);
+    const glm::vec4 initialCameraLookAt = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
+    
     glm::vec4 cameraPosition = glm::vec4(4.0f, 2.0f, -30.0f, 1.0f);
     glm::vec4 cameraLookAt = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
     glm::vec4 cameraView = cameraLookAt - cameraPosition;

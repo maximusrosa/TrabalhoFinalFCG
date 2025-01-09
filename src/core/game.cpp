@@ -243,6 +243,7 @@ void Game::createModel(const std::string& objFilePath, glm::mat4 model) {
     bool isCow = objFilePath.find("cow") != std::string::npos;
     bool isChestLid = objFilePath.find("chest_lid") != std::string::npos;
     bool isChest = objFilePath.find("chest") != std::string::npos;
+    bool isPlayer = objFilePath.find("cube") != std::string::npos;
 
     if (isMaze) {
         const std::string& mazeModelFolder = objFilePath;
@@ -275,7 +276,7 @@ void Game::createModel(const std::string& objFilePath, glm::mat4 model) {
             }
         }
 
-        if (isCow)
+        if (isChestLid || isChest) 
             BuildSceneTriangles(virtualScene, &objModel, model, true);
         else
             BuildSceneTriangles(virtualScene, &objModel, model);
@@ -328,15 +329,7 @@ void Game::drawChestLid(glm::mat4 model, int chestIndex) {
     DrawVirtualObject(const_cast<UniformMap&>(uniforms), virtualScene, chestLidName.c_str());
 }
 
-void RenderHelloWorldText(GLFWwindow* window) {
-    const char* message = "Hello World";
-    float lineheight = TextRendering_LineHeight(window);
-    float charwidth = TextRendering_CharWidth(window);
-
-    TextRendering_PrintString(window, message, 0.5f - (strlen(message) / 2.0f) * charwidth, 0.5f - lineheight / 2.0f, 1.0f);
-}
-
-void Game::RenderPlayerLife(GLFWwindow* window) {
+void Game::renderPlayerLife(GLFWwindow* window) {
     const float scale = 2.5f;
 
     std::string buffer = "[";
@@ -353,6 +346,102 @@ void Game::RenderPlayerLife(GLFWwindow* window) {
     float charwidth = TextRendering_CharWidth(window, scale);
 
     TextRendering_PrintString(window, buffer, -1.0f, -lineheight - 0.85, scale);
+}
+
+void Game::renderVictory(GLFWwindow* window) {
+    // Set the screen background color to light blue
+    glClearColor(0.55f, 0.55f, 0.9f, 1.0f);
+
+    // Clear the color buffer
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    // Render the victory message
+    const float scale = 7.0f;
+
+    std::string buffer = "VICTORY!";
+
+    float lineheight = TextRendering_LineHeight(window, scale);
+    float charwidth = TextRendering_CharWidth(window, scale);
+
+    int width, height;
+
+    if (fullScreen) {
+        glfwGetWindowSize(window, &width, &height);
+    } else {
+        width = windowWidth;
+        height = windowHeight;
+    }
+
+    TextRendering_PrintString(
+        window, 
+        buffer, 
+        -(charwidth * buffer.length()) / 2.0f, 
+        lineheight, 
+        scale
+    );
+
+    // Render the message to play again (press R) or exit (press ESC)
+    const float exitScale = 3.0f;
+    std::string exitBuffer = "Press ESC to exit";
+
+    float exitLineHeight = TextRendering_LineHeight(window, exitScale);
+    float exitCharWidth = TextRendering_CharWidth(window, exitScale);
+
+    TextRendering_PrintString(
+        window, 
+        exitBuffer, 
+        -(charwidth * buffer.length()) / 2.0f, 
+        lineheight - exitLineHeight - 0.2, 
+        exitScale
+    );
+}
+
+void Game::renderGameOver(GLFWwindow* window) {
+        // Set the screen background color to light blue
+    glClearColor(0.9f, 0.55f, 0.55f, 1.0f);
+
+    // Clear the color buffer
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    // Render the victory message
+    const float scale = 7.0f;
+
+    std::string buffer = "GAME OVER";
+
+    float lineheight = TextRendering_LineHeight(window, scale);
+    float charwidth = TextRendering_CharWidth(window, scale);
+
+    int width, height;
+
+    if (fullScreen) {
+        glfwGetWindowSize(window, &width, &height);
+    } else {
+        width = windowWidth;
+        height = windowHeight;
+    }
+
+    TextRendering_PrintString(
+        window, 
+        buffer, 
+        -(charwidth * buffer.length()) / 2.0f, 
+        lineheight, 
+        scale
+    );
+
+    // Render the message to play again (press R) or exit (press ESC)
+    const float exitScale = 3.0f;
+    std::string exitBuffer = "Press ESC to exit";
+
+    float exitLineHeight = TextRendering_LineHeight(window, exitScale);
+    float exitCharWidth = TextRendering_CharWidth(window, exitScale);
+
+    TextRendering_PrintString(
+        window, 
+        exitBuffer, 
+        -(charwidth * buffer.length()) / 2.0f, 
+        lineheight - exitLineHeight - 0.2, 
+        exitScale
+    );
 }
 
 // Cálculo da Curva de Bezier 2D
@@ -391,26 +480,38 @@ void Game::gameLoop() {
     float chestLidZTranslation = 0.0f;
     float chestLidYTranslation = 0.0f;
     
-    float t = 0.0f;       // Parâmetro "t" da curva de Bézier
-    bool turn_1 = false;  // Controle do sentido (ida ou volta)
+    float t = 0.0f;     // Parâmetro "t" da curva de Bézier
+    bool turn = false;  // Controle do sentido (ida ou volta)
 
-    glm::vec2 p0(4.0f, -90.0f);   // Ponto inicial
-    glm::vec2 p1(6.0f, -92.0f);   // Primeiro ponto de controle
-    glm::vec2 p2(8.0f, -96.0f);   // Segundo ponto de controle
-    glm::vec2 p3(10.0f, -100.0f); // Ponto final
+    glm::vec2 p0(0.0f, -90.0f); // Ponto inicial
+    glm::vec2 p1(2.0f, -92.0f); // Primeiro ponto de controle
+    glm::vec2 p2(4.0f, -94.0f); // Segundo ponto de controle
+    glm::vec2 p3(6.0f, -96.0f); // Ponto final
 
     double lastTime = glfwGetTime();
     double currentTime = lastTime;
 
+    glm::vec4 lastCowPosition = cowPosition;
+
     while (!glfwWindowShouldClose(window)) {
-        // Atualiza o parâmetro "t" da curva de Bézier
-        t += 0.1f * deltaTime;
+        glfwPollEvents();
+
+        if (gameOver) {
+            renderGameOver(window);
+            glfwSwapBuffers(window);
+            continue;
+        }
+        if (victory) {
+            renderVictory(window);
+            glfwSwapBuffers(window);
+            continue;
+        }
 
         // Atualiza os pontos de controle da curva de Bézier para alternar entre ida e volta
         if (t >= 1.0f) {
             t = 0.0f; // Reinicia o parâmetro "t"
 
-            if (turn_1) {
+            if (turn) {
                 // Caminho de volta
                 p0 = glm::vec2(10.0f, -100.0f);
                 p1 = glm::vec2(8.0f, -96.0f);
@@ -423,38 +524,53 @@ void Game::gameLoop() {
                 p2 = glm::vec2(8.0f, -96.0f);
                 p3 = glm::vec2(10.0f, -100.0f);
             }
-
-            turn_1 = !turn_1; // Alterna a direção
+            turn = !turn; // Alterna a direção
         }
 
         // Atualiza a posição da vaca
+        lastCowPosition = cowPosition;
         cowPosition = bezierCurve2D(p0, p1, p2, p3, t);
-
-        distanceCameraCow = glm::distance(cameraPosition, cowPosition);
-        if (lookAtMode && distanceCameraCow < distanceCameraCowThreshold) {
-            cameraView = normalize(cowPosition - cameraPosition);
-        }
 
         // Update time
         currentTime = glfwGetTime();
         deltaTime = currentTime - lastTime;
         lastTime = currentTime;
 
-        timeStarving += deltaTime;
-        if (timeStarving > starvationLimit) {
-            playerLife--;
-            timeStarving = 0.0f;
+        // Atualiza o parâmetro "t" da curva de Bézier
+        t += 0.1f * deltaTime;
+
+        // Atualiza AABB e bounding sphere da vaca
+        glm::vec4 cowTranslation = cowPosition - lastCowPosition;
+
+        virtualScene["the_cow"]->translate(cowTranslation.x, cowTranslation.y, cowTranslation.z);
+
+        distanceCameraCow = glm::distance(cameraPosition, cowPosition);
+        if (lookAtMode && distanceCameraCow < distanceCameraCowThreshold) {
+            cameraView = normalize(cowPosition - cameraPosition);
+        }
+
+        if (virtualScene["Cube"]->intersects(*virtualScene["the_cow"])) {
+            victory = true;
+            continue;
         }
 
         // Sets the background color
         initialRendering(0.0f, 0.0f, 0.1f);
-
         glUseProgram(gpuProgramId);
 
         setCameraView();
         setProjection();
         
         glm::mat4 model = Matrix_Identity();
+
+        timeStarving += deltaTime;
+        if (timeStarving > starvationLimit) {
+            playerLife--;
+            timeStarving = 0.0f;
+            if (playerLife == 0) {
+                gameOver = true;
+            }
+        }
 
         glm::mat4 cowModel = Matrix_Translate(cowPosition.x, cowPosition.y, cowPosition.z)
                              * Matrix_Scale(2.0f, 2.0f, 2.0f);
@@ -503,7 +619,7 @@ void Game::gameLoop() {
         drawPlane(model);
         drawMaze(model);
 
-        RenderPlayerLife(window);
+        renderPlayerLife(window);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

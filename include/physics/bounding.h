@@ -65,6 +65,10 @@ public:
     glm::vec4 getMin() const { return min; }
     glm::vec4 getMax() const { return max; }
 
+    glm::vec4 getCenter() const { return (min + max) / 2.0f; }
+    float getSize() const { return glm::distance(min, max); }
+    glm::vec4 getNormal() const;
+
     // Setters
     void setMin(const glm::vec4& min) { this->min = min; }
     void setMax(const glm::vec4& max) { this->max = max; }
