@@ -496,13 +496,13 @@ void Game::gameLoop() {
     while (!glfwWindowShouldClose(window)) {
         glfwPollEvents();
 
-        if (gameOver) {
-            renderGameOver(window);
+        if (victory) {
+            renderVictory(window);
             glfwSwapBuffers(window);
             continue;
         }
-        if (victory) {
-            renderVictory(window);
+        if (gameOver) {
+            renderGameOver(window);
             glfwSwapBuffers(window);
             continue;
         }
@@ -646,7 +646,7 @@ void Game::run() {
 
     // ----------------------------- COW ----------------------------- //
     model = Matrix_Translate(4.0f,1.2f,-90.0f)
-            * Matrix_Scale(2.0f,2.0f,2.0f);
+            * Matrix_Scale(-5.0f,2.0f,2.0f);
 
     createModel("../../assets/models/cow.obj", model);
 
