@@ -117,10 +117,12 @@ private:
     std::vector<bool> chestOpened = {false, false, false, false};
     int numChests = 0;
 
-    const glm::vec4 initialCameraPosition = glm::vec4(4.0f, 2.0f, -30.0f, 1.0f);
+    // const glm::vec4 initialCameraPosition = glm::vec4(4.0f, 2.0f, -30.0f, 1.0f);
+    const glm::vec4 initialCameraPosition = glm::vec4(84.81f, 2.0f, -76.62f, 1.0f);
     const glm::vec4 initialCameraLookAt = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
     
-    glm::vec4 cameraPosition = glm::vec4(4.0f, 2.0f, -30.0f, 1.0f);
+    // glm::vec4 cameraPosition = glm::vec4(4.0f, 2.0f, -30.0f, 1.0f);
+    glm::vec4 cameraPosition = glm::vec4(84.81f, 2.0f, -76.62f, 1.0f);
     glm::vec4 cameraLookAt = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
     glm::vec4 cameraView = cameraLookAt - cameraPosition;
     glm::vec4 cameraUp = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
