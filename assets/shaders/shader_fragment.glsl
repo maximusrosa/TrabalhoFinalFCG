@@ -33,6 +33,8 @@ uniform sampler2D stonebrick_texture;
 uniform sampler2D galaxy_texture;
 uniform sampler2D glowstone_texture;
 uniform sampler2D wood_texture;
+uniform sampler2D diamond_texture;
+uniform sampler2D chest_texture;
 
 out vec4 color;
 
@@ -127,7 +129,7 @@ void main()
                 u = px;
                 v = py;
 
-                Kd = texture(galaxy_texture, vec2(u,v)).rgb;
+                Kd = texture(gold_texture, vec2(u,v)).rgb;
                 Ks = vec3(0.2314, 0.0039, 0.2039);
                 Ka = vec3(0.0902, 0.0039, 0.102);
                 q = 64.0;
@@ -144,7 +146,7 @@ void main()
                 u = texcoords.x;
                 v = texcoords.y;
 
-                Kd = texture(wood_texture, vec2(u,v)).rgb;
+                Kd = texture(chest_texture, vec2(u,v)).rgb;
                 Ks = vec3(0.0118, 0.0078, 0.0);
                 Ka = vec3(0.0275, 0.0118, 0.0039);
                 q = 64.0;
@@ -161,7 +163,7 @@ void main()
                 u = texcoords.x;
                 v = texcoords.y;
 
-                Kd = texture(wood_texture, vec2(u,v)).rgb;
+                Kd = texture(chest_texture, vec2(u,v)).rgb;
                 Ks = vec3(0.0118, 0.0078, 0.0);
                 Ka = vec3(0.0275, 0.0118, 0.0039);
                 q = 64.0;

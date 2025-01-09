@@ -42,7 +42,7 @@ void resolveCollisionsWithStaticObjects(GameObject* movingObject, const VirtualS
     for (const auto& [name, staticObject] : staticObjects) {
         std::string movingObjectName = movingObject->getSceneObject().name;
         std::string staticObjectName = staticObject->getSceneObject().name;
-        if (movingObjectName == staticObjectName || staticObjectName == "the_plane") {
+        if (movingObjectName == staticObjectName || staticObjectName == "the_plane" || staticObjectName == "the_cow") {
             continue;
         }
         if (movingObject->intersects(*staticObject)) {
@@ -56,8 +56,19 @@ bool checkCollisionWithStaticObjects(GameObject* movingObject, const VirtualScen
     for (const auto& [name, staticObject] : staticObjects) {
         std::string movingObjectName = movingObject->getSceneObject().name;
         std::string staticObjectName = staticObject->getSceneObject().name;
-        if (movingObjectName == staticObjectName || staticObjectName == "the_plane") {
+        if (movingObjectName == staticObjectName || staticObjectName == "the_plane" || staticObjectName == "the_cow") {
             continue;
+        }
+        if (staticObjectName.find("the_chest") != std::string::npos) {
+            glm::vec4 movingObjectPosition = movingObject->getAABB().getCenter();
+            glm::vec3 lastMove = movingObject->getLastMove();
+            glm::vec4 lastMove4 = glm::vec4(lastMove.x, lastMove.y, lastMove.z, 0.0f);
+            glm::vec4 origin = movingObjectPosition - lastMove4;
+            glm::vec4 dir = lastMove4;
+            if (checkCollisionRayAABB(origin, dir, staticObject->getAABB())) {
+                std::cout << "Collision between " << movingObjectName << " and " << staticObjectName << std::endl;
+                return true;
+            }
         }
         if (movingObject->intersects(*staticObject)) {
             std::cout << "Collision between " << movingObjectName << " and " << staticObjectName << std::endl;
@@ -65,4 +76,33 @@ bool checkCollisionWithStaticObjects(GameObject* movingObject, const VirtualScen
         }
     }
     return false;
+}
+
+bool checkCollisionRaySphere(
+    const glm::vec4& origin, 
+    const glm::vec4& dir, 
+    const glm::vec4& center, 
+    float radius
+) {
+    glm::vec4 oc = origin - center;
+    float a = glm::dot(dir, dir);
+    float b = 2.0f * glm::dot(oc, dir);
+    float c = glm::dot(oc, oc) - radius * radius;
+    float discriminant = b * b - 4 * a * c;
+    return discriminant >= 0;
+}
+
+bool checkCollisionRayAABB(
+    const glm::vec4& origin, 
+    const glm::vec4& dir, 
+    const AABB& aabb
+) {
+    glm::vec4 invDir = 1.0f / dir;
+    glm::vec4 t0 = (aabb.getMin() - origin) * invDir;
+    glm::vec4 t1 = (aabb.getMax() - origin) * invDir;
+    glm::vec4 tmin = glm::min(t0, t1);
+    glm::vec4 tmax = glm::max(t0, t1);
+    float tminmax = glm::max(tmin.x, glm::max(tmin.y, tmin.z));
+    float tmaxmin = glm::min(tmax.x, glm::min(tmax.y, tmax.z));
+    return tminmax <= tmaxmin;
 }

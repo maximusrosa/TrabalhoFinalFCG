@@ -27,6 +27,7 @@ uniform sampler2D grass_texture;
 uniform sampler2D lava_texture;
 uniform sampler2D stonebrick_texture;
 uniform sampler2D galaxy_texture;
+uniform sampler2D diamond_texture;
 
 out vec4 position_world;
 out vec4 position_model;
@@ -74,9 +75,9 @@ void main()
             u = px;
             v = py;
 
-            Kd = texture(galaxy_texture, vec2(u,v)).rgb;
-            Ks = vec3(0.2314, 0.0039, 0.2039);
-            Ka = vec3(0.0902, 0.0039, 0.102);
+            Kd = texture(gold_texture, vec2(u,v)).rgb;
+            Ks = vec3(0.7216, 0.7216, 0.7216);
+            Ka = vec3(0.1686, 0.1529, 0.1137);
             q = 64.0;
         }
 

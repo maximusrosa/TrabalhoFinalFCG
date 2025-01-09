@@ -21,4 +21,15 @@ void resolveCollisions(std::vector<GameObject>& objects);
 void resolveCollisionsWithStaticObjects(GameObject* movingObject, const VirtualScene& staticObjects);
 bool checkCollisionWithStaticObjects(GameObject* movingObject, const VirtualScene& staticObjects);
 
+bool checkCollisionRaySphere(
+    const glm::vec4& origin, 
+    const glm::vec4& dir, 
+    const glm::vec4& center, 
+    float radius
+);
+bool checkCollisionRayAABB(
+    const glm::vec4& origin, 
+    const glm::vec4& dir, 
+    const AABB& aabb
+);
 #endif // COLLISIONS_H

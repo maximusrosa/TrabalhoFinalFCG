@@ -20,6 +20,23 @@ std::vector<glm::vec4> AABB::getCorners() const {
     };
 }
 
+glm::vec4 AABB::getNormal() const {
+    glm::vec4 center = getCenter();
+    glm::vec4 normal = glm::vec4(0.0f);
+    float minDist = std::numeric_limits<float>::max();
+    std::vector<glm::vec4> corners = getCorners();
+
+    for (const auto& corner : corners) {
+        float dist = glm::distance(center, corner);
+        if (dist < minDist) {
+            minDist = dist;
+            normal = corner - center;
+        }
+    }
+
+    return glm::normalize(normal);
+}
+
 bool AABB::contains(const glm::vec4& point) const { 
     return (point.x >= min.x && point.x <= max.x &&
             point.y >= min.y && point.y <= max.y &&
