@@ -25,26 +25,10 @@
   <component name="ChangeListManager">
     <list default="true" id="6ed9da7c-acf7-4d08-a0b9-64f909798ec1" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/textures/gold.jpeg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/textures/grass.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/textures/wall.jpeg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/Debug/CowQuest.exe" beforeDir="false" afterPath="$PROJECT_DIR$/bin/Debug/CowQuest.exe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/.ninja_deps" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/.ninja_deps" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/.ninja_log" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/.ninja_log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeCache.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeCache.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CowQuest.dir/src/core/game.cpp.obj" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CowQuest.dir/src/core/game.cpp.obj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CowQuest.dir/src/graphics/core.cpp.obj" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CowQuest.dir/src/graphics/core.cpp.obj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CowQuest.dir/src/graphics/renderer.cpp.obj" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CowQuest.dir/src/graphics/renderer.cpp.obj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CowQuest.dir/src/graphics/shaders.cpp.obj" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CowQuest.dir/src/graphics/shaders.cpp.obj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CowQuest.dir/src/main.cpp.obj" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CowQuest.dir/src/main.cpp.obj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CowQuest.dir/src/utils/math_utils.cpp.obj" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CowQuest.dir/src/utils/math_utils.cpp.obj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/clion-Debug-log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/clion-Debug-log.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/rules.ninja" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/rules.ninja" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/Testing/Temporary/LastTest.log" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/Testing/Temporary/LastTest.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/build.ninja" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/build.ninja" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/graphics/stb_image.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/graphics/textures.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/graphics/textures.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/models/chest.obj" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/chest.obj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/models/chest_lid.obj" beforeDir="false" afterPath="$PROJECT_DIR$/assets/models/chest_lid.obj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/core/game.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/core/game.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/game.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/game.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -77,22 +61,22 @@
     <option name="showLibraryContents" value="true" />
     <option name="showMembers" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;C/C++ File.main.cpp.executor&quot;: &quot;Run&quot;,
-    &quot;CMake Application.CowQuest.executor&quot;: &quot;Run&quot;,
-    &quot;CMake Application.main.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
-    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
-    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;maximus&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/maxbo/OneDrive/Documentos/Estudos/Faculdade/Prática/Semestre6/FCG/TrabalhoFinalFCG&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "C/C++ File.main.cpp.executor": "Run",
+    "CMake Application.CowQuest.executor": "Run",
+    "CMake Application.main.executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "RunOnceActivity.readMode.enableVisualFormatting": "true",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "git-widget-placeholder": "main",
+    "last_opened_file_path": "C:/Users/maxbo/OneDrive/Documentos/Estudos/Faculdade/Prática/Semestre6/FCG/TrabalhoFinalFCG",
+    "settings.editor.selected.configurable": "preferences.pluginManager"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\maxbo\OneDrive\Documentos\Estudos\Faculdade\Prática\Semestre6\FCG\TrabalhoFinalFCG\include\graphics" />

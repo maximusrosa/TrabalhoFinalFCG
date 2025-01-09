@@ -95,7 +95,7 @@ private:
     glm::vec4 cowPosition = glm::vec4(4.0f, 1.2f, -90.0f, 1.0f);
     float distanceCameraCow = 0.0f;
 
-    glm::vec4 cameraPosition = glm::vec4(4.0f, 2.0f, 0.0f, 1.0f);
+    glm::vec4 cameraPosition = glm::vec4(4.0f, 2.0f, -25.0f, 1.0f);
     glm::vec4 cameraLookAt = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
     glm::vec4 cameraView = cameraLookAt - cameraPosition;
     glm::vec4 cameraUp = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
@@ -122,6 +122,8 @@ private:
     GLuint gpuProgramId = 0;
     GLuint numLoadedTextures = 0;
     UniformMap uniforms = {};
+
+    int numVidas = 5;
 
     void gameLoop();
 

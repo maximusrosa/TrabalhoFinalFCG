@@ -307,22 +307,22 @@ void TextRendering_ShowHelloWorld(GLFWwindow* window)
 }
 
 // Cálculo da Curva de Bezier 2D
-glm::vec3 get2DBezierCurve(glm::vec2 p0, glm::vec2 p1, glm::vec2 p2, glm::vec2 p3, float t){
+glm::vec4 bezierCurve2D(glm::vec2 p0, glm::vec2 p1, glm::vec2 p2, glm::vec2 p3, float t){
 
     float x = pow(1-t,3)*p0.x + 3*t*pow(1-t,2)*p1.x + 3*pow(t,2)*(1-t)*p2.x + pow(t,3)*p3.x;
     float z = pow(1-t,3)*p0.y + 3*t*pow(1-t,2)*p1.y + 3*pow(t,2)*(1-t)*p2.y + pow(t,3)*p3.y;
 
-    return glm::vec3(x, 0.0f, z);
+    return {x, 1.2f, z, 1.0f};
 }
 
 // Cálculo da Curva de Bezier 3D
-glm::vec3 get3DBezierCurve(glm::vec3 p0, glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, float t){
+glm::vec4 bezierCurve3D(glm::vec3 p0, glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, float t){
 
     float x = pow(1-t,3)*p0.x + 3*t*pow(1-t,2)*p1.x + 3*pow(t,2)*(1-t)*p2.x + pow(t,3)*p3.x;
     float y = pow(1-t,3)*p0.y + 3*t*pow(1-t,2)*p1.y + 3*pow(t,2)*(1-t)*p2.y + pow(t,3)*p3.y;
     float z = pow(1-t,3)*p0.z + 3*t*pow(1-t,2)*p1.z + 3*pow(t,2)*(1-t)*p2.z + pow(t,3)*p3.z;
 
-    return glm::vec3(x, y, z);
+    return {x, y, z, 1.0f};
 }
 
 void Game::gameLoop() {
@@ -338,6 +338,14 @@ void Game::gameLoop() {
 
     double lastTime = glfwGetTime();
     double currentTime = lastTime;
+
+    float t = 0.0f;       // Parâmetro "t" da curva de Bézier
+    bool turn_1 = false;  // Controle do sentido (ida ou volta)
+
+    glm::vec2 p0(4.0f, -90.0f);   // Ponto inicial
+    glm::vec2 p1(6.0f, -92.0f);   // Primeiro ponto de controle
+    glm::vec2 p2(8.0f, -96.0f);   // Segundo ponto de controle
+    glm::vec2 p3(10.0f, -100.0f); // Ponto final
 
     while (!glfwWindowShouldClose(window)) {
         static const glm::mat4 identity = Matrix_Identity();
@@ -362,70 +370,64 @@ void Game::gameLoop() {
 
         setCameraView();
         setProjection();
-        
+
         glm::mat4 model = Matrix_Identity();
 
-        
-        glm::mat4 cowModel = Matrix_Translate(cowPosition.x, cowPosition.y, cowPosition.z)
-                             * Matrix_Scale(2.0f, 2.0f, 2.0f);
+        // Atualiza os pontos de controle da curva de Bézier para alternar entre ida e volta
+        if (t >= 1.0f) {
+            t = 0.0f; // Reinicia o parâmetro "t"
 
-        glm::vec3 bezierPosition = get2DBezierCurve(glm::vec2(4.0f, 1.2f), glm::vec2(4.0f, 2.0f), glm::vec2(4.0f, 3.0f), glm::vec2(4.0f, 4.0f), cowPositionZ / 100.0f);
+            if (turn_1) {
+                // Caminho de volta
+                p0 = glm::vec2(10.0f, -100.0f);
+                p1 = glm::vec2(8.0f, -96.0f);
+                p2 = glm::vec2(6.0f, -92.0f);
+                p3 = glm::vec2(4.0f, -90.0f);
+            } else {
+                // Caminho de ida
+                p0 = glm::vec2(4.0f, -90.0f);
+                p1 = glm::vec2(6.0f, -92.0f);
+                p2 = glm::vec2(8.0f, -96.0f);
+                p3 = glm::vec2(10.0f, -100.0f);
+            }
 
-        glm::mat4 cowModelAnimated = Matrix_Translate(bezierPosition.x, bezierPosition.y, cowPositionZ)
+            turn_1 = !turn_1; // Alterna a direção
+        }
+
+        // Calcula a posição da vaca na curva de Bézier
+        cowPosition = bezierCurve2D(p0, p1, p2, p3, t);
+
+        // Atualiza o modelo da vaca
+        glm::mat4 cowModelAnimated = Matrix_Translate(cowPosition.x, cowPosition.y, cowPosition.z)
                                      * Matrix_Scale(2.0f, 2.0f, 2.0f)
                                      * Matrix_Rotate_Y(cowRotation);
 
+        // Incrementa o parâmetro "t" para a próxima posição na curva
+        t += 0.1f * deltaTime; // Ajuste o multiplicador para alterar a velocidade
 
-
+        // Modelos de outros objetos
         glm::mat4 chestBaseModel = Matrix_Translate(4.0f, 0.5f, -20.0f)
-                                   * Matrix_Rotate_Y(M_PI/2) 
+                                   * Matrix_Rotate_Y(M_PI / 2)
                                    * Matrix_Scale(0.8f, 0.8f, 0.8f);
 
         glm::mat4 chestLidModel = Matrix_Translate(4.0f, 0.6f, -20.0f)
-                                  * Matrix_Rotate_Y(M_PI/2) 
-                                  * Matrix_Scale(0.8f, 0.8f, 0.8f) 
+                                  * Matrix_Rotate_Y(M_PI / 2)
+                                  * Matrix_Scale(0.8f, 0.8f, 0.8f)
                                   * Matrix_Rotate_Z(0.5f);
 
-        glm::mat4 chestBase = Matrix_Translate(4.0f, 0.5f, -20.0f)
-                              * Matrix_Rotate_Y(M_PI/2) * Matrix_Scale(0.8f, 0.8f, 0.8f);
-
-        if (chestLidRotation < M_PI_2) { // Abrir até 90 graus
-            chestLidRotation += 1.0f * deltaTime; // Velocidade de abertura
-        }
-
-        // Definir a transformação para a tampa do baú
-        glm::mat4 chestLid = Matrix_Translate(4.0f, 0.5f + 0.4f, -20.0f)  // Posição inicial
-                             * Matrix_Rotate_Y(M_PI/2)                   // Alinhamento com o baú
-                             * Matrix_Scale(0.8f, 0.8f, 0.8f);
-
-        // Adiciona a rotação da tampa
-        glm::mat4 lidOpening =       // Translada para a dobradiça
-                                Matrix_Rotate_Z(chestLidRotation)      // Gira em torno da dobradiça
-                               * Matrix_Translate(0.3f, 0.8f, 0.0f);     // Volta à posição original
-
-        chestLid *= lidOpening;
-
+        // Desenha os objetos na cena
         drawCow(cowModelAnimated);
         drawPlane(model);
         drawMaze(model);
-        drawChestBase(chestBase);
-        drawChestLid(chestLid);
+        drawChestBase(chestBaseModel);
+        drawChestLid(chestLidModel);
 
-
-/*
-        // Draw the cube (player)
-        model = Matrix_Translate(cameraPosition.x, cameraPosition.y, cameraPosition.z)
-                * Matrix_Rotate_Y(-cameraYaw);
-        glUniformMatrix4fv(uniforms["model"], 1 , GL_FALSE , glm::value_ptr(model));
-        glUniform1i(uniforms["object_id"], CUBE);
-        glUniform1i(uniforms["interpolation_type"], GOURAUD_INTERPOLATION);
-        DrawVirtualObject(uniforms, virtualScene, "Cube");
-*/
-
+        // Renderiza e processa eventos
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
 }
+
 
 void Game::run() {
     if (!window) {
