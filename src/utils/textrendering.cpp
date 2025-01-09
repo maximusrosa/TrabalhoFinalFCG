@@ -149,13 +149,13 @@ void TextRendering_PrintString(GLFWwindow* window, const std::string &str, float
     float sx = scale / width;
     float sy = scale / height;
 
-    for (size_t i = 0; i < str.size(); i++)
+    for (char i : str)
     {
         // Find the glyph for the character we are looking for
-        texture_glyph_t *glyph = 0;
+        texture_glyph_t *glyph = nullptr;
         for (size_t j = 0; j < dejavufont.glyphs_count; ++j)
         {
-            if (dejavufont.glyphs[j].codepoint == (uint32_t)str[i])
+            if (dejavufont.glyphs[j].codepoint == (uint32_t)i)
             {
                 glyph = &dejavufont.glyphs[j];
                 break;
@@ -227,84 +227,4 @@ float TextRendering_CharWidth(GLFWwindow* window, float scale = 1.0f)
     int width, height;
     glfwGetWindowSize(window, &width, &height);
     return dejavufont.glyphs[32].advance_x / width * scale;
-}
-
-void TextRendering_PrintMatrix(GLFWwindow* window, glm::mat4 M, float x, float y, float scale = 1.0f)
-{
-    char buffer[40];
-    float lineheight = TextRendering_LineHeight(window) * scale;
-
-    snprintf(buffer, 40, "[%+0.2f %+0.2f %+0.2f %+0.2f]", M[0][0], M[1][0], M[2][0], M[3][0]);
-    TextRendering_PrintString(window, buffer, x, y, scale);
-    snprintf(buffer, 40, "[%+0.2f %+0.2f %+0.2f %+0.2f]", M[0][1], M[1][1], M[2][1], M[3][1]);
-    TextRendering_PrintString(window, buffer, x, y - lineheight, scale);
-    snprintf(buffer, 40, "[%+0.2f %+0.2f %+0.2f %+0.2f]", M[0][2], M[1][2], M[2][2], M[3][2]);
-    TextRendering_PrintString(window, buffer, x, y - 2*lineheight, scale);
-    snprintf(buffer, 40, "[%+0.2f %+0.2f %+0.2f %+0.2f]", M[0][3], M[1][3], M[2][3], M[3][3]);
-    TextRendering_PrintString(window, buffer, x, y - 3*lineheight, scale);
-}
-
-void TextRendering_PrintVector(GLFWwindow* window, glm::vec4 v, float x, float y, float scale = 1.0f)
-{
-    char buffer[10];
-    float lineheight = TextRendering_LineHeight(window) * scale;
-
-    snprintf(buffer, 10, "[%+0.2f]", v.x);
-    TextRendering_PrintString(window, buffer, x, y, scale);
-    snprintf(buffer, 10, "[%+0.2f]", v.y);
-    TextRendering_PrintString(window, buffer, x, y - lineheight, scale);
-    snprintf(buffer, 10, "[%+0.2f]", v.z);
-    TextRendering_PrintString(window, buffer, x, y - 2*lineheight, scale);
-    snprintf(buffer, 10, "[%+0.2f]", v.w);
-    TextRendering_PrintString(window, buffer, x, y - 3*lineheight, scale);
-}
-
-void TextRendering_PrintMatrixVectorProduct(GLFWwindow* window, glm::mat4 M, glm::vec4 v, float x, float y, float scale = 1.0f)
-{
-    char buffer[70];
-    float lineheight = TextRendering_LineHeight(window) * scale;
-
-    auto r = M*v;
-    snprintf(buffer, 70, "[%+0.2f %+0.2f %+0.2f %+0.2f][%+0.2f]     [%+0.2f]\n", M[0][0], M[1][0], M[2][0], M[3][0], v[0], r[0]);
-    TextRendering_PrintString(window, buffer, x, y, scale);
-    snprintf(buffer, 70, "[%+0.2f %+0.2f %+0.2f %+0.2f][%+0.2f]     [%+0.2f]\n", M[0][1], M[1][1], M[2][1], M[3][1], v[1], r[1]);
-    TextRendering_PrintString(window, buffer, x, y - lineheight, scale);
-    snprintf(buffer, 70, "[%+0.2f %+0.2f %+0.2f %+0.2f][%+0.2f] --> [%+0.2f]\n", M[0][2], M[1][2], M[2][2], M[3][2], v[2], r[2]);
-    TextRendering_PrintString(window, buffer, x, y - 2*lineheight, scale);
-    snprintf(buffer, 70, "[%+0.2f %+0.2f %+0.2f %+0.2f][%+0.2f]     [%+0.2f]\n", M[0][3], M[1][3], M[2][3], M[3][3], v[3], r[3]);
-    TextRendering_PrintString(window, buffer, x, y - 3*lineheight, scale);
-}
-
-void TextRendering_PrintMatrixVectorProductMoreDigits(GLFWwindow* window, glm::mat4 M, glm::vec4 v, float x, float y, float scale = 1.0f)
-{
-    char buffer[70];
-    float lineheight = TextRendering_LineHeight(window) * scale;
-
-    auto r = M*v;
-    snprintf(buffer, 70, "[%5.1f %5.1f %5.1f %5.1f][%5.2f]     [%+6.1f]\n", M[0][0], M[1][0], M[2][0], M[3][0], v[0], r[0]);
-    TextRendering_PrintString(window, buffer, x, y, scale);
-    snprintf(buffer, 70, "[%5.1f %5.1f %5.1f %5.1f][%5.2f]     [%+6.1f]\n", M[0][1], M[1][1], M[2][1], M[3][1], v[1], r[1]);
-    TextRendering_PrintString(window, buffer, x, y - lineheight, scale);
-    snprintf(buffer, 70, "[%5.1f %5.1f %5.1f %5.1f][%5.2f] --> [%+6.1f]\n", M[0][2], M[1][2], M[2][2], M[3][2], v[2], r[2]);
-    TextRendering_PrintString(window, buffer, x, y - 2*lineheight, scale);
-    snprintf(buffer, 70, "[%5.1f %5.1f %5.1f %5.1f][%5.2f]     [%+6.1f]\n", M[0][3], M[1][3], M[2][3], M[3][3], v[3], r[3]);
-    TextRendering_PrintString(window, buffer, x, y - 3*lineheight, scale);
-}
-
-void TextRendering_PrintMatrixVectorProductDivW(GLFWwindow* window, glm::mat4 M, glm::vec4 v, float x, float y, float scale = 1.0f)
-{
-    auto r = M*v;
-    auto w = r[3];
-
-    char buffer[90];
-    float lineheight = TextRendering_LineHeight(window) * scale;
-
-    snprintf(buffer, 90, "[%+0.2f %+0.2f %+0.2f %+0.2f][%+0.2f]     [%+0.2f]        [%+0.2f]\n", M[0][0], M[1][0], M[2][0], M[3][0], v[0], r[0], r[0]/w);
-    TextRendering_PrintString(window, buffer, x, y, scale);
-    snprintf(buffer, 90, "[%+0.2f %+0.2f %+0.2f %+0.2f][%+0.2f]     [%+0.2f] div. w [%+0.2f]\n", M[0][1], M[1][1], M[2][1], M[3][1], v[1], r[1], r[1]/w);
-    TextRendering_PrintString(window, buffer, x, y - lineheight, scale);
-    snprintf(buffer, 90, "[%+0.2f %+0.2f %+0.2f %+0.2f][%+0.2f] --> [%+0.2f] -----> [%+0.2f]\n", M[0][2], M[1][2], M[2][2], M[3][2], v[2], r[2], r[2]/w);
-    TextRendering_PrintString(window, buffer, x, y - 2*lineheight, scale);
-    snprintf(buffer, 90, "[%+0.2f %+0.2f %+0.2f %+0.2f][%+0.2f]     [%+0.2f]        [%+0.2f]\n", M[0][3], M[1][3], M[2][3], M[3][3], v[3], r[3], r[3]/w);
-    TextRendering_PrintString(window, buffer, x, y - 3*lineheight, scale);
 }
