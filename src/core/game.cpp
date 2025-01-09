@@ -137,15 +137,24 @@ void Game::keyCallback(int key, int scancode, int actions, int mods) {
             }
         }
 
-        // F11 key toggles full screen
-        if (actions == GLFW_PRESS && key == GLFW_KEY_F11) {
-            fullScreen = !fullScreen;
-            if (fullScreen) {
-                glfwSetWindowMonitor(window, glfwGetPrimaryMonitor(), 0, 0,
-                                     screenWidth, screenHeight, GLFW_DONT_CARE);
-            } else {
-                glfwSetWindowMonitor(window, nullptr, windowX, windowY,
-                                     windowWidth, windowHeight, GLFW_DONT_CARE);
+        if (actions == GLFW_PRESS) {
+            // F11 key toggles full screen
+            if (key == GLFW_KEY_F11) {
+                fullScreen = !fullScreen;
+                if (fullScreen) {
+                    glfwSetWindowMonitor(window, glfwGetPrimaryMonitor(), 0, 0,
+                                        screenWidth, screenHeight, GLFW_DONT_CARE);
+                } else {
+                    glfwSetWindowMonitor(window, nullptr, windowX, windowY,
+                                        windowWidth, windowHeight, GLFW_DONT_CARE);
+                }
+            }
+
+            // L key toggles look at mode
+            if (key == GLFW_KEY_L) {
+                lookAtMode = !lookAtMode;
+                cameraLookAt = cowPosition;
+                distanceCameraCow = glm::distance(cameraPosition, cowPosition);
             }
         }
     }
@@ -184,15 +193,18 @@ void Game::cursorPosCallback(double xpos, double ypos) {
     if (cameraYaw > 2 * M_PI) cameraYaw -= 2 * M_PI;
     if (cameraYaw < 0) cameraYaw += 2 * M_PI;
 
-    // Compute new camera view direction
-    double viewX = std::cos(cameraPitch) * std::sin(cameraYaw);
-    double viewY = std::sin(cameraPitch);
-    double viewZ = std::cos(cameraPitch) * std::cos(cameraYaw);
+    if (lookAtMode && distanceCameraCow < distanceCameraCowThreshold) {
+        cameraView = normalize(cowPosition - cameraPosition);
+    } else {
+        // Compute new camera view direction
+        double viewX = std::cos(cameraPitch) * std::sin(cameraYaw);
+        double viewY = std::sin(cameraPitch);
+        double viewZ = std::cos(cameraPitch) * std::cos(cameraYaw);
 
-    // Update camera view vector and look at point
-    cameraView = glm::vec4(viewX, viewY, viewZ, 0.0f);
-    cameraLookAt = cameraPosition + cameraView;
-
+        // Update camera view vector and look at point
+        cameraView = glm::vec4(viewX, viewY, viewZ, 0.0f);
+        cameraLookAt = cameraPosition + cameraView;
+    }
     // Recompute camera right and up vector
     cameraRight = normalize(crossproduct(cameraView, glm::vec4(0.0f, 1.0f, 0.0f, 0.0f)));
     cameraUp = normalize(crossproduct(cameraRight, cameraView));
@@ -303,6 +315,13 @@ void Game::gameLoop() {
     double currentTime = lastTime;
 
     while (!glfwWindowShouldClose(window)) {
+        static const glm::mat4 identity = Matrix_Identity();
+
+        distanceCameraCow = glm::distance(cameraPosition, cowPosition);
+        if (lookAtMode && distanceCameraCow < distanceCameraCowThreshold) {
+            cameraView = normalize(cowPosition - cameraPosition);
+        }
+
         // Update time
         currentTime = glfwGetTime();
         deltaTime = currentTime - lastTime;
@@ -319,41 +338,23 @@ void Game::gameLoop() {
         setCameraView();
         setProjection();
 
-        glm::mat4 model = Matrix_Identity();
+        glm::mat4 cowModel = Matrix_Translate(cowPosition.x, cowPosition.y, cowPosition.z)
+                             * Matrix_Scale(2.0f, 2.0f, 2.0f);
 
-        cowPositionZ += cowSpeedZ * deltaTime; // Velocidade de movimento
-        cowRotation += 10.0f * deltaTime; // Velocidade de rotação
+        glm::mat4 chestBaseModel = Matrix_Translate(4.0f, 0.5f, -20.0f)
+                                   * Matrix_Rotate_Y(M_PI/2) 
+                                   * Matrix_Scale(0.8f, 0.8f, 0.8f);
 
-        if (cowPositionZ > 10.0f || cowPositionZ < -90.0f) {
-            cowSpeedZ = -cowSpeedZ; // Inverter a direção
-        }
+        glm::mat4 chestLidModel = Matrix_Translate(4.0f, 0.6f, -20.0f)
+                                  * Matrix_Rotate_Y(M_PI/2) 
+                                  * Matrix_Scale(0.8f, 0.8f, 0.8f) 
+                                  * Matrix_Rotate_Z(0.5f);
 
-        glm::mat4 cowModelAnimated = Matrix_Translate(4.0f, 1.2f, cowPositionZ)
-                                     * Matrix_Scale(2.0f, 2.0f, 2.0f)
-                                     * Matrix_Rotate_Y(cowRotation);
-
-        glm::mat4 chestBase = Matrix_Translate(4.0f, 0.5f, -20.0f)
-                              * Matrix_Rotate_Y(M_PI/2) * Matrix_Scale(0.8f, 0.8f, 0.8f);
-
-        glm::mat4 chestLid = Matrix_Translate(4.0f, 0.6f, -20.0f)
-                             * Matrix_Rotate_Y(M_PI/2) * Matrix_Scale(0.8f, 0.8f, 0.8f) * Matrix_Rotate_Z(0.5f);
-
-        drawCow(cowModelAnimated);
-        drawPlane(model);
-        drawMaze(model);
-        drawChestBase(chestBase);
-        drawChestLid(chestLid);
-
-
-/*
-        // Draw the cube (player)
-        model = Matrix_Translate(cameraPosition.x, cameraPosition.y, cameraPosition.z)
-                * Matrix_Rotate_Y(-cameraYaw);
-        glUniformMatrix4fv(uniforms["model"], 1 , GL_FALSE , glm::value_ptr(model));
-        glUniform1i(uniforms["object_id"], CUBE);
-        glUniform1i(uniforms["interpolation_type"], GOURAUD_INTERPOLATION);
-        DrawVirtualObject(uniforms, virtualScene, "Cube");
-*/
+        drawCow(cowModel);
+        drawPlane(identity);
+        drawMaze(identity);
+        drawChestBase(chestBaseModel);
+        drawChestLid(chestLidModel);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

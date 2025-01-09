@@ -90,6 +90,11 @@ private:
     float screenRatio;
     bool fullScreen = false;
 
+    bool lookAtMode = false;
+    const float distanceCameraCowThreshold = 20.0f;
+    glm::vec4 cowPosition = glm::vec4(4.0f, 1.2f, -90.0f, 1.0f);
+    float distanceCameraCow = 0.0f;
+
     glm::vec4 cameraPosition = glm::vec4(4.0f, 2.0f, 0.0f, 1.0f);
     glm::vec4 cameraLookAt = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
     glm::vec4 cameraView = cameraLookAt - cameraPosition;
