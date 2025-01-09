@@ -194,6 +194,13 @@ void TextRendering_PrintString(GLFWwindow* window, const std::string &str, float
         glBindBuffer(GL_ARRAY_BUFFER, 0);
 
         glUseProgram(textprogram_id);
+
+        // Set the text color to red
+        GLint colorLocation = glGetUniformLocation(textprogram_id, "textColor");
+        if (colorLocation != -1) {
+            glUniform4f(colorLocation, 1.0f, 0.0f, 0.0f, 1.0f);
+        }
+
         glBindVertexArray(textVAO);
 
         glDrawArrays(GL_TRIANGLES, 0, 6);

@@ -276,7 +276,7 @@ void Game::createModel(const std::string& objFilePath, glm::mat4 model) {
             }
         }
 
-        if (isChestLid || isChest) 
+        if (isCow) 
             BuildSceneTriangles(virtualScene, &objModel, model, true);
         else
             BuildSceneTriangles(virtualScene, &objModel, model);
@@ -330,7 +330,7 @@ void Game::drawChestLid(glm::mat4 model, int chestIndex) {
 }
 
 void Game::renderPlayerLife(GLFWwindow* window) {
-    const float scale = 2.5f;
+    const float scale = 3.0f;
 
     std::string buffer = "[";
 

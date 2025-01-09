@@ -59,6 +59,17 @@ bool checkCollisionWithStaticObjects(GameObject* movingObject, const VirtualScen
         if (movingObjectName == staticObjectName || staticObjectName == "the_plane" || staticObjectName == "the_cow") {
             continue;
         }
+        if (staticObjectName.find("the_chest") != std::string::npos) {
+            glm::vec4 movingObjectPosition = movingObject->getAABB().getCenter();
+            glm::vec3 lastMove = movingObject->getLastMove();
+            glm::vec4 lastMove4 = glm::vec4(lastMove.x, lastMove.y, lastMove.z, 0.0f);
+            glm::vec4 origin = movingObjectPosition - lastMove4;
+            glm::vec4 dir = lastMove4;
+            if (checkCollisionRayAABB(origin, dir, staticObject->getAABB())) {
+                std::cout << "Collision between " << movingObjectName << " and " << staticObjectName << std::endl;
+                return true;
+            }
+        }
         if (movingObject->intersects(*staticObject)) {
             std::cout << "Collision between " << movingObjectName << " and " << staticObjectName << std::endl;
             return true;

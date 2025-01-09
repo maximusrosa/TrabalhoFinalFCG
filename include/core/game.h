@@ -148,6 +148,8 @@ private:
     GLuint numLoadedTextures = 0;
     UniformMap uniforms = {};
 
+    unsigned int backgroundTextureID;
+
     void printVirtualScene() {
         for (auto& obj : virtualScene) {
             std::cout << obj.first << std::endl;
