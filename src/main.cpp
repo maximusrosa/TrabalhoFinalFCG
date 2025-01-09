@@ -28,7 +28,7 @@
 #include "core/game.h"
 
 int main() {
-    auto game = Game::getInstance("Game", 800, 600);
+    auto game = Game::getInstance("CowQuest", 800, 600);
     game->run();
     return EXIT_SUCCESS;
 }

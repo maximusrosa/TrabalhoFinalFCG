@@ -46,10 +46,10 @@ public:
     virtual void cursorPosCallback(double xpos, double ypos);
     virtual void framebufferSizeCallback(int width, int height);
 
-    void renderPlayerLife(GLFWwindow* window);
+    void renderPlayerLife(GLFWwindow* window) const;
 
-    void renderGameOver(GLFWwindow* window);
-    void renderVictory(GLFWwindow* window);
+    void renderGameOver(GLFWwindow* window) const;
+    void renderVictory(GLFWwindow* window) const;
 
     void setCameraView();
     void setProjection();
@@ -117,18 +117,17 @@ private:
     std::vector<bool> chestOpened = {false, false, false, false};
     int numChests = 0;
 
-    // const glm::vec4 initialCameraPosition = glm::vec4(4.0f, 2.0f, -30.0f, 1.0f);
-    const glm::vec4 initialCameraPosition = glm::vec4(84.81f, 2.0f, -76.62f, 1.0f);
+    const glm::vec4 initialCameraPosition1 = glm::vec4(4.0f, 2.0f, -30.0f, 1.0f);
+    const glm::vec4 initialCameraPosition2 = glm::vec4(84.81f, 2.0f, -76.62f, 1.0f);
     const glm::vec4 initialCameraLookAt = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
-    
-    // glm::vec4 cameraPosition = glm::vec4(4.0f, 2.0f, -30.0f, 1.0f);
-    glm::vec4 cameraPosition = glm::vec4(84.81f, 2.0f, -76.62f, 1.0f);
+
+    glm::vec4 cameraPosition = initialCameraPosition2;
     glm::vec4 cameraLookAt = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
     glm::vec4 cameraView = cameraLookAt - cameraPosition;
     glm::vec4 cameraUp = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
     glm::vec4 cameraRight = glm::vec4(1.0f, 0.0f, 0.0f, 0.0f);
 
-    const float baseSpeed = 10.0f;
+    const float baseSpeed = 100.0f;
     const float speedMultiplier = 1.75f;
     float currentSpeed = baseSpeed;
 

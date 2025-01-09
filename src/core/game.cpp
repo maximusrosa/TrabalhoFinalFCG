@@ -329,7 +329,7 @@ void Game::drawChestLid(glm::mat4 model, int chestIndex) {
     DrawVirtualObject(const_cast<UniformMap&>(uniforms), virtualScene, chestLidName.c_str());
 }
 
-void Game::renderPlayerLife(GLFWwindow* window) {
+void Game::renderPlayerLife(GLFWwindow* window) const {
     const float scale = 3.0f;
 
     std::string buffer = "[";
@@ -348,7 +348,7 @@ void Game::renderPlayerLife(GLFWwindow* window) {
     TextRendering_PrintString(window, buffer, -1.0f, -lineheight - 0.85, scale);
 }
 
-void Game::renderVictory(GLFWwindow* window) {
+void Game::renderVictory(GLFWwindow* window) const {
     // Set the screen background color to light blue
     glClearColor(0.55f, 0.55f, 0.9f, 1.0f);
 
@@ -396,8 +396,8 @@ void Game::renderVictory(GLFWwindow* window) {
     );
 }
 
-void Game::renderGameOver(GLFWwindow* window) {
-        // Set the screen background color to light blue
+void Game::renderGameOver(GLFWwindow* window) const {
+    // Set the screen background color to light blue
     glClearColor(0.9f, 0.55f, 0.55f, 1.0f);
 
     // Clear the color buffer
@@ -421,7 +421,7 @@ void Game::renderGameOver(GLFWwindow* window) {
     }
 
     TextRendering_PrintString(
-        window, 
+        window,
         buffer, 
         -1.1 * (charwidth * buffer.length()) / 2.0f, 
         lineheight, 
@@ -436,7 +436,7 @@ void Game::renderGameOver(GLFWwindow* window) {
     float exitCharWidth = TextRendering_CharWidth(window, exitScale);
 
     TextRendering_PrintString(
-        window, 
+        window,
         exitBuffer, 
         -0.9f * (charwidth * buffer.length()) / 2.0f, 
         lineheight - exitLineHeight - 0.2, 
@@ -444,7 +444,6 @@ void Game::renderGameOver(GLFWwindow* window) {
     );
 }
 
-// Cálculo da Curva de Bezier 2D
 glm::vec4 bezierCurve2D(glm::vec2 p0, glm::vec2 p1, glm::vec2 p2, glm::vec2 p3, float t) {
     float x = pow(1-t,3) * p0.x 
               + 3 * t * pow(1-t,2) * p1.x 
@@ -458,35 +457,18 @@ glm::vec4 bezierCurve2D(glm::vec2 p0, glm::vec2 p1, glm::vec2 p2, glm::vec2 p3, 
     return {x, 1.2f, z, 1.0f};
 }
 
-// Cálculo da Curva de Bezier 3D
-glm::vec4 bezierCurve3D(glm::vec3 p0, glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, float t) {
-    float x = pow(1-t,3) * p0.x 
-              + 3 * t * pow(1-t,2) * p1.x 
-              + 3 * pow(t,2) * (1-t) * p2.x 
-              + pow(t,3) * p3.x;
-    float y = pow(1-t,3) * p0.y 
-              + 3 * t * pow(1-t,2) * p1.y 
-              + 3 * pow(t,2) * (1-t) * p2.y 
-              + pow(t,3) * p3.y;
-    float z = pow(1-t,3) * p0.z 
-              + 3 * t * pow(1-t,2) * p1.z 
-              + 3 * pow(t,2) * (1-t) * p2.z 
-              + pow(t,3) * p3.z;
-    return {x, y, z, 1.0f};
-}
-
 void Game::gameLoop() {
+    glm::mat4 model = Matrix_Identity();
     float chestLidRotation = 0.0f;
-    float chestLidZTranslation = 0.0f;
-    float chestLidYTranslation = 0.0f;
-    
+
+    float scallingFactor = 0.1f;
     float t = 0.0f;     // Parâmetro "t" da curva de Bézier
     bool turn = false;  // Controle do sentido (ida ou volta)
 
     glm::vec2 p0(0.0f, -90.0f); // Ponto inicial
-    glm::vec2 p1(2.0f, -92.0f); // Primeiro ponto de controle
-    glm::vec2 p2(4.0f, -94.0f); // Segundo ponto de controle
-    glm::vec2 p3(6.0f, -96.0f); // Ponto final
+    glm::vec2 p1(1.5f, -91.5f); // Primeiro ponto de controle (mudança gradual)
+    glm::vec2 p2(3.5f, -93.0f); // Segundo ponto de controle (mais alinhado com p1 e p3)
+    glm::vec2 p3(5.0f, -94.5f); // Ponto final (um pouco mais distante para suavizar)
 
     double lastTime = glfwGetTime();
     double currentTime = lastTime;
@@ -501,35 +483,43 @@ void Game::gameLoop() {
             glfwSwapBuffers(window);
             continue;
         }
-        if (true) {
+        if (gameOver) {
             renderGameOver(window);
             glfwSwapBuffers(window);
             continue;
         }
 
-        // Atualiza os pontos de controle da curva de Bézier para alternar entre ida e volta
-        if (t >= 1.0f) {
-            t = 0.0f; // Reinicia o parâmetro "t"
+        glm::mat4 cowModel = Matrix_Translate(cowPosition.x, cowPosition.y, cowPosition.z)
+                             * Matrix_Scale(2.0f, 2.0f, 2.0f);
 
-            if (turn) {
-                // Caminho de volta
-                p0 = glm::vec2(10.0f, -100.0f);
-                p1 = glm::vec2(8.0f, -96.0f);
-                p2 = glm::vec2(6.0f, -92.0f);
-                p3 = glm::vec2(4.0f, -90.0f);
+        // Update the control points of the Bézier curve (Cow movement)
+        if (t >= 1.0f) {
+            t = 0.0f;
+
+            if (!turn) {
+                // Forward path
+                p0 = glm::vec2(0.0f, -90.0f);
+                p1 = glm::vec2(1.5f, -91.5f);
+                p2 = glm::vec2(3.5f, -93.0f);
+                p3 = glm::vec2(5.0f, -94.5f);
+
             } else {
-                // Caminho de ida
-                p0 = glm::vec2(4.0f, -90.0f);
-                p1 = glm::vec2(6.0f, -92.0f);
-                p2 = glm::vec2(8.0f, -96.0f);
-                p3 = glm::vec2(10.0f, -100.0f);
+                // Backwards path
+                p0 = glm::vec2(5.0f, -94.5f);
+                p1 = glm::vec2(3.5f, -93.0f);
+                p2 = glm::vec2(1.5f, -91.5f);
+                p3 = glm::vec2(0.0f, -90.0f);
             }
-            turn = !turn; // Alterna a direção
+            turn = !turn; // Changes direction
         }
 
         // Atualiza a posição da vaca
         lastCowPosition = cowPosition;
         cowPosition = bezierCurve2D(p0, p1, p2, p3, t);
+
+        // Atualiza AABB e bounding sphere da vaca
+        glm::vec4 cowTranslation = cowPosition - lastCowPosition;
+        virtualScene["the_cow"]->translate(cowTranslation.x, cowTranslation.y, cowTranslation.z);
 
         // Update time
         currentTime = glfwGetTime();
@@ -537,14 +527,10 @@ void Game::gameLoop() {
         lastTime = currentTime;
 
         // Atualiza o parâmetro "t" da curva de Bézier
-        t += 0.1f * deltaTime;
-
-        // Atualiza AABB e bounding sphere da vaca
-        glm::vec4 cowTranslation = cowPosition - lastCowPosition;
-
-        virtualScene["the_cow"]->translate(cowTranslation.x, cowTranslation.y, cowTranslation.z);
+        t += scallingFactor * deltaTime;
 
         distanceCameraCow = glm::distance(cameraPosition, cowPosition);
+
         if (lookAtMode && distanceCameraCow < distanceCameraCowThreshold) {
             cameraView = normalize(cowPosition - cameraPosition);
         }
@@ -560,8 +546,6 @@ void Game::gameLoop() {
 
         setCameraView();
         setProjection();
-        
-        glm::mat4 model = Matrix_Identity();
 
         timeStarving += deltaTime;
         if (timeStarving > starvationLimit) {
@@ -572,9 +556,7 @@ void Game::gameLoop() {
             }
         }
 
-        glm::mat4 cowModel = Matrix_Translate(cowPosition.x, cowPosition.y, cowPosition.z)
-                             * Matrix_Scale(2.0f, 2.0f, 2.0f);
-
+        // Draws the chests
         for (int i = 1; i <= numChests; i++) {
             std::string chestName = "the_chest" + std::to_string(i);
             std::string chestLidName = "the_chest_lid" + std::to_string(i);
@@ -598,23 +580,24 @@ void Game::gameLoop() {
             }
 
             glm::vec3 coord = chestCoordinates[i-1];
+
             glm::mat4 chestBaseModel = Matrix_Translate(coord.x, coord.y, coord.z);
 
-            glm::mat4 chestLidModel;
+            glm::mat4 chestLidModel = Matrix_Translate(coord.x, coord.y, coord.z)
+                                        * Matrix_Translate(-chestLidOffsetX, -chestLidOffsetY, 0.0f)
+                                        * Matrix_Translate(chestLidOffsetX, chestLidOffsetY, 0.0f);
 
             if (chestOpened[i-1]) {
                 chestLidModel = Matrix_Translate(coord.x, coord.y, coord.z)
                               * Matrix_Translate(-chestLidOffsetX, -chestLidOffsetY, 0.0f)
                               * Matrix_Rotate_Z(chestLidRotation)
                               * Matrix_Translate(chestLidOffsetX, chestLidOffsetY, 0.0f);
-            } else {
-                chestLidModel = Matrix_Translate(coord.x, coord.y, coord.z)
-                              * Matrix_Translate(-chestLidOffsetX, -chestLidOffsetY, 0.0f)
-                              * Matrix_Translate(chestLidOffsetX, chestLidOffsetY, 0.0f);
-            }                     
+            }
+
             drawChestBase(chestBaseModel, i);
             drawChestLid(chestLidModel, i);
         }
+
         drawCow(cowModel);
         drawPlane(model);
         drawMaze(model);
