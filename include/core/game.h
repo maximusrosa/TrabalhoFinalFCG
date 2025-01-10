@@ -115,6 +115,7 @@ private:
         glm::vec3(-9.232f, 1.0f, 53.063f)
     };
     std::vector<bool> chestOpened = {false, false, false, false};
+    std::vector<float> chestLidRotation = {0.0f, 0.0f, 0.0f, 0.0f};
     int numChests = 0;
 
     const glm::vec4 initialCameraPosition1 = glm::vec4(4.0f, 2.0f, -30.0f, 1.0f);
