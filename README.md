@@ -1,4 +1,71 @@
-=== Windows
+
+# CowQuest
+
+Trabalho final de Fundamentos de Computação Gráfica (2024/2)
+
+O jogo desenvolvido se chama *CowQuest*. 
+
+O objetivo é escapar do labirinto dentro de um tempo que é determinado pela “fome” do personagem, que precisa procurar por baús que contenham alimento  e chegar até a vaca dourada, localizada em sua saída.
+
+## Contribuições da dupla
+**Gabriel**
+- Modularização do projeto
+- Mapeamento de texturas 
+- Animação
+- Criação dos modelos de iluminação
+- Testes de Colisão
+- Interpolação de Phong e Gouraud
+- Câmera livre e look-At
+- Recorte dos ".obj" utilizando MeshLab
+- Telas de Vitória e Derrota
+
+**Maximus**
+- Mapeamento de texturas
+- Animação 
+- Ajuste de parâmetros de iluminação de Blinn-Phong
+- Refatorações na classe Game e nos arquivos de shader
+- Automatização do carregamento de texturas
+
+
+## Descrição do processo de desenvolvimento
+
+**Malhas poligonais complexas** - todos os objetos foram construídos utilizando malhas de triângulos, da mesma maneira feita nos laboratórios.
+
+**Transformações geométricas controladas pelos usuários** - a abertura do baú ocorre quando o usuário está próximo o suficiente e pressiona a tecla espaço.
+
+**Câmera livre e look-at** - a câmera livre padrão do jogo é a câmera livre, mas ao estar próximo da vaca, é possível pressionar a tecla "l" para ativar a câmera look-at em sua direção.
+
+**Múltiplas instâncias de objetos** - o baú é copiado múltiplas vezes com diferentes posições.
+
+**Testes de intersecções:**
+- Cubo-Cubo: jogador com as paredes
+- Cubo-Esfera: jogador com a vaca
+- Raio-Cubo: jogador com os baús
+  
+**Modelo de iluminação difusa** - todas as paredes do labrinto e o chão possuem iluminação difusa.
+
+**Modelo de iluminação de Blinn-Phong** - os baús e a vaca dourada possuem iluminação de Blinn-Phong.
+
+**Mapeamento de texturas em todos os objetos** - as texturas são mapeadas a partir das imagens dentro da pasta "textures", definidas para cada objeto.
+
+**Movimentação com curva Bézier cubica** - A movimentação da vaca pastando é feita através de uma curva de bezier cubica.
+
+**Animações baseadas no tempo** - A abertura do baú é feita através de uma animação baseada em tempo.
+
+## Funcionamento da aplicação
+![image](assets/example.jpg)
+![image](assets/example2.jpeg)
+
+## Manual descrevendo atalhos
+W, A, S, D - movimenta o jogador para frente, para a esquerda, para trás e para a direita, respectivamente. 
+Shift - faz o jogador se movimentar mais rápido
+L - ativa a câmera look-at, que foca na vaca dourada.
+Space - abertura do baú
+ESC - fecha o jogo
+Espaço - abre o baú, caso o jogador esteja próximo o suficiente.
+
+## Compilação da aplicação
+Windows
 ===================================
 Para compilar e executar este projeto no Windows, você possui duas
 opções para compilação:
@@ -52,7 +119,7 @@ Veja mais instruções de uso do CMake no VSCode em:
 
 https://github.com/microsoft/vscode-cmake-tools/blob/main/docs/README.md
 
-=== Linux
+Linux
 ===================================
 Para compilar e executar este projeto no Linux, primeiro você precisa instalar
 as bibliotecas necessárias. Para tanto, execute o comando abaixo em um terminal.
@@ -109,7 +176,7 @@ https://github.com/microsoft/vscode-cmake-tools/blob/main/docs/README.md
 Instale a IDE Code::Blocks (versão Linux em http://codeblocks.org/), abra o
 arquivo "Laboratorio_X.cbp", e modifique o "Build target" de "Debug" para "Linux".
 
-=== macOS
+macOS
 ===================================
 Para compilar e executar esse projeto no macOS, primeiro você precisa instalar o
 HOMEBREW, um gerenciador de pacotes para facilitar a instação de bibliotecas. O
@@ -134,23 +201,4 @@ currently not available due to the lack of Mac developers, or developers that
 own a Mac. We could use an extra Mac developer (or two) to work on Mac
 compatibility issues."
 
---- macOS com CMake
--------------------------------------------
-Você utiliza macOS e conseguiu utilizar o CMake para compilar este projeto?
-Então mande um e-mail para o professor em <eslgastal@inf.ufrgs.br> com
-as alterações necessárias no CMakeLists.txt e uma lista de instruções
-para colocar neste LEIAME.txt .
-
-=== Soluções de Problemas
-===================================
-
-Caso você tenha problemas de compilação no Windows com GCC, cuide para
-extrair o código do laboratório em um caminho que não contenha espaços
-no nome de algum diretório:
-
-- Caminho OK: C:\Users\JohnDoe\Documents\FCG\Lab1
-
-- Caminho NÃO OK: C:\Users\JohnDoe\Documents\Fundamentos de CG\Lab1
-
-Caso você tenha problemas em executar o código deste projeto, tente atualizar o
-driver da sua placa de vídeo.
+Após baixar os softwares necessários, somente é necessário clicar Shift+F5 no VS code ou usar o comando `make run`
