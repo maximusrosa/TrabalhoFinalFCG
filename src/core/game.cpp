@@ -458,9 +458,6 @@ glm::vec4 bezierCurve2D(glm::vec2 p0, glm::vec2 p1, glm::vec2 p2, glm::vec2 p3, 
 }
 
 void Game::gameLoop() {
-    glm::mat4 model = Matrix_Identity();
-    float chestLidRotation = 0.0f;
-
     float scallingFactor = 0.1f;
     float t = 0.0f;     // Parâmetro "t" da curva de Bézier
     bool turn = false;  // Controle do sentido (ida ou volta)
@@ -489,8 +486,10 @@ void Game::gameLoop() {
             continue;
         }
 
-        glm::mat4 cowModel = Matrix_Translate(cowPosition.x, cowPosition.y, cowPosition.z)
-                             * Matrix_Scale(2.0f, 2.0f, 2.0f);
+        // Update time
+        currentTime = glfwGetTime();
+        deltaTime = currentTime - lastTime;
+        lastTime = currentTime;
 
         // Update the control points of the Bézier curve (Cow movement)
         if (t >= 1.0f) {
@@ -520,11 +519,6 @@ void Game::gameLoop() {
         // Atualiza AABB e bounding sphere da vaca
         glm::vec4 cowTranslation = cowPosition - lastCowPosition;
         virtualScene["the_cow"]->translate(cowTranslation.x, cowTranslation.y, cowTranslation.z);
-
-        // Update time
-        currentTime = glfwGetTime();
-        deltaTime = currentTime - lastTime;
-        lastTime = currentTime;
 
         // Atualiza o parâmetro "t" da curva de Bézier
         t += scallingFactor * deltaTime;
@@ -556,42 +550,45 @@ void Game::gameLoop() {
             }
         }
 
+        glm::mat4 model = Matrix_Identity();
+
+        glm::mat4 cowModel = Matrix_Translate(cowPosition.x, cowPosition.y, cowPosition.z)
+                             * Matrix_Scale(2.0f, 2.0f, 2.0f);
+
         // Draws the chests
         for (int i = 1; i <= numChests; i++) {
-            std::string chestName = "the_chest" + std::to_string(i);
-            std::string chestLidName = "the_chest_lid" + std::to_string(i);
-
-            glm::vec4 chestBaseAABBMin = virtualScene[chestName]->getAABB().getMin();
-            glm::vec4 chestBaseAABBMax = virtualScene[chestName]->getAABB().getMax();
-
-            glm::vec4 chestLidAABBMin = virtualScene[chestLidName]->getAABB().getMin();
-            glm::vec4 chestLidAABBMax = virtualScene[chestLidName]->getAABB().getMax();
-
-            float chestDepth = chestBaseAABBMax.z - chestBaseAABBMin.z;
-            float chestBaseHeight = chestBaseAABBMax.y - chestBaseAABBMin.y;
-            float chestLidHeight = chestLidAABBMax.y - chestLidAABBMin.y;
-
-            // Desloca o baú de modo que a dobradiça fique no centro
-            float chestLidOffsetX = chestDepth / 2.0f;
-            float chestLidOffsetY = (chestBaseHeight - 2.0f * chestLidHeight) / 2.0f;
-            
-            if (chestLidRotation < M_PI_2) {   // Abrir até 90 graus
-                chestLidRotation += deltaTime; // Velocidade de abertura
-            }
-
             glm::vec3 coord = chestCoordinates[i-1];
 
             glm::mat4 chestBaseModel = Matrix_Translate(coord.x, coord.y, coord.z);
-
-            glm::mat4 chestLidModel = Matrix_Translate(coord.x, coord.y, coord.z)
-                                        * Matrix_Translate(-chestLidOffsetX, -chestLidOffsetY, 0.0f)
-                                        * Matrix_Translate(chestLidOffsetX, chestLidOffsetY, 0.0f);
+            glm::mat4 chestLidModel;
 
             if (chestOpened[i-1]) {
+                std::string chestName = "the_chest" + std::to_string(i);
+                std::string chestLidName = "the_chest_lid" + std::to_string(i);
+
+                glm::vec4 chestBaseAABBMin = virtualScene[chestName]->getAABB().getMin();
+                glm::vec4 chestBaseAABBMax = virtualScene[chestName]->getAABB().getMax();
+
+                glm::vec4 chestLidAABBMin = virtualScene[chestLidName]->getAABB().getMin();
+                glm::vec4 chestLidAABBMax = virtualScene[chestLidName]->getAABB().getMax();
+
+                float chestDepth = chestBaseAABBMax.z - chestBaseAABBMin.z;
+                float chestBaseHeight = chestBaseAABBMax.y - chestBaseAABBMin.y;
+                float chestLidHeight = chestLidAABBMax.y - chestLidAABBMin.y;
+
+                // Desloca o baú de modo que a dobradiça fique no centro
+                float chestLidOffsetX = chestDepth / 2.0f;
+                float chestLidOffsetY = (chestBaseHeight - 2.0f * chestLidHeight) / 2.0f;
+
+                if (chestLidRotation[i-1] < M_PI_2) {   // Abrir até 90 graus
+                    chestLidRotation[i-1] += deltaTime;
+                }
                 chestLidModel = Matrix_Translate(coord.x, coord.y, coord.z)
-                              * Matrix_Translate(-chestLidOffsetX, -chestLidOffsetY, 0.0f)
-                              * Matrix_Rotate_Z(chestLidRotation)
-                              * Matrix_Translate(chestLidOffsetX, chestLidOffsetY, 0.0f);
+                                * Matrix_Translate(-chestLidOffsetX, -chestLidOffsetY, 0.0f)
+                                * Matrix_Rotate_Z(chestLidRotation[i-1])
+                                * Matrix_Translate(chestLidOffsetX, chestLidOffsetY, 0.0f);
+            } else {
+                chestLidModel = Matrix_Translate(coord.x, coord.y, coord.z);
             }
 
             drawChestBase(chestBaseModel, i);
