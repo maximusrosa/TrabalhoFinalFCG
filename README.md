@@ -64,6 +64,9 @@ Space - abertura do baú
 ESC - fecha o jogo
 Espaço - abre o baú, caso o jogador esteja próximo o suficiente.
 
+## Uso de ferramentas de IA
+Utilizamos o GitHub Copilot, principalmente para auxiliar com o preenchimento de códigos similares e passar um "esqueleto" de como poderíamos implementar determinadas funções. Entretanto, devido ao escopo do projeto, esse auxílio foi limitado e não substituiu a necessidade de conhecimento teórico, espcecialmente nos momentos de bugs que não são necessariamente "erros" de código, mas sim de lógica.
+
 ## Compilação da aplicação
 Windows
 ===================================
