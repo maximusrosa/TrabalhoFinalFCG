@@ -363,7 +363,7 @@ void Game::renderVictory(GLFWwindow* window) const {
         scale
     );
 
-    // Render the message to play again (press R) or exit (press ESC)
+    // Render the message to exit (press ESC)
     const float exitScale = 3.0f;
     std::string exitBuffer = "Press ESC to exit";
 
@@ -411,7 +411,7 @@ void Game::renderGameOver(GLFWwindow* window) const {
         scale
     );
 
-    // Render the message to play again (press R) or exit (press ESC)
+    // Render the message to exit (press ESC)
     const float exitScale = 3.0f;
     std::string exitBuffer = "Press ESC to exit";
 
