@@ -204,4 +204,5 @@ currently not available due to the lack of Mac developers, or developers that
 own a Mac. We could use an extra Mac developer (or two) to work on Mac
 compatibility issues."
 
+
 Após baixar os softwares necessários, somente é necessário clicar Shift+F5 no VS code ou usar o comando `make run`
