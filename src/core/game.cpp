@@ -239,13 +239,7 @@ void Game::setProjection() {
 }
 
 void Game::createModel(const std::string& objFilePath, glm::mat4 model) {
-    bool isMaze = objFilePath.find("maze") != std::string::npos;
-    bool isCow = objFilePath.find("cow") != std::string::npos;
-    bool isChestLid = objFilePath.find("chest_lid") != std::string::npos;
-    bool isChest = objFilePath.find("chest") != std::string::npos;
-    bool isPlayer = objFilePath.find("cube") != std::string::npos;
-
-    if (isMaze) {
+    if (objFilePath.find("maze") != std::string::npos) {
         const std::string& mazeModelFolder = objFilePath;
 
         std::vector<std::string> mazeModelFiles = getFiles(mazeModelFolder);
@@ -264,22 +258,11 @@ void Game::createModel(const std::string& objFilePath, glm::mat4 model) {
 
         printf("Creating model: %s\n", objFilePath.c_str());
 
-        if (isChestLid) {
-            std::string chestName = "the_chest_lid" + std::to_string(numChests);
-            for (tinyobj::shape_t& shape : objModel.shapes) {
-                shape.name = chestName;
-            }
-        } else if (isChest) {
-            std::string chestName = "the_chest" + std::to_string(numChests);
-            for (tinyobj::shape_t& shape : objModel.shapes) {
-                shape.name = chestName;
-            }
-        }
-
-        if (isCow) 
+        if (objFilePath.find("cow") != std::string::npos) {
             BuildSceneTriangles(virtualScene, &objModel, model, true);
-        else
+        } else {
             BuildSceneTriangles(virtualScene, &objModel, model);
+        }
     }
 }
 
@@ -380,7 +363,7 @@ void Game::renderVictory(GLFWwindow* window) const {
         scale
     );
 
-    // Render the message to play again (press R) or exit (press ESC)
+    // Render the message to exit (press ESC)
     const float exitScale = 3.0f;
     std::string exitBuffer = "Press ESC to exit";
 
@@ -428,7 +411,7 @@ void Game::renderGameOver(GLFWwindow* window) const {
         scale
     );
 
-    // Render the message to play again (press R) or exit (press ESC)
+    // Render the message to exit (press ESC)
     const float exitScale = 3.0f;
     std::string exitBuffer = "Press ESC to exit";
 
@@ -501,7 +484,6 @@ void Game::gameLoop() {
                 p1 = glm::vec2(1.5f, -91.5f);
                 p2 = glm::vec2(3.5f, -93.0f);
                 p3 = glm::vec2(5.0f, -94.5f);
-
             } else {
                 // Backwards path
                 p0 = glm::vec2(5.0f, -94.5f);
@@ -563,14 +545,14 @@ void Game::gameLoop() {
             glm::mat4 chestLidModel;
 
             if (chestOpened[i-1]) {
-                std::string chestName = "the_chest" + std::to_string(i);
-                std::string chestLidName = "the_chest_lid" + std::to_string(i);
+                GameObject* chest = virtualScene["the_chest" + std::to_string(i)];
+                GameObject* chestLid = virtualScene["the_chest_lid" + std::to_string(i)];
 
-                glm::vec4 chestBaseAABBMin = virtualScene[chestName]->getAABB().getMin();
-                glm::vec4 chestBaseAABBMax = virtualScene[chestName]->getAABB().getMax();
-
-                glm::vec4 chestLidAABBMin = virtualScene[chestLidName]->getAABB().getMin();
-                glm::vec4 chestLidAABBMax = virtualScene[chestLidName]->getAABB().getMax();
+                glm::vec4 chestBaseAABBMin = chest->getAABB().getMin();
+                glm::vec4 chestBaseAABBMax = chest->getAABB().getMax();
+                
+                glm::vec4 chestLidAABBMin = chestLid->getAABB().getMin();
+                glm::vec4 chestLidAABBMax = chestLid->getAABB().getMax();
 
                 float chestDepth = chestBaseAABBMax.z - chestBaseAABBMin.z;
                 float chestBaseHeight = chestBaseAABBMax.y - chestBaseAABBMin.y;
@@ -637,12 +619,32 @@ void Game::run() {
     createModel("../../assets/models/maze/", model);
 
     // ----------------------------- CHEST ----------------------------- //
-    for (glm::vec3 coord : chestCoordinates) {
-        model = Matrix_Translate(coord.x, coord.y, coord.z);
-        numChests++;
-        createModel("../../assets/models/chest.obj", model);
-        createModel("../../assets/models/chest_lid.obj", model);
+    model = Matrix_Identity();
+
+    createModel("../../assets/models/chest.obj", model);
+    createModel("../../assets/models/chest_lid.obj", model);
+
+    GameObject* chest = virtualScene["the_chest"];
+    GameObject* chestLid = virtualScene["the_chest_lid"];
+
+    // Place the chests at the specified coordinates
+    for (int i = 1; i <= numChests; i++) {
+        glm::vec3 coord = chestCoordinates[i-1];
+
+        std::string chestName = "the_chest" + std::to_string(i);
+        std::string chestLidName = "the_chest_lid" + std::to_string(i);
+
+        virtualScene[chestName] = new GameObject(*chest);
+        virtualScene[chestName]->translate(coord.x, coord.y, coord.z);
+
+        virtualScene[chestLidName] = new GameObject(*chestLid);
+        virtualScene[chestLidName]->translate(coord.x, coord.y, coord.z);
     }
+
+    virtualScene.erase("the_chest");
+    virtualScene.erase("the_chest_lid");
+    delete chest;
+    delete chestLid;
 
     // ----------------------------- CUBE (PLAYER) ----------------------------- //
     model = Matrix_Translate(cameraPosition.x, cameraPosition.y, cameraPosition.z)
